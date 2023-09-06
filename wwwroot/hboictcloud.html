@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>Dokkie Startproject</title>
+
+        <link rel="stylesheet" href="/assets/css/index.css" />
+    </head>
+    <body>
+        <h1>HBO-ICT.Cloud</h1>
+
+        <p>Dit zijn een aantal voorbeelden van de mogelijkheden van de HBO-ICT.Cloud API.</p>
+
+        <h2>Url</h2>
+
+        <p>
+            Dit zit er in de huidige URL:
+
+            <code id="url"></code>
+        </p>
+
+        <input type="text" id="input-url" />
+        <button id="button-url-replace">Replace</button>
+        <button id="button-url-redirect">Redirect</button>
+
+        <h2>Session</h2>
+
+        <p>
+            Dit zit er in de huidige sessie:
+
+            <code id="session"></code>
+        </p>
+
+        <input type="text" id="input-session" />
+        <button id="button-session-ok">OK</button>
+        <button id="button-session-reset">Reset</button>
+
+        <h2>Query</h2>
+
+        <p>
+            Voor dit voorbeeld zul je eerst je <code>hboictcloud-config.ts</code> moeten aanpassen en een
+            tabel aan een database moeten toevoegen!
+        </p>
+
+        <input type="text" id="input-query" />
+        <button id="button-query">Query</button>
+
+        <div>
+            <pre id="query">Leeg...</pre>
+        </div>
+
+        <h2>Localization</h2>
+
+        <p data-translate="paragraph"></p>
+
+        <button data-translate="english" id="button-localization-english">Engels</button>
+        <button data-translate="dutch" id="button-localization-dutch">Nederlands</button>
+        <button id="button-xx">Geen taal (om te testen)</button>
+
+        <script src="/src/hboictcloud.ts" type="module"></script>
+    </body>
+</html>

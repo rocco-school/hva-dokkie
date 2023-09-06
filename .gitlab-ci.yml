@@ -1,0 +1,59 @@
+image: node:18.16.0
+
+variables:
+  # Set this to either "pages" or "hboictcloud" to enable automatic deployment on commit
+  DEPLOY_TYPE: ""
+  FTP_HOST: "sftp://sftp.hbo-ict.cloud:3322"
+  FTP_USERNAME: ""
+  FTP_PASSWORD: ""
+  FTP_TARGETPATH: "./live/"
+
+# Deploys website via Gitlab Pages, disabled by default, uploading files on this environment will not work!
+pages:
+  stage: deploy
+  when: manual
+  cache:
+    key:
+      files:
+        - package-lock.json
+      prefix: npm
+    paths:
+      - node_modules/
+  script:
+    - npm install
+    - npm run build
+    - cp -a dist/. public/
+  tags:
+    - hva
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPLOY_TYPE == "pages"
+      when: always
+
+# Deploys website via HBO-ICT.Cloud, disabled by default, enter the required variables under CI/CD in Gitlab!
+hboictcloud:
+  stage: deploy
+  when: manual
+  cache:
+      key:
+        files:
+          - package-lock.json
+        prefix: npm
+      paths:
+        - node_modules/
+  script:
+    - npm install
+    - npm run build
+    - cp -a dist/. public/
+    - apt-get update -qq && apt-get install -y -qq lftp
+    - lftp -e "set net:max-retries 3; set ssl:verify-certificate no; set ftp:ssl-allow yes; set sftp:auto-confirm yes; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rev -x uploads/ public/ $FTP_TARGETPATH --ignore-time --parallel=10"
+  tags:
+    - hva
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPLOY_TYPE == "hboictcloud"
+      when: always
