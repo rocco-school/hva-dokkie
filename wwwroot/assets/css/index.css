@@ -3,12 +3,17 @@
     font-family: 'Poppins', sans-serif;
 }
 
+body {
+    display: flex;
+}
+
 &:before {
     background-image: url('../images/geld1.png');
     content: '';
     display: block;
     height: 100%;
     filter: blur(2px);
+    opacity: .6;
     position: absolute;
     width: 100%;
 }
@@ -71,4 +76,42 @@
 .c-content-inner__text {
     font-size: 1.3rem;
     margin-bottom: 7rem;
+}
+
+.faq-container {
+    text-align: start;
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    height: 20rem;
+    width: 50rem;
+    transform: translate(-50%, -50%);
+    padding: 1rem;
+}
+
+.faq-container .faq .faq--question {
+    display: flex;
+    flex-direction: row;
+}
+
+.faq-container .faq .faq--question .faq--question-arrow {
+    width: 3rem;
+    vertical-align: center;
+    margin-left: 32rem;
+    height: 3rem;
+    margin-top: .3rem;
+}
+
+.faq-container .faq {
+    border: 2px solid #777777;
+    border-radius: 1.5rem;
+    padding: 1rem;
+}
+
+.faq-container .faq--question-arrow {
+    cursor: pointer;
+}
+
+.faq-container .faq p {
+    display: none;
 }

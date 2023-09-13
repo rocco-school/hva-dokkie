@@ -9,7 +9,6 @@ function app(): void {
     button?.addEventListener("click", handleClick);
 
     async function handleClick(this: HTMLElement): Promise<void> {
-        console.log("Clicked!");
         this.classList.add("active");
 
         await delay(400);
