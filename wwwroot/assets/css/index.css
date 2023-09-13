@@ -7,7 +7,7 @@
     content: '';
     display: block;
     height: 100%;
-    opacity: 0.3;
+    filter: blur(2px);
     position: absolute;
     width: 100%;
 }

@@ -6,32 +6,34 @@
 
     <title>Dokkie login</title>
 
-    <link rel="stylesheet" href="./assets/css/index.css"/>
+    <link rel="stylesheet" href="./assets/css/login.css"/>
 </head>
 <body>
-<header class="header">
-    <div class="c-content">
-        <div class="c-content-inner">
-            <h1 class="c-content-inner__title">Dokkie</h1>
-            <p class="c-content-inner__text">A platform to plan your expanses per event with your friends!</p>
-        </div>
-
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#">Events</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="signup.html">Signup</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
-
 <main>
+    <div class="container">
+        <div class="container--inner">
+            <h2>Login</h2>
 
+            <div class="name">
+                <label for="name"><b>Name</b></label>
+                <input id="name" type="text" placeholder="Enter Username" name="name" required>
+            </div>
+            <div class="password">
+                <label for="password"><b>Password</b></label>
+                <input id="password" type="password" placeholder="Enter Password" name="password" required>
+            </div>
+            <div class="remember">
+                <label>
+                    <input class="remember__checkbox" type="checkbox" checked="checked" name="remember">
+                    <span>Remember me</span>
+                </label>
+            </div>
 
+            <button class="submit" type="submit">Login</button>
+
+        </div>
+    </div>
 </main>
-<script src="/src/index.ts" type="module"></script>
+<script src="/src/login.ts" type="module"></script>
 </body>
 </html>
