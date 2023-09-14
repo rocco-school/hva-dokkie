@@ -8,12 +8,11 @@ body {
 }
 
 &:before {
-    background-image: url('../images/geld1.png');
+    background-image: url('../images/geld3.png');
     content: '';
     display: block;
     height: 100%;
     filter: blur(2px);
-    opacity: .6;
     position: absolute;
     width: 100%;
 }
@@ -23,7 +22,7 @@ body {
     border-bottom: 2px solid black;
     text-align: center;
     position: absolute;
-    top: 40%;
+    top: 30%;
     left: 50%;
     height: 20rem;
     width: 50rem;
@@ -81,7 +80,7 @@ body {
 .faq-container {
     text-align: start;
     position: absolute;
-    top: 80%;
+    top: 70%;
     left: 50%;
     height: 20rem;
     width: 50rem;
@@ -97,21 +96,37 @@ body {
 .faq-container .faq .faq--question .faq--question-arrow {
     width: 3rem;
     vertical-align: center;
-    margin-left: 32rem;
     height: 3rem;
     margin-top: .3rem;
+    transform: rotate(-90deg);
 }
 
 .faq-container .faq {
     border: 2px solid #777777;
     border-radius: 1.5rem;
     padding: 1rem;
-}
-
-.faq-container .faq--question-arrow {
     cursor: pointer;
+    margin-bottom: 2rem;
 }
 
-.faq-container .faq p {
+.faq-container .faq .faq--question .faq-title {
+    width: 100%;
+}
+
+.faq-container .faq .faq--answer {
     display: none;
+}
+
+hr {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.faq-container .is-active .faq--answer{
+    display: block;
+}
+
+.faq-container .is-active .faq--question .faq--question-arrow {
+    transform: rotate(0deg);
 }

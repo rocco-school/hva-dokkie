@@ -1,0 +1,209 @@
+/**
+primary color = dark blue = #051821
+Secondary color = dark green = #1A4645
+tertiary color = lighter green = #266867
+quaternary color = orange = #F58800
+quinary color = yellow = #F8BC24
+ */
+
+body {
+    display: flex;
+}
+
+.main {
+    width: 100%;
+}
+
+/* Style the header with a grey background and some padding */
+.header {
+    overflow: hidden;
+    padding: 1rem 1rem;
+    vertical-align: center;
+    margin: 0 10rem;
+}
+
+.header .logo {
+    font-size: 2rem;
+}
+
+.header .highlight {
+    background-color: #F8BC24;
+    width: 10rem;
+    border-radius: 2rem;
+}
+
+.header .highlight:hover {
+    background-color: #051821;
+    color: white;
+}
+
+
+/* Style the header links */
+.header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.3rem;
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+.header-right {
+    float: right;
+}
+
+@media screen and (max-width: 500px) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .header-right {
+        float: none;
+    }
+}
+
+.container {
+    background-image: url('../images/geld3.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    width: 100%;
+    padding-bottom: 50%; /* 2:1 */
+}
+
+.content .start_button {
+    background-color: #F8BC24;
+    width: 10rem;
+    border-radius: 2rem;
+    padding: 1rem;
+    text-align: center;
+    text-decoration: none;
+    color: #051821;
+}
+
+.content .start_button:hover {
+    background-color: #051821;
+    color: white;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 4rem;
+    width: 40rem;
+}
+
+.content .content__title {
+    font-size: 4rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.content .content__text {
+    font-size: 1.3rem;
+    color: white;
+}
+
+
+@media only screen and (max-width: 480px) {
+
+    .container {
+        padding-bottom: 0;
+    }
+
+    .content {
+        position: relative;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 30px;
+    }
+
+}
+
+.faq_content {
+    display: flex;
+    gap: 5rem;
+    padding: 4rem 10rem;
+}
+
+.faq_content .faq_content_text-block {
+    max-width: 30rem;
+    margin-top: 8rem;
+    text-align: center;
+}
+
+.faq_content .faq_content_text-block .faq_content__title {
+    font-size: 2.5rem;
+}
+
+.faq_content .faq_content_text-block .faq_content__text {
+    font-size: 1.3rem;
+}
+
+.faq-container {
+    width: 100%;
+}
+
+.faq {
+    background-image: url("../images/geld3.png");
+    border-radius: 1.5rem;
+}
+
+.faq-container .faq .faq--question {
+    display: flex;
+    flex-direction: row;
+}
+
+.faq-container .faq .faq--question .faq--question-arrow {
+    width: 3rem;
+    vertical-align: center;
+    height: 3rem;
+    margin-top: .3rem;
+    transform: rotate(-90deg);
+}
+
+.faq-container .faq {
+    border: 2px solid #777777;
+    border-radius: 1.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.faq-container .faq .faq--question .faq-title {
+    width: 100%;
+}
+
+.faq-container .faq .faq--answer {
+    display: none;
+}
+
+.faq-container .faq .faq--answer p {
+    margin-top: 1.7rem;
+}
+
+.faq-container .faq .faq--answer hr {
+    margin-top: 1rem;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.faq-container .is-active .faq--answer {
+    display: block;
+}
+
+.faq-container .is-active .faq--question .faq--question-arrow {
+    transform: rotate(0deg);
+}
