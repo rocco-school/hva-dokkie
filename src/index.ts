@@ -5,42 +5,51 @@ import "./hboictcloud-config";
  */
 function app(): void {
 
-    const body:HTMLBodyElement|null = document.querySelector("body");
-    body?.addEventListener("click", closeAllFAQ);
+    async function handleClick(event: MouseEvent): Promise<void> {
+        const click: EventTarget | null = event.target;
+
+        const items: NodeListOf<Element> = document.querySelectorAll(".faq");
+
+        const bool: boolean = Array.from(items).some((item: Element) => item.contains(click));
+
+        if (!bool) {
+            await closeAllFAQ();
+        }
+    }
+
+    window.onclick = handleClick;
 
     document.querySelectorAll(".faq").forEach(item => {
-        item.addEventListener("click", handleClick);
+        item.addEventListener("click", handleFAQClick);
     });
 
-    const button:Element|null = document.querySelector(".start_button");
+    const button: Element | null = document.querySelector(".start_button");
     button?.addEventListener("click", scrollDown);
 
+    async function closeAllFAQ(): Promise<void> {
+        const items: Element[] = Array.from(document.querySelectorAll(".faq"));
+        items.forEach((item: Element): void => {
+            item.classList.replace("is-active", "faq__height");
+        });
+    }
+
     async function scrollDown(this: HTMLElement): Promise<void> {
-        const elem:Element|null = document.querySelector(".faq-container");
-        elem?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        const elem: Element | null = document.querySelector(".faq-container");
+        elem?.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
     }
 
-    async function closeAllFAQ(this: HTMLElement): Promise<void> {
-        const FAQ:NodeListOf<Element> = document.querySelectorAll(".faq");
+    async function handleFAQClick(this: HTMLElement): Promise<void> {
+        const items: Element[] = Array.from(document.querySelectorAll(".faq"));
 
-
-    }
-
-    async function handleClick(this: HTMLElement): Promise<void> {
-
-        document.querySelectorAll(".faq").forEach(item => {
+        items.forEach((item: Element): void => {
             if (item !== this) {
-                item.classList.remove("is-active");
-                item.classList.add("faq__height");
+                item.classList.replace("is-active", "faq__height");
             }
         });
 
         this.classList.toggle("faq__height");
         this.classList.toggle("is-active");
-        // let parent:HTMLElement|null = this.parentElement;
-        // parent?.parentElement?.classList.toggle("is-active");
     }
-
 }
 
 app();
