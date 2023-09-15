@@ -20,9 +20,9 @@ main {
 
 .header {
     overflow: hidden;
-    padding: 1rem 1rem;
+    padding: .5rem 0;
     vertical-align: center;
-    margin: 0 10rem;
+    margin: 0 9rem;
 }
 
 @media screen and (max-width: 1250px) {
@@ -84,7 +84,7 @@ main {
     padding-bottom: 50%; /* 2:1 */
 }
 
-.content .start_button {
+.container__content .start_button {
     background-color: #F8BC24;
     width: 10rem;
     border-radius: 2rem;
@@ -96,12 +96,12 @@ main {
     cursor: pointer;
 }
 
-.content .start_button:hover {
+.container__content .start_button:hover {
     background-color: #051821;
     color: white;
 }
 
-.content {
+.container__content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -113,19 +113,19 @@ main {
 }
 
 @media screen and (max-width: 1250px) {
-    .content {
+    .contcontainer__contentent {
         left: 4rem;
         width: 40rem;
     }
 }
 
-.content .content__title {
+.container__content .content__title {
     font-size: 4rem;
     color: white;
     margin-bottom: 0;
 }
 
-.content .content__text {
+.container__content .content__text {
     font-size: 1.3rem;
     color: white;
     margin-top: 1rem;
@@ -138,7 +138,7 @@ main {
         padding-bottom: 0;
     }
 
-    .content {
+    .container__content {
         position: relative;
         top: 0;
         bottom: 0;

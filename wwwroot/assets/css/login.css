@@ -1,3 +1,19 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+&:before {
+    background-image: url("../images/geld3.png");
+    content: '';
+    display: block;
+    height: 100%;
+    filter: blur(4px);
+    position: absolute;
+    width: 100%;
+}
+
 .container {
     background-color: white;
     border-radius: 1.5rem;
@@ -75,4 +91,23 @@ input:focus {
 
 .active {
     background-color: lightgray;
+}
+
+.redirects {
+    display: flex;
+    vertical-align: middle;
+    gap: 5rem;
+    margin: auto;
+}
+
+.redirects .link {
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-top: .3rem;
+    color: #051821;
+}
+
+.redirects .title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
 }
