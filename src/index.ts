@@ -5,6 +5,9 @@ import "./hboictcloud-config";
  */
 function app(): void {
 
+    const body:HTMLBodyElement|null = document.querySelector("body");
+    body?.addEventListener("click", closeAllFAQ);
+
     document.querySelectorAll(".faq").forEach(item => {
         item.addEventListener("click", handleClick);
     });
@@ -16,6 +19,13 @@ function app(): void {
         const elem:Element|null = document.querySelector(".faq-container");
         elem?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
     }
+
+    async function closeAllFAQ(this: HTMLElement): Promise<void> {
+        const FAQ:NodeListOf<Element> = document.querySelectorAll(".faq");
+
+
+    }
+
     async function handleClick(this: HTMLElement): Promise<void> {
 
         document.querySelectorAll(".faq").forEach(item => {
