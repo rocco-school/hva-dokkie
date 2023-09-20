@@ -1,10 +1,11 @@
 import "./hboictcloud-config";
+import { api } from "@hboictcloud/api";
+import {QUERY} from "./query/user.query";
 
 /**
  * Entry point
  */
 function app(): void {
-
     async function handleClick(event: MouseEvent): Promise<void> {
         const click: EventTarget | null = event.target;
 

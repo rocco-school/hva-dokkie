@@ -17,7 +17,7 @@
                 <h2 class="title">Signup</h2>
                 <a class="link" href="login.html"><span>Login</span></a>
             </div>
-            <form>
+            <form id="form" action="/" method="GET">
                 <div class="name">
                     <label for="name"><b>Name</b></label>
                     <input id="name" type="text" placeholder="Enter Username" name="name" required>
@@ -25,9 +25,11 @@
                 <div class="password">
                     <label for="password"><b>Password</b></label>
                     <input id="password" type="password" placeholder="Create password" name="password" required>
+                    <div id="show-password"><img src="assets/images/icons/eye-hidden-com.svg" alt="show password" class="icon-eye open"></div>
                     <br>
                     <label for="confirm-password"><b>Confirm password</b></label>
                     <input id="confirm-password" type="password" placeholder="Confirm password" name="confirm-password" required>
+                    <div id="show-confirmation-password"><img src="assets/images/icons/eye-hidden-com.svg" alt="show password" class="icon-eye open"></div>
                 </div>
 
                 <div class="additional-info">
@@ -37,9 +39,11 @@
                     <label for="zipcode"><b>Zipcode</b></label>
                     <input id="zipcode" type="text" placeholder="Enter Zip code" name="zipcode" required>
                     <br>
-                    <label for="email"><b>Password</b></label>
+                    <label for="email"><b>Email</b></label>
                     <input id="email" type="text" placeholder="Enter Email" name="email" required>
                 </div>
+
+                <div id="error"></div>
 
                 <button class="submit" type="submit">Signup</button>
             </form>
