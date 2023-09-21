@@ -1,74 +1,139 @@
 import "./hboictcloud-config";
-import {api} from "@hboictcloud/api";
+import {api, createQueryString, queryDatabase} from "@hboictcloud/api";
 import {QUERY} from "./query/user.query";
-import {User} from "./interface/user";
+import {hashPassword} from "./hash-password";
+import {hash} from "bcryptjs";
+
 
 /**
  * Entry point
  */
 function app(): void {
+    const password: HTMLInputElement | null = document.querySelector("#password");
+    const confirmPassword: HTMLInputElement | null = document.querySelector("#confirm-password");
+    const name: HTMLInputElement | null = document.querySelector("#name");
+    const form: HTMLFormElement | null = document.querySelector("#form");
+    const email: HTMLInputElement | null = document.querySelector("#email");
 
-    const password:HTMLInputElement = document.querySelector("#password");
-    const confirmPassword:HTMLInputElement = document.querySelector("#confirm-password");
-    const name:HTMLInputElement = document.querySelector("#name");
-    const form:HTMLElement = document.querySelector("#form");
-    const email:HTMLInputElement = document.querySelector("#email");
+    if (form) {
+        form.addEventListener("submit", onsubmit);
+    }
 
     document.querySelectorAll(".icon-eye").forEach(item => {
         item.addEventListener("click", handleClick);
     });
 
     async function handleClick(this: HTMLImageElement): Promise<void> {
-
-        const items: Element[] = Array.from(document.querySelectorAll(".icon-eye"));
         this.classList.toggle("open");
-        if (this.parentElement.id === "show-password") {
-            if (this.classList.contains("open")) {
-                password.type = "password";
-                this.src = "assets/images/icons/eye-hidden-com.svg";
-            } else {
-                password.type = "text";
-                this.src = "assets/images/icons/eye-open-com.svg";
-            }
-        }
-        if (this.parentElement.id === "show-confirmation-password") {
-            if (this.classList.contains("open")) {
-                confirmPassword.type = "password";
-                this.src = "assets/images/icons/eye-hidden-com.svg";
-            } else {
-                confirmPassword.type = "text";
-                this.src = "assets/images/icons/eye-open-com.svg";
-            }
+
+        const parentElementId: string | undefined = this.parentElement?.id;
+
+        switch (parentElementId) {
+            case "show-password":
+                if (password) {
+                    togglePasswordVisibility(password, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
+                }
+                break;
+            case "show-confirmation-password":
+                if (confirmPassword) {
+                    togglePasswordVisibility(confirmPassword, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
+                }
+                break;
         }
     }
 
-    form.addEventListener("submit", (e:SubmitEvent):void => {
-        if (name.value === "") {
-            name.setCustomValidity("Name is required");
-            stop();
+    function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
+        if (input) {
+            const isOpen: boolean = image.classList.contains("open");
+            input.type = isOpen ? "password" : "text";
+            image.src = isOpen ? hiddenSrc : openSrc;
         }
-        if (name.value === "") {
-            name.setCustomValidity("Name is required");
-        }
-        if (password.value.length <= 6) {
-            password.setCustomValidity("Password must be longer than 6 characters");
-        }
-        if (password.value.length >= 20) {
-            password.setCustomValidity("Password must not be longer than 20 characters");
-        }
-        if (password.value === "password") {
-            password.setCustomValidity("Password cannot be password");
-        }
-        if (confirmPassword.value !== password.value) {
-            confirmPassword.setCustomValidity("Does not match password");
-        }
+    }
 
-        const data: User = { email: email, password: password, name: name}
+    if (form) {
+        form.addEventListener("submit", (e: SubmitEvent): void => {
+            e.preventDefault();
 
-        api.queryDatabase(QUERY.CREATE_USER, Object.values(data))
+            const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
+                if (input && input.value === "") {
+                    input.setCustomValidity(errorMessage);
+                } else {
+                    if (input) {
+                        input.setCustomValidity("");
+                    }
+                }
+            };
 
-        e.preventDefault();
-    });
+            const validatePassword: (password: HTMLInputElement | null) => void = (password: HTMLInputElement | null): void => {
+                if (password) {
+                    const passwordLength: number = password.value.length;
+                    const passwordValue: string = password.value;
+
+                    if (passwordLength <= 6) {
+                        password.setCustomValidity("Password must be longer than 6 characters");
+                    } else if (passwordLength >= 20) {
+                        password.setCustomValidity("Password must not be longer than 20 characters");
+                    } else if (passwordValue === "password") {
+                        password.setCustomValidity("Password cannot be password");
+                    } else {
+                        password.setCustomValidity("");
+                    }
+                }
+            };
+
+            const validateConfirmPassword: (confirmPassword: HTMLInputElement | null, password: HTMLInputElement | null) => void = (confirmPassword: HTMLInputElement | null, password: HTMLInputElement | null): void => {
+                if (confirmPassword && password && confirmPassword.value !== password.value) {
+                    confirmPassword.setCustomValidity("Does not match password");
+                } else {
+                    if (confirmPassword) {
+                        confirmPassword.setCustomValidity("");
+                    }
+                }
+            };
+
+            const validateEmail: (email: HTMLInputElement | null, validRegex: RegExp) => void = (email: HTMLInputElement | null, validRegex: RegExp): void => {
+                if (email && !email.value.match(validRegex)) {
+                    email.setCustomValidity("Invalid email");
+                } else {
+                    if (email) {
+                        email.setCustomValidity("");
+                    }
+                }
+            };
+
+            const inputs: (HTMLInputElement | null)[] = [name, password, confirmPassword, email];
+            const validRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+            inputs.forEach((input: HTMLInputElement | null): void => {
+                validateInput(input, input?.name + " is required");
+            });
+
+            validatePassword(password);
+            validateConfirmPassword(confirmPassword, password);
+            validateEmail(email, validRegex);
+
+            inputs.forEach((input) => {
+                if (input) {
+                    input.addEventListener("input", () => {
+                        input.setCustomValidity("");
+                    });
+                }
+            });
+
+            // if (form.checkValidity()) {
+            //     form.submit();
+            // }
+        });
+    }
+
+
+    async function onsubmit(): Promise<void> {
+        if (password) {
+            const hashedPassword: Promise<string | void> = hashPassword(password.value , email?.value, name?.value);
+        }
+    }
+
+
 }
 
 app();

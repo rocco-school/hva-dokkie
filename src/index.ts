@@ -1,6 +1,4 @@
 import "./hboictcloud-config";
-import { api } from "@hboictcloud/api";
-import {QUERY} from "./query/user.query";
 
 /**
  * Entry point
