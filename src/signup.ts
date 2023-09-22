@@ -1,8 +1,8 @@
 import "./hboictcloud-config";
-import {api, createQueryString, queryDatabase} from "@hboictcloud/api";
-import {QUERY} from "./query/user.query";
 import {hashPassword} from "./hash-password";
-import {hash} from "bcryptjs";
+import {api} from "@hboictcloud/api";
+import {QUERY} from "./query/user.query";
+import {Status} from "./enum/status.enum";
 
 
 /**
@@ -14,20 +14,29 @@ function app(): void {
     const name: HTMLInputElement | null = document.querySelector("#name");
     const form: HTMLFormElement | null = document.querySelector("#form");
     const email: HTMLInputElement | null = document.querySelector("#email");
+    const validRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const button: HTMLButtonElement | null = document.querySelector(".submit");
 
-    if (form) {
-        form.addEventListener("submit", onsubmit);
-    }
 
     document.querySelectorAll(".icon-eye").forEach(item => {
         item.addEventListener("click", handleClick);
     });
+
+    button?.addEventListener("click", buttonClicked);
+
+    async function buttonClicked(this: HTMLElement): Promise<void> {
+        // Upon button click adds class and then removes it again.
+        this.classList.add("active");
+        await delay(400);
+        this.classList.remove("active");
+    }
 
     async function handleClick(this: HTMLImageElement): Promise<void> {
         this.classList.toggle("open");
 
         const parentElementId: string | undefined = this.parentElement?.id;
 
+        // Check what the parentID is if it checks call function.
         switch (parentElementId) {
             case "show-password":
                 if (password) {
@@ -44,6 +53,8 @@ function app(): void {
 
     function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
         if (input) {
+            // Get image with class open and change password type to plain text
+            // Change the image of the clicked icon.
             const isOpen: boolean = image.classList.contains("open");
             input.type = isOpen ? "password" : "text";
             image.src = isOpen ? hiddenSrc : openSrc;
@@ -91,9 +102,27 @@ function app(): void {
                 }
             };
 
-            const validateEmail: (email: HTMLInputElement | null, validRegex: RegExp) => void = (email: HTMLInputElement | null, validRegex: RegExp): void => {
+            const validateEmail: (email: HTMLInputElement | null, validRegex: RegExp) => void = async (email: HTMLInputElement | null, validRegex: RegExp): Promise<void> => {
+                let emailExists: boolean = false;
+
+                if (email) {
+
+                    // Check database for existing users with input email.
+                    const userEmail: string[] = [email.value];
+                    const user: Promise<string | any[]> = api.queryDatabase(QUERY.FIND_USER_BY_EMAIL, ...userEmail);
+
+                    try {
+                        await user;
+                        emailExists = true;
+                    } catch (error) {
+                        emailExists = false;
+                    }
+                }
+                // Checks with RegExp if email is valid.
                 if (email && !email.value.match(validRegex)) {
                     email.setCustomValidity("Invalid email");
+                } else if (email && emailExists) {
+                    email.setCustomValidity("This email is already registered!");
                 } else {
                     if (email) {
                         email.setCustomValidity("");
@@ -102,38 +131,61 @@ function app(): void {
             };
 
             const inputs: (HTMLInputElement | null)[] = [name, password, confirmPassword, email];
-            const validRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
             });
-
+            // Validates the input and if its invalid adds an customValidity warning.
             validatePassword(password);
             validateConfirmPassword(confirmPassword, password);
             validateEmail(email, validRegex);
 
-            inputs.forEach((input) => {
-                if (input) {
-                    input.addEventListener("input", () => {
-                        input.setCustomValidity("");
-                    });
-                }
-            });
 
-            // if (form.checkValidity()) {
-            //     form.submit();
-            // }
+            // Check if all inputs are validated
+            const formIsValid: boolean = inputs.every((input: HTMLInputElement | null) => input?.checkValidity());
+
+            if (formIsValid) {
+                if (form.checkValidity()) {
+                    onsubmit().then();
+                }
+            } else {
+                inputs.forEach((input: HTMLInputElement | null): void => {
+                    if (input) {
+                        input.addEventListener("input", (): void => {
+                            input.setCustomValidity("");
+                        });
+                    }
+                });
+            }
+
         });
     }
 
 
     async function onsubmit(): Promise<void> {
+        // make database entry with Hashed password.
         if (password) {
-            const hashedPassword: Promise<string | void> = hashPassword(password.value , email?.value, name?.value);
+            const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
+
+            // Check if Promise was resolved successful
+            hashedPassword.then(
+                (): void => {
+                    console.log("Successfull!");
+                },
+                (): void => {
+                    console.log("Unsucessfull!");
+                }
+            );
+
+
         }
     }
 
+}
 
+function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 app();

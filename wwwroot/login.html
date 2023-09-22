@@ -12,28 +12,31 @@
 <main>
     <div class="container">
         <div class="container--inner">
-            <div class="redirects">
-                <a class="link" href="index.html"><span>Home</span></a>
-                <h2 class="title">Login</h2>
-                <a class="link" href="signup.html"><span>Signup</span></a>
-            </div>
+            <h2 class="title">Login</h2>
 
-            <div class="name">
-                <label for="name"><b>Name</b></label>
-                <input id="name" type="text" placeholder="Enter Username" name="name" required>
-            </div>
-            <div class="password">
-                <label for="password"><b>Password</b></label>
-                <input id="password" type="password" placeholder="Enter Password" name="password" required>
-            </div>
-            <div class="remember">
-                <label>
-                    <input class="remember__checkbox" type="checkbox" checked="checked" name="remember">
-                    <span>Remember me</span>
-                </label>
-            </div>
+            <form id="form">
+                <div class="email">
+                    <label for="email"><b>Email</b></label>
+                    <input id="email" type="text" name="email" required>
+                </div>
+                <div class="password">
+                    <label for="password"><b>Password</b></label>
+                    <input id="password" type="password" name="password" required>
+                </div>
+                <div class="remember">
+                    <label>
+                        <input class="remember__checkbox" type="checkbox" checked="checked" name="remember">
+                        <span>Remember me</span>
+                    </label>
+                </div>
 
-            <button class="submit" type="submit">Login</button>
+                <button class="submit" type="submit">Login</button>
+
+                <div class="subtext">
+                    <span class="text">New here?</span>
+                    <a class="link" href="signup.html">Create account!</a>
+                </div>
+            </form>
 
         </div>
     </div>

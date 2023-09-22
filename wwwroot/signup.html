@@ -12,11 +12,7 @@
 <main>
     <div class="container">
         <div class="container--inner">
-            <div class="redirects">
-                <a class="link" href="index.html"><span>Home</span></a>
-                <h2 class="title">Signup</h2>
-                <a class="link" href="login.html"><span>Login</span></a>
-            </div>
+            <h2 class="title">Signup</h2>
             <form id="form" onsubmit="return false">
                 <div class="name">
                     <label for="name"><b>Name</b></label>
@@ -46,6 +42,11 @@
                 <div id="error"></div>
 
                 <button class="submit" type="submit">Signup</button>
+
+                <div class="subtext">
+                    <span class="text">Already registered?</span>
+                    <a class="link" href="login.html">Log in!</a>
+                </div>
             </form>
 
         </div>

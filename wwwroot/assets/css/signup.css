@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -99,27 +100,18 @@ input:focus {
     margin-right: auto;
     font-size: 1.3rem;
     cursor: pointer;
+    transition: all .3s;
+}
+
+.submit:hover {
+    transform: scale(1.03);
 }
 
 .active {
     background-color: lightgray;
 }
 
-.redirects {
-    display: flex;
-    vertical-align: middle;
-    gap: 5rem;
-    margin: auto;
-}
-
-.redirects .link {
-    text-decoration: none;
-    font-size: 1.2rem;
-    margin-top: .3rem;
-    color: #051821;
-}
-
-.redirects .title {
+.title {
     font-size: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -132,4 +124,16 @@ input:focus {
     width: 1rem;
     height: 1rem;
     z-index: 2;
+}
+
+.subtext {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.subtext .link {
+    margin-left: 1rem;
+    text-underline-offset: .3rem;
+    color: #051821;
 }
