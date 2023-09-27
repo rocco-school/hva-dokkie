@@ -48,6 +48,7 @@ export default defineConfig((config) => {
         define: {
             __HBOICTCLOUD_APIKEY__: JSON.stringify(env.VITE_HBOICTCLOUD_APIKEY),
             __HBOICTCLOUD_DATABASE__: JSON.stringify(env.VITE_HBOICTCLOUD_DATABASE),
+            __SECRET_KEY__: JSON.stringify(env.VITE_SECRET_KEY),
         },
     };
 });
