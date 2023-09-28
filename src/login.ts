@@ -2,19 +2,20 @@ import "./hboictcloud-config";
 import {api, session} from "@hboictcloud/api";
 import {QUERY} from "./query/user.query";
 import bcrypt from "bcryptjs";
-import {sign, verify} from "./authentication/jsonwebtoken";
-import {User} from "./interface/user";
+import {sign} from "./authentication/jsonwebtoken";
+import {verifyUser} from "./authentication/verifyUser";
 
 /**
  * Entry point
  */
 async function app(): Promise<void> {
 
+    await verifyUser("index.html");
+
     const password: HTMLInputElement | null = document.querySelector("#password");
     const form: HTMLFormElement | null = document.querySelector("#form");
     const email: HTMLInputElement | null = document.querySelector("#email");
     const button: HTMLElement | null = document.querySelector(".submit");
-
 
     if (form) {
         form.addEventListener("submit", (e: SubmitEvent): void => {
@@ -54,6 +55,7 @@ async function app(): Promise<void> {
                                 assignToken(user).then(
                                     (): void => {
                                         console.log("Succesfully logged in!");
+                                        window.location.href="index.html";
                                     },
                                     (): void => {
                                         console.log("Login unsuccesful!");

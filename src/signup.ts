@@ -3,12 +3,16 @@ import {hashPassword} from "./hash-password";
 import {api} from "@hboictcloud/api";
 import {QUERY} from "./query/user.query";
 import {Status} from "./enum/status.enum";
+import {verifyUser} from "./authentication/verifyUser";
 
 
 /**
  * Entry point
  */
-function app(): void {
+async function app(): Promise<void> {
+
+    await verifyUser("index.html");
+
     const password: HTMLInputElement | null = document.querySelector("#password");
     const confirmPassword: HTMLInputElement | null = document.querySelector("#confirm-password");
     const name: HTMLInputElement | null = document.querySelector("#name");
