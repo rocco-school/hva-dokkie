@@ -15,12 +15,16 @@ async function app(): Promise<void> {
             try {
                 const logged: JWTPayload = await verify(token, secret);
                 const logOut: Element | null = document.querySelector(".logout");
-                const logIn: Element | null  = document.querySelector(".login");
-                const signUp: Element | null  = document.querySelector(".signup");
+                const logIn: Element | null = document.querySelector(".login");
+                const signUp: Element | null = document.querySelector(".signup");
+                const events: Element | null = document.querySelector(".events");
+                const users: Element | null = document.querySelector(".users");
                 if (logged) {
                     logIn?.classList.add("hidden");
                     signUp?.classList.add("hidden");
                     logOut?.classList.remove("hidden");
+                    events?.classList.remove("hidden");
+                    users?.classList.remove("hidden");
                 } else {
                     logIn?.classList.remove("hidden");
                     signUp?.classList.remove("hidden");

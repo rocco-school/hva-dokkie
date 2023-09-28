@@ -3,14 +3,14 @@ import {api, session} from "@hboictcloud/api";
 import {QUERY} from "./query/user.query";
 import bcrypt from "bcryptjs";
 import {sign} from "./authentication/jsonwebtoken";
-import {verifyUser} from "./authentication/verifyUser";
+import {verifyUserRedirect} from "./authentication/verifyUser";
 
 /**
  * Entry point
  */
 async function app(): Promise<void> {
 
-    await verifyUser("index.html");
+    await verifyUserRedirect("index.html");
 
     const password: HTMLInputElement | null = document.querySelector("#password");
     const form: HTMLFormElement | null = document.querySelector("#form");
@@ -55,7 +55,7 @@ async function app(): Promise<void> {
                                 assignToken(user).then(
                                     (): void => {
                                         console.log("Succesfully logged in!");
-                                        window.location.href="index.html";
+                                        window.location.href = "index.html";
                                     },
                                     (): void => {
                                         console.log("Login unsuccesful!");
