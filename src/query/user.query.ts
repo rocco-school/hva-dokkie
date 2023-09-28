@@ -10,6 +10,6 @@ export const QUERY: {
     SELECT_USER: "SELECT * FROM user WHERE id = ?",
     CREATE_USER: "INSERT INTO user (email, password, username) VALUES(?, ?, ?)",
     UPDATE_USER: "UPDATE user SET first_name = ?, last_name = ?, email = ?, address = ?, phone = ? WHERE id = ?",
-    DELETE_USER: "DELETE FROM user WHERE id = ?",
+    DELETE_USER: "DELETE FROM user WHERE userId = ?",
     FIND_USER_BY_EMAIL: "SELECT * FROM user WHERE email = ?",
 };

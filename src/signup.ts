@@ -176,6 +176,7 @@ async function app(): Promise<void> {
             hashedPassword.then(
                 (): void => {
                     console.log("Successfull!");
+                    window.location.href = "login.html";
                 },
                 (): void => {
                     console.log("Unsucessfull!");
