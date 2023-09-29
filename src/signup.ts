@@ -1,7 +1,7 @@
 import "./hboictcloud-config";
 import {hashPassword} from "./hash-password";
 import {api} from "@hboictcloud/api";
-import {QUERY} from "./query/user.query";
+import {USER_QUERY} from "./query/user.query";
 import {Status} from "./enum/status.enum";
 import {verifyUserRedirect} from "./authentication/verifyUser";
 
@@ -113,7 +113,7 @@ async function app(): Promise<void> {
 
                     // Check database for existing users with input email.
                     const userEmail: string[] = [email.value];
-                    const user: Promise<string | any[]> = api.queryDatabase(QUERY.FIND_USER_BY_EMAIL, ...userEmail);
+                    const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, ...userEmail);
 
                     try {
                         await user;

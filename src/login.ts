@@ -1,6 +1,6 @@
 import "./hboictcloud-config";
 import {api, session} from "@hboictcloud/api";
-import {QUERY} from "./query/user.query";
+import {USER_QUERY} from "./query/user.query";
 import bcrypt from "bcryptjs";
 import {sign} from "./authentication/jsonwebtoken";
 import {verifyUserRedirect} from "./authentication/verifyUser";
@@ -35,7 +35,7 @@ async function app(): Promise<void> {
                 if (password && email) {
                     // Check database for existing users with input email.
                     const inputEmail: (string | any)[] = [email.value];
-                    const user: any[] | string = await api.queryDatabase(QUERY.FIND_USER_BY_EMAIL, ...inputEmail);
+                    const user: any[] | string = await api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, ...inputEmail);
 
                     if (user.length === 0) {
                         email.setCustomValidity("This email is not registered!");

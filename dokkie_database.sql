@@ -14,7 +14,7 @@ USE `Dokkie` ;
 -- Table `Dokkie`.`Event`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Dokkie`.`Event` (
-  `eventId` INT NOT NULL AUTO_INCREMENT,
+  `eventId` VARCHAR(255) NOT NULL,
   `description` VARCHAR(100) NOT NULL,
   `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`eventId`))
@@ -37,7 +37,7 @@ ENGINE = InnoDB;
 -- Table `Dokkie`.`Participant`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Dokkie`.`Participant` (
-  `eventId` INT NOT NULL,
+  `eventId` VARCHAR(255) NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `userId` INT NULL,
   PRIMARY KEY (`eventId`, `name`),
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS `Dokkie`.`Participant` (
   CONSTRAINT `fk_participant_event`
     FOREIGN KEY (`eventId`)
     REFERENCES `Dokkie`.`Event` (`eventId`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_participant_user`
     FOREIGN KEY (`userId`)
     REFERENCES `Dokkie`.`User` (`userId`)

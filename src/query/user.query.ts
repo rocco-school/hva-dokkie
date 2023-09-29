@@ -1,4 +1,4 @@
-export const QUERY: {
+export const USER_QUERY: {
     SELECT_USER: string;
     SELECT_USERS: string;
     CREATE_USER: string;
@@ -7,9 +7,9 @@ export const QUERY: {
     FIND_USER_BY_EMAIL: string
 } = {
     SELECT_USERS: "SELECT * FROM user LIMIT 50",
-    SELECT_USER: "SELECT * FROM user WHERE id = ?",
+    SELECT_USER: "SELECT * FROM user WHERE userId = ?",
     CREATE_USER: "INSERT INTO user (email, password, username) VALUES(?, ?, ?)",
-    UPDATE_USER: "UPDATE user SET first_name = ?, last_name = ?, email = ?, address = ?, phone = ? WHERE id = ?",
+    UPDATE_USER: "UPDATE user SET first_name = ?, last_name = ?, email = ?, address = ?, phone = ? WHERE userId = ?",
     DELETE_USER: "DELETE FROM user WHERE userId = ?",
     FIND_USER_BY_EMAIL: "SELECT * FROM user WHERE email = ?",
 };

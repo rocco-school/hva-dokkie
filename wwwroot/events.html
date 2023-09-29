@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Dokkie homepage</title>
+
+    <link rel="stylesheet" href="./assets/css/events.css"/>
+</head>
+<body>
+<main>
+    <div class="hero">
+        <div class="header">
+            <a href="index.html" class="logo">Dokkie</a>
+            <div class="header-right">
+                <a class="users" href="user.html">Users</a>
+                <div class="logout highlight">Log out!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="create-event">
+            <a class="create-event-button"><span>Create Event</span></a>
+        </div>
+
+
+        <div class="create-event-form hidden">
+            <div class="container">
+                <h2 class="container--title">Create Event!</h2>
+                <form id="form">
+                    <div class="name">
+                        <label for="name"><b>Event name</b></label>
+                        <input id="name" type="text" name="name" placeholder="Name" required>
+                    </div>
+                    <div class="description">
+                        <label for="description"><b>Event Description</b></label>
+                        <input id="description" type="text" name="description" placeholder="Description" required>
+                    </div>
+
+                    <div class="error-message hidden">Error when creating Event</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="events_table">
+            <div class="table--outer">
+                <table class="table">
+                    <thead class="thead">
+                    <tr class="table-head">
+                        <th scope="col">
+                            EventID
+                        </th>
+                        <th scope="col">
+                            Description
+                        </th>
+                        <th scope="col">
+                            dateCreated
+                        </th>
+                        <th scope="col">
+                            Active
+                        </th>
+                        <th scope="col">
+
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-body">
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<script src="/src/events.ts" type="module"></script>
+</body>
+</html>

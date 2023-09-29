@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import {api} from "@hboictcloud/api";
-import {QUERY} from "./query/user.query";
+import {USER_QUERY} from "./query/user.query";
 import {Status} from "./enum/status.enum";
 
 export async function hashPassword(password: string, email: string | undefined, name: string | undefined): Promise<Status | void> {
@@ -22,7 +22,7 @@ export async function hashPassword(password: string, email: string | undefined, 
                 try {
                     //Create user in database with hashed password.
                     const createUser: (string | undefined)[] = [email, hash, name];
-                    await api.queryDatabase(QUERY.CREATE_USER, ...createUser);
+                    await api.queryDatabase(USER_QUERY.CREATE_USER, ...createUser);
                     return Status.CREATED;
                 } catch (error: unknown) {
                    return Status.INTERNAL_SERVER_ERROR;

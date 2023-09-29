@@ -1,11 +1,11 @@
 import "./hboictcloud-config";
 import {verifyUser} from "./authentication/verifyUser";
 import {api, session} from "@hboictcloud/api";
-import {QUERY} from "./query/user.query";
+import {USER_QUERY} from "./query/user.query";
 
 async function addUsersToTable(): Promise<void> {
     const tableBody: Element | null = document.querySelector(".table-body");
-    const getUsers: Promise<any[] | string> = api.queryDatabase(QUERY.SELECT_USERS);
+    const getUsers: Promise<any[] | string> = api.queryDatabase(USER_QUERY.SELECT_USERS);
     getUsers.then(
         (users: string | any[]): void => {
             if (typeof users !== "string") {
@@ -35,7 +35,7 @@ async function deleteUserFunction(this: HTMLElement): Promise<void> {
     const row: HTMLTableRowElement | null = this.closest("tr");
     if (row) {
         const userId: string | null  = row.getAttribute("id");
-        const user: Promise<string | any[]> = api.queryDatabase(QUERY.DELETE_USER, userId);
+        const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.DELETE_USER, userId);
         console.log(user);
         user.then(
             ():void => {
