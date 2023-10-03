@@ -11,6 +11,7 @@ import {verifyUserRedirect} from "./authentication/verifyUser";
  */
 async function app(): Promise<void> {
 
+    // Checks if user is not already logged in if logged in redirects to homepage.
     await verifyUserRedirect("index.html");
 
     const password: HTMLInputElement | null = document.querySelector("#password");
@@ -22,13 +23,14 @@ async function app(): Promise<void> {
     const button: HTMLButtonElement | null = document.querySelector(".submit");
 
 
+    // Show password / Hide password
     document.querySelectorAll(".icon-eye").forEach(item => {
         item.addEventListener("click", handleClick);
     });
 
-    button?.addEventListener("click", buttonClicked);
+    button?.addEventListener("click", buttonClickEvent);
 
-    async function buttonClicked(this: HTMLElement): Promise<void> {
+    async function buttonClickEvent(this: HTMLElement): Promise<void> {
         // Upon button click adds class and then removes it again.
         this.classList.add("active");
         await delay(400);

@@ -1,7 +1,9 @@
 import {SignJWT, jwtVerify, type JWTPayload} from "jose";
 
 export async function sign(payload: JWTPayload, secret: string): Promise<string> {
+    // Get current date
     const iat: number = Math.floor(Date.now() / 1000);
+    // Set expiration time
     const exp: number = iat + 60* 60; // one hour
 
     return new SignJWT({...payload})
@@ -15,6 +17,6 @@ export async function sign(payload: JWTPayload, secret: string): Promise<string>
 export async function verify(token: string, secret: string): Promise<JWTPayload> {
     const {payload} = await jwtVerify(token, new TextEncoder().encode(secret));
     // run some checks on the returned payload, perhaps you expect some specific values
-    // if its all good, return it, or perhaps just return a boolean
+    // if it is all good, return it, or perhaps just return a boolean
     return payload;
 }

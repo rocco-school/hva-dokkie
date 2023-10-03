@@ -12,11 +12,16 @@ quinary color = yellow = #F8BC24
 }
 
 body {
+    background-color: rgb(243 244 246);
     display: flex;
 }
 
 main {
     width: 100%;
+}
+
+.hero {
+    background-color: white;
 }
 
 .header {

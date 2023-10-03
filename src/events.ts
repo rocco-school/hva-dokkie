@@ -7,20 +7,24 @@ import {JWTPayload} from "jose";
 import {verify} from "./authentication/jsonwebtoken";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
 
-async function addUsersToTable(): Promise<void> {
-    const token: string = session.get("JWPToken");
+async function addEventsToTable(): Promise<void> {
+    // Get token from session storage for userID
+    const token: string = session.get("JWTToken");
     const logged: JWTPayload = await verify(token, __SECRET_KEY__);
-    const userID: unknown = logged.id;
+    const userID: any = logged.id;
     const tableBody: Element | null = document.querySelector(".table-body");
     if (userID) {
+        // Get all events from userID
         const getEvents: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.SELECT_EVENTS_BY_USER, userID);
-        console.log(getEvents);
+
         getEvents.then(
             (events: string | any[]): void => {
                 if (typeof events !== "string") {
                     events.forEach((event: any): void => {
+                        //Create <tr> for the table row
                         const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
                         if (tr) {
+                            // Create the other table data for the current row
                             tr.setAttribute("id", event.eventId);
                             tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(event.eventId));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(event.description));
@@ -44,18 +48,23 @@ async function addUsersToTable(): Promise<void> {
 
 
 async function createEvent(name: string | undefined, description: string | undefined): Promise<void> {
+    // Generate an random uuidv4 ID
     const id: string = uuidv4();
+
     const errorMessage: Element | null = document.querySelector(".error-message");
     const createEventForm: Element | null = document.querySelector(".create-event-form");
     const params: any[] = [id, description];
     try {
+        // Create event inside database
         const event: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.CREATE_EVENT, ...params);
         event.then(
             async (): Promise<void> => {
-                const token: string = session.get("JWPToken");
+                // Get token from Session and check if verified.
+                const token: string = session.get("JWTToken");
                 const logged: JWTPayload = await verify(token, __SECRET_KEY__);
+                // Create participant information with ID from session data
                 const participantInfo: any[] = [id, name, logged.id];
-                console.log(participantInfo);
+                // Create participant inside the database
                 const participant: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.CREATE_PARTICIPANT, ...participantInfo);
 
                 participant.then(
@@ -75,11 +84,12 @@ async function createEvent(name: string | undefined, description: string | undef
 }
 
 async function deleteEventFunction(this: HTMLElement): Promise<void> {
+    // Get closest <tr> to get user ID
     const row: HTMLTableRowElement | null = this.closest("tr");
     if (row) {
         const eventId: string | null = row.getAttribute("id");
+        // Delete event in database
         const event: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.DELETE_EVENT, eventId);
-        console.log(event);
         event.then(
             (): void => {
                 console.log("Successfully deleted user!");
@@ -93,8 +103,10 @@ async function deleteEventFunction(this: HTMLElement): Promise<void> {
 }
 
 async function app(): Promise<void> {
+    // Verify user before rest of page loads.
     await verifyUser();
-    await addUsersToTable();
+    // Adds Events to table
+    await addEventsToTable();
 
     const logout: Element | null = document.querySelector(".logout");
     const createButton: Element | null = document.querySelector(".create-event-button");
@@ -102,16 +114,19 @@ async function app(): Promise<void> {
     const name: HTMLInputElement | null = document.querySelector("#name");
     const description: HTMLInputElement | null = document.querySelector("#description");
 
+    // Handle logout event
     logout?.addEventListener("click", loggedOut);
-    createButton?.addEventListener("click", showCreatEvent);
+    // Handle showing the create event form
+    createButton?.addEventListener("click", showCreateEvent);
 
-    async function showCreatEvent(this: HTMLElement): Promise<void> {
+    function showCreateEvent(): void {
         const createEventForm: Element | null = document.querySelector(".create-event-form");
         createEventForm?.classList.remove("hidden");
     }
 
-    async function loggedOut(this: HTMLElement): Promise<void> {
-        session.remove("JWPToken");
+    function loggedOut(): void {
+        // Remove JWTToken From session
+        session.remove("JWTToken");
         location.reload();
     }
 
@@ -135,6 +150,7 @@ async function app(): Promise<void> {
                 validateInput(input, input?.name + " is required");
             });
 
+            // Check if all inputs are validated
             const formIsValid: boolean = inputs.every((input: HTMLInputElement | null) => input?.checkValidity());
 
             if (formIsValid) {

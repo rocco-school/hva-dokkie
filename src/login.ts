@@ -10,6 +10,7 @@ import {verifyUserRedirect} from "./authentication/verifyUser";
  */
 async function app(): Promise<void> {
 
+    // Checks if user is not already logged in if logged in redirects to homepage.
     await verifyUserRedirect("index.html");
 
     const password: HTMLInputElement | null = document.querySelector("#password");
@@ -81,7 +82,7 @@ async function app(): Promise<void> {
 
             if (formIsValid) {
                 if (form.checkValidity()) {
-                    onsubmit().then();
+                    console.log("Succesfully logged in!");
                 }
             } else {
                 inputs.forEach((input: HTMLInputElement | null): void => {
@@ -96,41 +97,37 @@ async function app(): Promise<void> {
         });
     }
 
-
-    async function onsubmit(): Promise<void> {
-
-        console.log("submit");
-
-    }
-
     button?.addEventListener("click", handleClick);
 
     async function handleClick(this: HTMLElement): Promise<void> {
+        // Upon button click adds class and then removes it again.
         this.classList.add("active");
-
         await delay(400);
-
         this.classList.remove("active");
-
     }
 }
 
 
 async function assignToken(user: any[] | string): Promise<void> {
+    // Get secret key from env file
     const secret: string = __SECRET_KEY__;
 
+    // Construct payload for JWT
     const payload: { id: number, email: string } = {
         id: user[0].userId,
         email: user[0].email,
     };
 
-    const jwpToken: string = (await sign(payload, secret)).valueOf();
+    // Generate JWT with payload and secret.
+    const jwtToken: string = (await sign(payload, secret)).valueOf();
 
-    session.set("JWPToken", jwpToken);
+    // Put JWT inside user session storage
+    session.set("JWTToken", jwtToken);
 }
 
 
 function delay(ms: number): Promise<void> {
+    // Sets time out with give ms
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
