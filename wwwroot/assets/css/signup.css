@@ -28,6 +28,18 @@
     padding: 2rem;
 }
 
+@media screen and (max-height: 500px) {
+    .container {
+        width: 25rem;
+    }
+}
+
+@media screen and (max-height: 425px) {
+    .container {
+        width: 20rem;
+    }
+}
+
 .container--inner {
     display: flex;
     flex-direction: column;
@@ -101,6 +113,12 @@ input:focus {
     font-size: 1.3rem;
     cursor: pointer;
     transition: all .3s;
+}
+
+@media screen and (max-height: 425px) {
+    .submit {
+        width: 16rem;
+    }
 }
 
 .submit:hover {

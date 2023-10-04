@@ -28,6 +28,18 @@
     padding: 2rem;
 }
 
+@media screen and (max-height: 500px) {
+    .container {
+        width: 25rem;
+    }
+}
+
+@media screen and (max-height: 425px) {
+    .container {
+        width: 20rem;
+    }
+}
+
 .container--inner {
     display: flex;
     flex-direction: column;
@@ -48,12 +60,12 @@
 }
 
 .container--inner .email label {
-    position: absolute;
+    position: relative;
     text-align: start;
 }
 
 .container--inner .password label {
-    position: absolute;
+    position: relative;
     text-align: start;
 }
 
@@ -90,6 +102,12 @@ input:focus {
     margin-right: auto;
     font-size: 1.3rem;
     cursor: pointer;
+}
+
+@media screen and (max-height: 425px) {
+    .submit {
+        width: 16rem;
+    }
 }
 
 .title {

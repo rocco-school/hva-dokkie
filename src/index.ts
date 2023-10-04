@@ -8,43 +8,31 @@ import {verify} from "./authentication/jsonwebtoken";
  */
 async function app(): Promise<void> {
     // Verify user and sets buttons based on verified user
-    async function verifyUser(): Promise<void> {
-        // Gets Secret key from ENV
-        const secret: string = __SECRET_KEY__;
-        // Gets token from session
-        const token: string = session.get("JWTToken");
-        if (token) {
-            try {
-                // Checks if user is verified with secret and token
-                const logged: JWTPayload = await verify(token, secret);
-                // gets elements and shows/hides them based on if user verified.
-                const logOut: Element | null = document.querySelector(".logout");
-                const logIn: Element | null = document.querySelector(".login");
-                const signUp: Element | null = document.querySelector(".signup");
-                const events: Element | null = document.querySelector(".events");
-                const users: Element | null = document.querySelector(".users");
-                if (logged) {
-                    logIn?.classList.add("hidden");
-                    signUp?.classList.add("hidden");
-                    logOut?.classList.remove("hidden");
-                    events?.classList.remove("hidden");
-                    users?.classList.remove("hidden");
-                } else {
-                    logIn?.classList.remove("hidden");
-                    signUp?.classList.remove("hidden");
-                }
-            } catch (error) {
-                console.error("An error occurred:", error);
-            }
-        }
-    }
-
     await verifyUser();
 
+    const mobileNav: Element | null = document.querySelector(".overlay");
+    // Handle open mobile nav menu
+    const openMobileMenu: Element | null = document.querySelector(".mobile-menu");
+    openMobileMenu?.addEventListener("click", openMenu);
+
+    function openMenu(): void {
+        mobileNav?.classList.add("max-width");
+        console.log("done!");
+    }
+
+    // Handle closing mobile nav menu
+    const closeMobileMenu: Element | null = document.querySelector(".close-menu");
+    closeMobileMenu?.addEventListener("click", closeMenu);
+
+    function closeMenu(): void {
+        mobileNav?.classList.remove("max-width");
+        console.log("closed!");
+    }
 
     // Handle logout event
-    const logout: Element | null = document.querySelector(".logout");
-    logout?.addEventListener("click", loggedOut);
+    document.querySelectorAll(".logout").forEach(item => {
+        item.addEventListener("click", loggedOut);
+    });
 
     async function loggedOut(this: HTMLElement): Promise<void> {
         // Remove JWTToken From session
@@ -67,6 +55,7 @@ async function app(): Promise<void> {
     }
 
     window.onclick = handleClick;
+
 
     // Handle FAQ clicked
     document.querySelectorAll(".faq").forEach(item => {
@@ -105,6 +94,51 @@ async function app(): Promise<void> {
         // Toggles faq_height and is-active on clicked FAQ
         this.classList.toggle("faq__height");
         this.classList.toggle("is-active");
+    }
+}
+
+async function verifyUser(): Promise<void> {
+    // Gets Secret key from ENV
+    const secret: string = __SECRET_KEY__;
+    // Gets token from session
+    const token: string = session.get("JWTToken");
+    if (token) {
+        try {
+            // Checks if user is verified with secret and token
+            const logged: JWTPayload = await verify(token, secret);
+            // gets elements and shows/hides them based on if user verified.
+
+            if (logged) {
+                // Add hidden class
+                document.querySelectorAll(".login").forEach(item => {
+                    item.classList.add("hidden");
+                });
+                document.querySelectorAll(".signup").forEach(item => {
+                    item.classList.add("hidden");
+                });
+
+                // Remove hidden class
+                document.querySelectorAll(".logout").forEach(item => {
+                    item.classList.remove("hidden");
+                });
+                document.querySelectorAll(".users").forEach(item => {
+                    item.classList.remove("hidden");
+                });
+                document.querySelectorAll(".events").forEach(item => {
+                    item.classList.remove("hidden");
+                });
+            } else {
+                document.querySelectorAll(".login").forEach(item => {
+                    item.classList.remove("hidden");
+                });
+                document.querySelectorAll(".signup").forEach(item => {
+                    item.classList.remove("hidden");
+                });
+
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
     }
 }
 
