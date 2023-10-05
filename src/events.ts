@@ -110,6 +110,7 @@ async function app(): Promise<void> {
 
     const logout: Element | null = document.querySelector(".logout");
     const createButton: Element | null = document.querySelector(".create-event-button");
+    const cancelButton: Element | null = document.querySelector(".cancel");
     const form: HTMLFormElement | null = document.querySelector("#form");
     const name: HTMLInputElement | null = document.querySelector("#name");
     const description: HTMLInputElement | null = document.querySelector("#description");
@@ -118,6 +119,13 @@ async function app(): Promise<void> {
     logout?.addEventListener("click", loggedOut);
     // Handle showing the create event form
     createButton?.addEventListener("click", showCreateEvent);
+    // Handle canceling creating event.
+    cancelButton?.addEventListener("click", hideCreateEvent);
+
+    function hideCreateEvent(): void {
+        const createEventForm: Element | null = document.querySelector(".create-event-form");
+        createEventForm?.classList.add("hidden");
+    }
 
     function showCreateEvent(): void {
         const createEventForm: Element | null = document.querySelector(".create-event-form");
