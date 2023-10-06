@@ -10,6 +10,8 @@ import {verifyUserRedirect} from "./authentication/verifyUser";
  */
 async function app(): Promise<void> {
 
+    session.clear();
+
     // Checks if user is not already logged in if logged in redirects to homepage.
     await verifyUserRedirect("index.html");
 
