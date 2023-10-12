@@ -49,7 +49,7 @@ async function addEventsToTable(): Promise<void> {
 }
 
 
-async function createEvent(name: string | undefined, description: string | undefined): Promise<void> {
+async function createEvent(description: string | undefined): Promise<void> {
     // Generate an random uuidv4 ID
     const id: string = uuidv4();
 
@@ -65,10 +65,11 @@ async function createEvent(name: string | undefined, description: string | undef
                 const token: string = session.get("JWTToken");
                 const logged: JWTPayload = await verify(token, __SECRET_KEY__);
                 // Create participant information with ID from session data
-                const participantInfo: any[] = [id, name, logged.id];
+                const participantInfo: any[] = [id, logged.id];
+                console.log(participantInfo);
                 // Create participant inside the database
                 const participant: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.CREATE_PARTICIPANT, ...participantInfo);
-
+                console.log(participant);
                 participant.then(
                     (): void => {
                         createEventForm?.classList.add("hidden");
@@ -89,7 +90,7 @@ async function deleteEventFunction(this: HTMLElement): Promise<void> {
     // Get closest <tr> to get user ID
     const row: HTMLTableRowElement | null = this.closest("tr");
     if (row) {
-        const eventId: string | null = row.getAttribute("id");
+        const eventId: any = row.getAttribute("id");
         // Delete event in database
         const event: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.DELETE_EVENT, eventId);
         event.then(
@@ -123,12 +124,11 @@ async function app(): Promise<void> {
     // Adds Events to table
     await addEventsToTable();
 
-    const logout: Element | null = document.querySelector(".logout");
-    const createButton: Element | null = document.querySelector(".create-event-button");
-    const cancelButton: Element | null = document.querySelector(".cancel");
-    const form: HTMLFormElement | null = document.querySelector("#form");
-    const name: HTMLInputElement | null = document.querySelector("#name");
-    const description: HTMLInputElement | null = document.querySelector("#description");
+    const logout: Element | any = document.querySelector(".logout");
+    const createButton: Element | any = document.querySelector(".create-event-button");
+    const cancelButton: Element | any = document.querySelector(".cancel");
+    const form: HTMLFormElement | any = document.querySelector("#form");
+    const description: HTMLInputElement | any = document.querySelector("#description");
 
     // Handle logout event
     logout?.addEventListener("click", loggedOut);
@@ -167,7 +167,7 @@ async function app(): Promise<void> {
                 }
             };
 
-            const inputs: (HTMLInputElement | null)[] = [name, description];
+            const inputs: (HTMLInputElement | null)[] = [description];
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
@@ -178,7 +178,7 @@ async function app(): Promise<void> {
 
             if (formIsValid) {
                 if (form.checkValidity()) {
-                    await createEvent(name?.value, description?.value);
+                    await createEvent(description?.value);
                 }
             } else {
                 inputs.forEach((input: HTMLInputElement | null): void => {

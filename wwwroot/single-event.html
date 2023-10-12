@@ -23,11 +23,11 @@
 
     <div class="hero-tabs">
         <div class="hero-tabs-inner">
-            <a class="hero-tab dashboard">
+            <a class="hero-tab dashboard is-active">
                 <div>Dashboard</div>
             </a>
-            <a class="hero-tab payment is-active">
-                <div>Payments</div>
+            <a class="hero-tab payment hidden">
+                <div>Payment</div>
             </a>
             <a class="hero-tab participants">
                 <div>Participants</div>
@@ -38,22 +38,18 @@
 
     <div class="create-form hidden">
         <div class="container">
-            <h2 class="container--title">Create Payment!</h2>
+            <h2 class="container--title">Create Expense!</h2>
             <form id="form">
                 <div class="description">
-                    <label for="description"><b>Payment description</b></label>
+                    <label for="description"><b>Expense description</b></label>
                     <input id="description" type="text" name="description" placeholder="Description" required>
                 </div>
                 <div class="amount">
-                    <label for="amount"><b>Payment Amount</b></label>
+                    <label for="amount"><b>Total expense</b></label>
                     <input id="amount" type="number" name="amount" placeholder="Amount" required>
                 </div>
-                <div class="name">
-                    <label for="name"><b>Payment name</b></label>
-                    <input id="name" type="text" name="name" placeholder="Name" required>
-                </div>
 
-                <div class="error-message hidden">Error when creating Event</div>
+                <div class="error-message hidden">Error when creating Expense</div>
 
                 <div class="form-buttons">
                     <button class="submit" type="submit">Create</button>
@@ -64,62 +60,72 @@
     </div>
 
 
-    <div class="content dashboard-content hidden">
-        <div class="cost-widget">
-            <div class="information">
-                <span class="title">Total cost:</span>
-                <span class="text">$5000</span>
+    <div class="content dashboard-content ">
+        <div class="dashboard-widgets">
+            <div class="widget">
+                <div class="information">
+                    <span class="title">Total cost:</span>
+                    <span class="text">$5000</span>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="information">
+                    <span class="title">Total participants:</span>
+                    <span class="text">50</span>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="information">
+                    <span class="title">Total open Payments:</span>
+                    <span class="text">50</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="expense-table">
+            <div class="create">
+                <a class="create-button"><span>Create Expense</span></a>
+            </div>
+
+            <div class="table--outer">
+                <div class="table--inner">
+                    <table class="table">
+                        <thead class="thead">
+                        <tr class="table-head">
+                            <th scope="col">
+                                ExpenseID
+                            </th>
+                            <th scope="col">
+                                Description
+                            </th>
+                            <th scope="col">
+                                Total cost
+                            </th>
+                            <th scope="col">
+                                Created at
+                            </th>
+                            <th scope="col">
+                                Status
+                            </th>
+                            <th scope="col">
+
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-body payment-table-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="participants-widget">
-            <div class="information">
-                <span class="title">Total participants:</span>
-                <span class="text">50</span>
-            </div>
-        </div>
-
-        <div class="payments-widget">
-            <div class="information">
-                <span class="title">Total open Payments:</span>
-                <span class="text">50</span>
-            </div>
-        </div>
     </div>
 
-    <div class="content payment-content ">
+    <div class="content payment-content hidden">
 
-        <div class="create">
-            <a class="create-button"><span>Create Payment</span></a>
-        </div>
-
-        <div class="table--outer">
-            <div class="table--inner">
-                <table class="table">
-                    <thead class="thead">
-                    <tr class="table-head">
-                        <th scope="col">
-                            EventID
-                        </th>
-                        <th scope="col">
-                            Description
-                        </th>
-                        <th scope="col">
-                            dateCreated
-                        </th>
-                        <th scope="col">
-                            Active
-                        </th>
-                        <th scope="col">
-
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody class="table-body">
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 
     <div class="content participant-content hidden">

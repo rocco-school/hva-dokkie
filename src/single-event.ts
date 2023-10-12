@@ -1,10 +1,11 @@
 import "./hboictcloud-config";
-import {api, session} from "@hboictcloud/api";
+import {api, session, utils} from "@hboictcloud/api";
 import {JWTPayload} from "jose";
 import {verify} from "./authentication/jsonwebtoken";
 import {EVENT_QUERY} from "./query/event.query";
 import {v4 as uuidv4} from "uuid";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
+import {EXPENSE_QUERY} from "./query/expanse.query";
 
 /**
  * Entry point
@@ -15,7 +16,16 @@ async function app(): Promise<void> {
     await checkURLParams();
     await verifyUser();
 
+    addExpensesTable();
+
     console.log(eventId);
+
+    const form: HTMLFormElement | null = document.querySelector("#form");
+    const createButton: Element | any = document.querySelector(".create-button");
+    const cancelButton: Element | any = document.querySelector(".cancel");
+    const description: HTMLInputElement | null = document.querySelector("#description");
+    const amount: HTMLInputElement | null = document.querySelector("#amount");
+
 
     document.querySelectorAll(".hero-tab").forEach(item => {
         item.addEventListener("click", handleHeroTab);
@@ -24,18 +34,8 @@ async function app(): Promise<void> {
         item.addEventListener("click", loggedOut);
     });
 
-    const createButton: Element | null = document.querySelector(".create-button");
     createButton?.addEventListener("click", showCreatePayment);
-
-    const cancelButton: Element | null = document.querySelector(".cancel");
     cancelButton?.addEventListener("click", hideCreatePayment);
-
-
-    const form: HTMLFormElement | null = document.querySelector("#form");
-
-    const name: HTMLInputElement | null = document.querySelector("#name");
-    const description: HTMLInputElement | null = document.querySelector("#description");
-    const amount: HTMLInputElement | null = document.querySelector("#amount");
 
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
@@ -51,7 +51,7 @@ async function app(): Promise<void> {
                 }
             };
 
-            const inputs: (HTMLInputElement | null)[] = [description, amount, name];
+            const inputs: (HTMLInputElement | null)[] = [description, amount];
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
@@ -62,7 +62,7 @@ async function app(): Promise<void> {
 
             if (formIsValid) {
                 if (form.checkValidity()) {
-                    await createPayment(description?.value, amount?.value, name?.value);
+                    await createExpense(description?.value, parseFloat(<string>amount?.value));
                 }
             } else {
                 inputs.forEach((input: HTMLInputElement | null): void => {
@@ -160,51 +160,96 @@ async function verifyUser(): Promise<void> {
 }
 
 
-async function createPayment(description: string | undefined, amount: string | undefined, name: string | undefined): Promise<void> {
-
-    // const errorMessage: Element | null = document.querySelector(".error-message");
-    // const createPaymentForm: Element | null = document.querySelector(".create-form");
-    const currentDate: number = Date.now();
-    const params: any[] = [currentDate, description, amount, eventId, name];
+async function createExpense(description: string | undefined, amount: number | undefined): Promise<void> {
+    const params: any[] = [description, amount, eventId];
     try {
-
-        console.log(params);
-        const payment: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.CREATE_PARTICIPANT, ...params);
+        const payment: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.CREATE_EXPENSE, ...params);
         payment.then(
             (): void => {
-                console.log(payment);
+                console.log("Successfully created expense!");
+                location.reload();
             },
             (): void => {
-                console.log(payment);
-                console.log("failed!");
+                console.log("Failed to create expense!");
             }
         );
-        // Create event inside database
-        // const event: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.CREATE_EVENT, ...params);
-        // event.then(
-        //     async (): Promise<void> => {
-        //         // Get token from Session and check if verified.
-        //         const token: string = session.get("JWTToken");
-        //         const logged: JWTPayload = await verify(token, __SECRET_KEY__);
-        //         // Create participant information with ID from session data
-        //         const participantInfo: any[] = [id, name, logged.id];
-        //         // Create participant inside the database
-        //         const participant: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.CREATE_PARTICIPANT, ...participantInfo);
-        //
-        //         participant.then(
-        //             (): void => {
-        //                 createEventForm?.classList.add("hidden");
-        //                 location.reload();
-        //             },
-        //             (): void => {
-        //                 errorMessage?.classList.remove("hidden");
-        //             }
-        //         );
-        //     }
-        // );
     } catch (Error) {
         console.log(Error);
     }
 }
+
+function addExpensesTable(): void {
+    // Get token from session storage for userID
+    const tableBody: Element | null = document.querySelector(".payment-table-body");
+    const eventID: any = eventId;
+
+    if (eventID) {
+        // Get all events from userID
+        const getExpenses: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSES_BY_EVENT, eventID);
+        console.log(getExpenses);
+
+        getExpenses.then(
+            (events: string | any[]): void => {
+                if (typeof events !== "string") {
+                    events.forEach((expense: any): void => {
+                        //Create <tr> for the table row
+                        const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
+                        if (tr) {
+                            // Create the other table data for the current row
+                            tr.setAttribute("id", expense.expenseId);
+                            tr.setAttribute("class", "expense");
+                            tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(expense.expenseId));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(expense.description));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("€" + expense.totalAmount));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(expense.dateCreated));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("open"));
+                            const button: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
+                            const aButton: HTMLElement = button.appendChild(document.createElement("a"));
+                            aButton.classList.add("delete-button");
+                            const span: HTMLSpanElement = aButton.appendChild(document.createElement("span"));
+                            span.appendChild(document.createTextNode("Delete"));
+
+                            // Add event listeners
+                            // tr.addEventListener("click", handleExpenseClick);
+                            aButton.addEventListener("click", deleteExpenseFunction);
+                        }
+                    });
+                }
+            }
+        );
+    }
+}
+
+async function deleteExpenseFunction(this: HTMLElement): Promise<void> {
+    // Get closest <tr> to get user ID
+    const row: HTMLTableRowElement | null = this.closest("tr");
+    console.log(row);
+
+    if (row) {
+        const id: any = row.getAttribute("id");
+        const expense: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.DELETE_EXPENSE, id);
+        expense.then(
+            (): void => {
+                console.log("Successfully deleted expense!");
+                location.reload();
+            },
+            (): void => {
+                console.log("Failed to delete expense!");
+            }
+        );
+    }
+}
+
+
+// async function handleExpenseClick(this: HTMLElement): Promise<void> {
+//     if (this.id) {
+//         const url: string = utils.createUrl("single-event.html", {
+//             eventId: this.id,
+//         });
+//         if (url) {
+//             window.location.href = url;
+//         }
+//     }
+// }
 
 app();

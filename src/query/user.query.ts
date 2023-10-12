@@ -9,7 +9,7 @@ export const USER_QUERY: {
     SELECT_USERS: "SELECT * FROM user LIMIT 50",
     SELECT_USER: "SELECT * FROM user WHERE userId = ?",
     CREATE_USER: "INSERT INTO user (email, password, username) VALUES(?, ?, ?)",
-    UPDATE_USER: "UPDATE user SET first_name = ?, last_name = ?, email = ?, address = ?, phone = ? WHERE userId = ?",
+    UPDATE_USER: "UPDATE user SET email = ?, password = ?, username = ? WHERE userId = ?",
     DELETE_USER: "DELETE FROM user WHERE userId = ?",
     FIND_USER_BY_EMAIL: "SELECT * FROM user WHERE email = ?",
 };

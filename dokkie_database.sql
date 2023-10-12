@@ -81,7 +81,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Expense` (
 `expenseId` INT NOT NULL AUTO_INCREMENT,
-`totalAmount` DOUBLE NOT NULL,
+`totalAmount` DOUBLE NULL,
+`description` VARCHAR(100) NULL,
+`dateCreated` DATETIME DEFAULT CURRENT_TIMESTAMP,
 `eventId` VARCHAR(36) NOT NULL,
 PRIMARY KEY (`expenseId`),
 INDEX `event_idx` (`eventId` ASC),

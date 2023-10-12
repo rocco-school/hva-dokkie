@@ -133,34 +133,17 @@ main {
     background-color: #F8BC24;
 }
 
-.dashboard-content {
+.dashboard-widgets {
     margin: 2rem auto auto;
     width: 80%;
     height: 100%;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 5.5rem;
+    gap: 10rem;
 }
 
 
-.cost-widget {
-    width: 25rem;
-    height: 10rem;
-    background-color: white;
-    border-radius: 1.5rem;
-}
-
-
-.participants-widget {
-    width: 25rem;
-    height: 10rem;
-    background-color: white;
-    border-radius: 1.5rem;
-}
-
-
-.payments-widget {
-    width: 25rem;
+.widget {
     height: 10rem;
     background-color: white;
     border-radius: 1.5rem;
@@ -184,7 +167,7 @@ main {
 }
 
 .create {
-    width: 70%;
+    width: 80%;
     position: relative;
     margin: 5rem auto 2rem;
 }
@@ -204,7 +187,7 @@ main {
 
 .table--outer {
     background-color: #F3F4F6;
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: 4rem;
     border-radius: 0.5rem;
@@ -238,6 +221,7 @@ main {
 
 .table--outer .table tbody tr {
     background-color: #FFFFFF;
+    cursor: pointer;
     border-bottom-width: 1px;
 }
 
@@ -283,13 +267,6 @@ main {
     margin-bottom: 2rem;
 }
 
-.container .name {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-}
-
 .container .description {
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -302,11 +279,6 @@ main {
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
-}
-
-.container .name label {
-    position: relative;
-    text-align: start;
 }
 
 input {
@@ -367,4 +339,9 @@ input:focus {
     margin: auto;
     color: red;
     text-align: center;
+}
+
+.delete-button {
+    color: red;
+    cursor: pointer;
 }

@@ -6,7 +6,7 @@ import {Status} from "./enum/status.enum";
 export async function hashPassword(password: string, email: string | undefined, name: string | undefined): Promise<Status | void> {
     try {
         // Generates a random salt(unique text) to add to hash.
-        return bcrypt.genSalt(10, function (err: Error | null, salt: string): Status | void    {
+        return bcrypt.genSalt(10, function (err: Error | null, salt: string): Status | void {
             if (err) {
                 return Status.INTERNAL_SERVER_ERROR;
             }
@@ -21,11 +21,11 @@ export async function hashPassword(password: string, email: string | undefined, 
 
                 try {
                     //Create user in database with hashed password.
-                    const createUser: (string | undefined)[] = [email, hash, name];
+                    const createUser: any[] = [email, hash, name];
                     await api.queryDatabase(USER_QUERY.CREATE_USER, ...createUser);
                     return Status.CREATED;
                 } catch (error: unknown) {
-                   return Status.INTERNAL_SERVER_ERROR;
+                    return Status.INTERNAL_SERVER_ERROR;
                 }
             });
 

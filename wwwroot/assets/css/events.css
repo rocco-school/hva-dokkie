@@ -202,23 +202,11 @@ main {
     margin-bottom: 2rem;
 }
 
-.container .name {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-}
-
 .container .description {
     margin-top: 1rem;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
-}
-
-.container .name label {
-    position: relative;
-    text-align: start;
 }
 
 input {
