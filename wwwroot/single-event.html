@@ -23,14 +23,48 @@
 
     <div class="hero-tabs">
         <div class="hero-tabs-inner">
-            <a class="hero-tab is-active"><div>Dashboard</div></a>
-            <a class="hero-tab"><div>Payments</div></a>
-            <a class="hero-tab"><div>Participants</div></a>
+            <a class="hero-tab dashboard">
+                <div>Dashboard</div>
+            </a>
+            <a class="hero-tab payment is-active">
+                <div>Payments</div>
+            </a>
+            <a class="hero-tab participants">
+                <div>Participants</div>
+            </a>
         </div>
     </div>
     <hr class="hero-tabs-underline">
 
-    <div class="dashboard-content">
+    <div class="create-form hidden">
+        <div class="container">
+            <h2 class="container--title">Create Payment!</h2>
+            <form id="form">
+                <div class="description">
+                    <label for="description"><b>Payment description</b></label>
+                    <input id="description" type="text" name="description" placeholder="Description" required>
+                </div>
+                <div class="amount">
+                    <label for="amount"><b>Payment Amount</b></label>
+                    <input id="amount" type="number" name="amount" placeholder="Amount" required>
+                </div>
+                <div class="name">
+                    <label for="name"><b>Payment name</b></label>
+                    <input id="name" type="text" name="name" placeholder="Name" required>
+                </div>
+
+                <div class="error-message hidden">Error when creating Event</div>
+
+                <div class="form-buttons">
+                    <button class="submit" type="submit">Create</button>
+                    <button class="cancel" type="button">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="content dashboard-content hidden">
         <div class="cost-widget">
             <div class="information">
                 <span class="title">Total cost:</span>
@@ -51,8 +85,45 @@
                 <span class="text">50</span>
             </div>
         </div>
+    </div>
 
+    <div class="content payment-content ">
 
+        <div class="create">
+            <a class="create-button"><span>Create Payment</span></a>
+        </div>
+
+        <div class="table--outer">
+            <div class="table--inner">
+                <table class="table">
+                    <thead class="thead">
+                    <tr class="table-head">
+                        <th scope="col">
+                            EventID
+                        </th>
+                        <th scope="col">
+                            Description
+                        </th>
+                        <th scope="col">
+                            dateCreated
+                        </th>
+                        <th scope="col">
+                            Active
+                        </th>
+                        <th scope="col">
+
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="content participant-content hidden">
+        hoi
     </div>
 
 </main>

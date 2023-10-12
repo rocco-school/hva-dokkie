@@ -182,3 +182,189 @@ main {
 .text {
     font-size: 2.5rem;
 }
+
+.create {
+    width: 70%;
+    position: relative;
+    margin: 5rem auto 2rem;
+}
+
+.create-button {
+    background-color: white;
+    margin-top: 5rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.create-button:hover {
+    background-color: #F9FAFB;
+}
+
+.table--outer {
+    background-color: #F3F4F6;
+    width: 70%;
+    margin: auto;
+    margin-top: 4rem;
+    border-radius: 0.5rem;
+}
+
+.table--inner {
+    position: relative;
+    overflow-x: auto;
+    border-radius: 0.5rem;
+}
+
+.table--outer .table {
+    width: 100%;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+    color: #6B7280;
+}
+
+.table--outer .table .thead {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: #374151;
+    text-transform: uppercase;
+    background-color: #F9FAFB;
+}
+
+.table--outer .table .table-head th {
+    padding: 0.75rem 1.5rem;
+}
+
+.table--outer .table tbody tr {
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+}
+
+.table--outer .table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.table--outer .table tbody th {
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: rgb(17 24 39);
+    white-space: nowrap;
+}
+
+.table--outer .table tbody td {
+    padding: 1rem 1.5rem;
+}
+
+.create-form {
+    background-color: #ffff;
+    width: 30rem;
+    height: 35rem;
+    border-radius: 1.5rem;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.container--title {
+    margin-bottom: 2rem;
+}
+
+.container .name {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.container .description {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.container .amount {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.container .name label {
+    position: relative;
+    text-align: start;
+}
+
+input {
+    height: 2rem;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+}
+
+input:focus {
+    outline: none;
+}
+
+.container .description label {
+    position: relative;
+    text-align: start;
+}
+
+.form-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 20rem;
+}
+
+.submit {
+    margin-top: 1.5rem;
+    height: 2.5rem;
+    border-radius: 1.5rem;
+    border: 0;
+    width: 9rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.cancel {
+    margin-top: 1.5rem;
+    height: 2.5rem;
+    border-radius: 1.5rem;
+    width: 9rem;
+    border: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.submit:hover {
+    background-color: #F9FAFB;
+}
+
+.cancel:hover {
+    background-color: #F9FAFB;
+}
+
+.error-message {
+    margin: auto;
+    color: red;
+    text-align: center;
+}
