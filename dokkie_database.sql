@@ -28,7 +28,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`User` (
   `userId` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(60) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`userId`))
 ENGINE = InnoDB;
