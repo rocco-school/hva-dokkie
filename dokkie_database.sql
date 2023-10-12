@@ -66,13 +66,20 @@ CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Payment` (
 `description` VARCHAR(100) NOT NULL,
 `amount` DOUBLE NOT NULL,
 `eventId` VARCHAR(36) NOT NULL,
+`participantId` INT NOT NULL,
 PRIMARY KEY (`paymentId`),
 INDEX `event_idx` (`eventId` ASC),
+INDEX `participant_idx` (`participantId` ASC),  -- Add this line for the index
 CONSTRAINT `fk_payment_event`
-  FOREIGN KEY (`eventId`)
-      REFERENCES `pb1b2324_reusrjc_live`.`Event` (`eventId`)
-      ON DELETE RESTRICT
-      ON UPDATE CASCADE)
+ FOREIGN KEY (`eventId`)
+     REFERENCES `pb1b2324_reusrjc_live`.`Event` (`eventId`)
+     ON DELETE RESTRICT
+     ON UPDATE CASCADE,
+CONSTRAINT `fk_payment_participant`
+ FOREIGN KEY (`participantId`)
+     REFERENCES `pb1b2324_reusrjc_live`.`Participant` (`participantId`)
+     ON DELETE CASCADE
+     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

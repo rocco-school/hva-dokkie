@@ -345,3 +345,21 @@ input:focus {
     color: red;
     cursor: pointer;
 }
+
+.dropdown-label {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.dropdown {
+    margin-top: .5rem;
+    background-color: #F9FAFB;
+    border-width: 1px;
+    border-color: #D1D5DB;
+    border-radius: 0.5rem;
+    color: #111827;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    width: 100%;
+    padding: 0.625rem;
+}

@@ -18,13 +18,12 @@ async function app(): Promise<void> {
 
     addExpensesTable();
 
-    console.log(eventId);
-
     const form: HTMLFormElement | null = document.querySelector("#form");
     const createButton: Element | any = document.querySelector(".create-button");
     const cancelButton: Element | any = document.querySelector(".cancel");
-    const description: HTMLInputElement | null = document.querySelector("#description");
-    const amount: HTMLInputElement | null = document.querySelector("#amount");
+    const description: HTMLInputElement | any = document.querySelector("#description");
+    const amount: HTMLInputElement | any = document.querySelector("#amount");
+    const createPayment: Element | any = document.querySelector(".create-payment");
 
 
     document.querySelectorAll(".hero-tab").forEach(item => {
@@ -34,8 +33,9 @@ async function app(): Promise<void> {
         item.addEventListener("click", loggedOut);
     });
 
-    createButton?.addEventListener("click", showCreatePayment);
-    cancelButton?.addEventListener("click", hideCreatePayment);
+    createButton?.addEventListener("click", showCreateExpense);
+    cancelButton?.addEventListener("click", hideCreateExpense);
+    createPayment?.addEventListener("click", handleCreatePayment);
 
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
@@ -81,14 +81,33 @@ async function app(): Promise<void> {
 }
 
 
-function hideCreatePayment(): void {
+function hideCreateExpense(): void {
     const createPaymentForm: Element | null = document.querySelector(".create-form");
     createPaymentForm?.classList.add("hidden");
 }
 
-function showCreatePayment(): void {
+function showCreateExpense(): void {
     const createPaymentForm: Element | null = document.querySelector(".create-form");
     createPaymentForm?.classList.remove("hidden");
+}
+
+function handleCreatePayment(): void {
+    const createPaymentForm: Element | null = document.querySelector(".payment-form");
+    createPaymentForm?.classList.remove("hidden");
+
+    const arr: any[] = [eventId];
+    const participants: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.SELECT_PARTICIPANT_AND_USER_BY_EVENT, ...arr);
+    const select: HTMLSelectElement | any = document.querySelector("#payment-participant");
+    participants.then(
+        (participant: string | any[]): void => {
+            if (typeof participant !== "string") {
+                participant.forEach(item => {
+                    select.options[select.options.length] = new Option(item.username, item.userId);
+                });
+            }
+        }
+    );
+
 }
 
 async function handleHeroTab(this: HTMLElement): Promise<void> {
@@ -210,7 +229,7 @@ function addExpensesTable(): void {
                             span.appendChild(document.createTextNode("Delete"));
 
                             // Add event listeners
-                            // tr.addEventListener("click", handleExpenseClick);
+                            tr.addEventListener("click", handleExpenseClick);
                             aButton.addEventListener("click", deleteExpenseFunction);
                         }
                     });
@@ -241,15 +260,13 @@ async function deleteExpenseFunction(this: HTMLElement): Promise<void> {
 }
 
 
-// async function handleExpenseClick(this: HTMLElement): Promise<void> {
-//     if (this.id) {
-//         const url: string = utils.createUrl("single-event.html", {
-//             eventId: this.id,
-//         });
-//         if (url) {
-//             window.location.href = url;
-//         }
-//     }
-// }
+async function handleExpenseClick(this: HTMLElement): Promise<void> {
+    const expenseId: string = this.id;
+    document.querySelector(".hero-tabs")?.classList.add("hidden");
+    document.querySelector(".hero-tabs-underline")?.classList.add("hidden");
+    document.querySelector(".dashboard-content")?.classList.add("hidden");
+    document.querySelector(".payment-content")?.classList.remove("hidden");
+
+}
 
 app();

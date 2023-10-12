@@ -26,9 +26,6 @@
             <a class="hero-tab dashboard is-active">
                 <div>Dashboard</div>
             </a>
-            <a class="hero-tab payment hidden">
-                <div>Payment</div>
-            </a>
             <a class="hero-tab participants">
                 <div>Participants</div>
             </a>
@@ -59,8 +56,39 @@
         </div>
     </div>
 
+    <div class="create-form payment-form hidden">
+        <div class="container">
+            <h2 class="container--title">Create Expense!</h2>
+            <form id="payment-form">
+                <div class="description">
+                    <label for="payment-description"><b>Expense description</b></label>
+                    <input id="payment-description" type="text" name="payment-description" placeholder="Description" required>
+                </div>
+                <div class="amount">
+                    <label for="payment-amount"><b>Amount</b></label>
+                    <input id="payment-amount" type="number" name="payment-amount" placeholder="Amount" required>
+                </div>
 
-    <div class="content dashboard-content ">
+                <div class="participant">
+                    <label class="dropdown-label" for="payment-participant"><b>Participant</b></label>
+                    <select class="dropdown" id="payment-participant" name="payment-participant">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                    </select>
+                </div>
+
+
+                <div class="error-message hidden">Error when creating Expense</div>
+
+                <div class="form-buttons">
+                    <button class="submit" type="submit">Create</button>
+                    <button class="cancel" type="button">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="content dashboard-content">
         <div class="dashboard-widgets">
             <div class="widget">
                 <div class="information">
@@ -125,7 +153,45 @@
     </div>
 
     <div class="content payment-content hidden">
+        <div class="payment-table">
+            <div class="create">
+                <a class="create-button create-payment"><span>Create Payment</span></a>
+            </div>
 
+            <div class="table--outer">
+                <div class="table--inner">
+                    <table class="table">
+                        <thead class="thead">
+                        <tr class="table-head">
+                            <th scope="col">
+                                paymentID
+                            </th>
+                            <th scope="col">
+                                datePaid
+                            </th>
+                            <th scope="col">
+                                description
+                            </th>
+                            <th scope="col">
+                                amount
+                            </th>
+                            <th scope="col">
+                                eventId
+                            </th>
+                            <th scope="col">
+                                Participant
+                            </th>
+                            <th scope="col">
+                                Status
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-body payment-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="content participant-content hidden">
