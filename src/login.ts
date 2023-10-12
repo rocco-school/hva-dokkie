@@ -10,8 +10,6 @@ import {verifyUserRedirect} from "./authentication/verifyUser";
  */
 async function app(): Promise<void> {
 
-    session.clear();
-
     // Checks if user is not already logged in if logged in redirects to homepage.
     await verifyUserRedirect("index.html");
 
@@ -21,7 +19,7 @@ async function app(): Promise<void> {
     const button: HTMLElement | null = document.querySelector(".submit");
 
     if (form) {
-        form.addEventListener("submit", (e: SubmitEvent): void => {
+        form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             e.preventDefault();
 
             const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
@@ -35,13 +33,13 @@ async function app(): Promise<void> {
             };
 
             const validate: (password: HTMLInputElement | null, email: HTMLInputElement | null) => void = async (password: HTMLInputElement | null, email: HTMLInputElement | null): Promise<void> => {
-                if (password && email) {
+                if (password?.value && email?.value) {
                     // Check database for existing users with input email.
-                    const inputEmail: (string | any)[] = [email.value];
-                    const user: any[] | string = await api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, ...inputEmail);
+                    const user: any[] | string = await api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, email.value);
 
                     if (user.length === 0) {
                         email.setCustomValidity("This email is not registered!");
+                        console.log("This email is not registered!");
                         return;
                     }
 
@@ -55,6 +53,8 @@ async function app(): Promise<void> {
                                 password.setCustomValidity("Password does not match email!");
                             }
                             if (result) {
+                                console.log(user);
+                                console.log(result);
                                 assignToken(user).then(
                                     (): void => {
                                         console.log("Succesfully logged in!");
@@ -71,12 +71,14 @@ async function app(): Promise<void> {
                 }
             };
 
+            // Validates the input and if its invalid adds an customValidity warning.
+
             const inputs: (HTMLInputElement | null)[] = [password, email];
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
             });
-            // Validates the input and if its invalid adds an customValidity warning.
+
             validate(password, email);
 
             // Check if all inputs are validated
@@ -84,7 +86,7 @@ async function app(): Promise<void> {
 
             if (formIsValid) {
                 if (form.checkValidity()) {
-                    console.log("Succesfully logged in!");
+                    console.log("Form fields valid!");
                 }
             } else {
                 inputs.forEach((input: HTMLInputElement | null): void => {

@@ -1,6 +1,6 @@
 import "./hboictcloud-config";
 import {verifyUser} from "./authentication/verifyUser";
-import {api, session} from "@hboictcloud/api";
+import {api, session, utils} from "@hboictcloud/api";
 import {EVENT_QUERY} from "./query/event.query";
 import {v4 as uuidv4} from "uuid";
 import {JWTPayload} from "jose";
@@ -26,6 +26,7 @@ async function addEventsToTable(): Promise<void> {
                         if (tr) {
                             // Create the other table data for the current row
                             tr.setAttribute("id", event.eventId);
+                            tr.setAttribute("class", "event");
                             tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(event.eventId));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(event.description));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(event.dateCreated));
@@ -36,7 +37,8 @@ async function addEventsToTable(): Promise<void> {
                             const span: HTMLSpanElement = aButton.appendChild(document.createElement("span"));
                             span.appendChild(document.createTextNode("Delete"));
 
-                            // Add event listener to the delete button
+                            // Add event listeners
+                            tr.addEventListener("click", handleEventClick);
                             aButton.addEventListener("click", deleteEventFunction);
                         }
                     });
@@ -101,6 +103,19 @@ async function deleteEventFunction(this: HTMLElement): Promise<void> {
         );
     }
 }
+
+
+async function handleEventClick(this: HTMLElement): Promise<void> {
+    if (this.id) {
+        const url: string = utils.createUrl("single-event.html", {
+            eventId: this.id,
+        });
+        if (url) {
+            window.location.href = url;
+        }
+    }
+}
+
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.

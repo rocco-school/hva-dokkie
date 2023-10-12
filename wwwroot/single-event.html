@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Dokkie homepage</title>
+
+    <link rel="stylesheet" href="./assets/css/single-event.css"/>
+</head>
+<body>
+<main>
+    <div class="hero">
+        <div class="header">
+            <a href="index.html" class="logo">Dokkie</a>
+            <div class="header-right">
+                <a class="users" href="events.html">Events</a>
+                <a class="users" href="user.html">Users</a>
+                <div class="logout highlight">Log out!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-tabs">
+        <div class="hero-tabs-inner">
+            <a class="hero-tab is-active"><div>Dashboard</div></a>
+            <a class="hero-tab"><div>Payments</div></a>
+            <a class="hero-tab"><div>Participants</div></a>
+        </div>
+    </div>
+    <hr class="hero-tabs-underline">
+
+    <div class="dashboard-content">
+        <div class="cost-widget">
+            <div class="information">
+                <span class="title">Total cost:</span>
+                <span class="text">$5000</span>
+            </div>
+        </div>
+
+        <div class="participants-widget">
+            <div class="information">
+                <span class="title">Total participants:</span>
+                <span class="text">50</span>
+            </div>
+        </div>
+
+        <div class="payments-widget">
+            <div class="information">
+                <span class="title">Total open Payments:</span>
+                <span class="text">50</span>
+            </div>
+        </div>
+
+
+    </div>
+
+</main>
+
+<script src="/src/single-event.ts" type="module"></script>
+</body>
+</html>

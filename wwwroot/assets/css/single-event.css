@@ -12,7 +12,7 @@ quinary color = yellow = #F8BC24
 }
 
 body {
-    background-color: rgb(243 244 246);
+    background-color: #F3F4F6;
     display: flex;
 }
 
@@ -36,7 +36,6 @@ main {
         margin: 0 3rem;
     }
 }
-
 
 .header .logo {
     font-size: 2rem;
@@ -79,7 +78,7 @@ main {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .header-right {
@@ -98,63 +97,88 @@ main {
     }
 }
 
+.hero-tabs {
+    display: flex;
+    margin: 1rem auto;
+    width: 50%;
+}
 
-.main_content {
-    background-color: rgb(243 244 246);
-    width: 70%;
+.hero-tabs-inner {
+    display: flex;
     margin: auto;
-    margin-top: 10rem;
-    border-radius: 0.5rem;
+    gap: 16rem;
 }
 
-
-.table--outer {
-    position: relative;
-    overflow-x: auto;
-    border-radius: 0.5rem;
-}
-
-.table--outer .table {
-    width: 100%;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    text-align: left;
-    color: rgb(107 114 128);
-}
-
-.table--outer .table .thead {
-    font-size: 0.75rem;
-    line-height: 1rem;
-    color: rgb(55 65 81);
-    text-transform: uppercase;
-    background-color: rgb(249 250 251);
-}
-
-.table--outer .table .table-head th {
-    padding: 0.75rem 1.5rem;
-}
-
-.table--outer .table tbody tr {
-    background-color: rgb(255 255 255);
-    border-bottom-width: 1px;
-}
-
-.table--outer .table tbody tr:hover {
-    background-color: rgb(249 250 251);
-}
-
-.table--outer .table tbody th {
-    padding: 1rem 1.5rem;
-    font-weight: 500;
-    color: rgb(17 24 39);
-    white-space: nowrap;
-}
-
-.table--outer .table tbody td {
-    padding: 1rem 1.5rem;
-}
-
-.delete-button {
-    color: red;
+.hero-tab {
+    padding: .5rem;
+    border-radius: .8rem;
     cursor: pointer;
+}
+
+.hero-tab:hover {
+    background-color: #ebebeb;
+}
+
+.hero-tabs-underline {
+    border: 1px solid #ebebeb;
+    width: 80%;
+    margin: auto;
+}
+
+.is-active {
+    background-color: #F8BC24;
+}
+
+.is-active:hover {
+    background-color: #F8BC24;
+}
+
+.dashboard-content {
+    margin: 2rem auto auto;
+    width: 80%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5.5rem;
+}
+
+
+.cost-widget {
+    width: 25rem;
+    height: 10rem;
+    background-color: white;
+    border-radius: 1.5rem;
+}
+
+
+.participants-widget {
+    width: 25rem;
+    height: 10rem;
+    background-color: white;
+    border-radius: 1.5rem;
+}
+
+
+.payments-widget {
+    width: 25rem;
+    height: 10rem;
+    background-color: white;
+    border-radius: 1.5rem;
+}
+
+
+.information {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3em;
+    margin-left: 3rem;
+}
+
+.title {
+    color: #818181;
+    margin-bottom: .5rem;
+}
+
+.text {
+    font-size: 2.5rem;
 }
