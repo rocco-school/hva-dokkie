@@ -46,6 +46,15 @@
                     <input id="amount" type="number" name="amount" placeholder="Amount" required>
                 </div>
 
+                <div class="participants">
+                    <label class="dropdown-label" for="expense-participants">
+                        <b>Choose participants</b>
+                    </label>
+                    <select class="dropdown" id="expense-participants" name="expense-participants" multiple>
+                        <option value="none" selected disabled>Select participants</option>
+                    </select>
+                </div>
+
                 <div class="error-message hidden">Error when creating Expense</div>
 
                 <div class="form-buttons">
@@ -143,7 +152,7 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody class="table-body payment-table-body">
+                        <tbody class="table-body expense-table-body">
                         </tbody>
                     </table>
                 </div>
@@ -195,7 +204,7 @@
     </div>
 
     <div class="content participant-content hidden">
-        hoi
+
     </div>
 
 </main>

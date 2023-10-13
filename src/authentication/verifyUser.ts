@@ -1,4 +1,4 @@
-import {session, url} from "@hboictcloud/api";
+import {session} from "@hboictcloud/api";
 import {JWTPayload} from "jose";
 import {verify} from "./jsonwebtoken";
 

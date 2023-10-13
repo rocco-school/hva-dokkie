@@ -37,7 +37,7 @@ ENGINE = InnoDB;
 -- Table `pb1b2324_reusrjc_live`.`Participant`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Participant` (
-  `participantId` INT NOT NULL AUTO_INCREMENT, /** veranderd **/
+  `participantId` INT NOT NULL AUTO_INCREMENT,
   `eventId` VARCHAR(36) NOT NULL,
   `userId` INT NOT NULL,
   PRIMARY KEY (`participantId`,`eventId`, `userId`),
@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Participant` (
     FOREIGN KEY (`userId`)
     REFERENCES `pb1b2324_reusrjc_live`.`User` (`userId`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -64,12 +65,14 @@ CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Payment` (
 `paymentId` INT NOT NULL AUTO_INCREMENT,
 `datePaid` DATE,
 `description` VARCHAR(100) NOT NULL,
-`amount` DOUBLE NOT NULL,
+`customAmount` DOUBLE NULL DEFAULT NULL,
 `eventId` VARCHAR(36) NOT NULL,
+`expenseId` VARCHAR(36) NOT NULL,
 `participantId` INT NOT NULL,
 PRIMARY KEY (`paymentId`),
 INDEX `event_idx` (`eventId` ASC),
-INDEX `participant_idx` (`participantId` ASC),  -- Add this line for the index
+INDEX `participant_idx` (`participantId` ASC),
+INDEX `expense_idx` (`expenseId` ASC),
 CONSTRAINT `fk_payment_event`
  FOREIGN KEY (`eventId`)
      REFERENCES `pb1b2324_reusrjc_live`.`Event` (`eventId`)
@@ -79,7 +82,13 @@ CONSTRAINT `fk_payment_participant`
  FOREIGN KEY (`participantId`)
      REFERENCES `pb1b2324_reusrjc_live`.`Participant` (`participantId`)
      ON DELETE CASCADE
-     ON UPDATE CASCADE)
+     ON UPDATE CASCADE,
+CONSTRAINT `fk_payment_expense`
+    FOREIGN KEY (`expenseId`)
+        REFERENCES `pb1b2324_reusrjc_live`.`Expense` (`expenseId`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+)
 ENGINE = InnoDB;
 
 
@@ -87,7 +96,7 @@ ENGINE = InnoDB;
 -- Table `pb1b2324_reusrjc_live`.`expenses`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Expense` (
-`expenseId` INT NOT NULL AUTO_INCREMENT,
+`expenseId` VARCHAR(36) NOT NULL,
 `totalAmount` DOUBLE NULL,
 `description` VARCHAR(100) NULL,
 `dateCreated` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -102,7 +111,7 @@ CONSTRAINT `fk_expense_event`
 )
 ENGINE = InnoDB;
 
-USE `pb1b2324_reusrjc_live` ;
+USE `pb1b2324_reusrjc_live`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

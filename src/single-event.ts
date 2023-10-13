@@ -1,11 +1,12 @@
 import "./hboictcloud-config";
-import {api, session, utils} from "@hboictcloud/api";
+import {api, session} from "@hboictcloud/api";
 import {JWTPayload} from "jose";
 import {verify} from "./authentication/jsonwebtoken";
 import {EVENT_QUERY} from "./query/event.query";
-import {v4 as uuidv4} from "uuid";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
 import {EXPENSE_QUERY} from "./query/expanse.query";
+import {PAYMENT_QUERY} from "./query/payment.query";
+import {v4 as uuidv4} from "uuid";
 
 /**
  * Entry point
@@ -17,14 +18,15 @@ async function app(): Promise<void> {
     await verifyUser();
 
     addExpensesTable();
+    handlePopulateSelects();
 
     const form: HTMLFormElement | null = document.querySelector("#form");
     const createButton: Element | any = document.querySelector(".create-button");
     const cancelButton: Element | any = document.querySelector(".cancel");
     const description: HTMLInputElement | any = document.querySelector("#description");
     const amount: HTMLInputElement | any = document.querySelector("#amount");
+    const participants: HTMLInputElement | any = document.querySelector("#expense-participants");
     const createPayment: Element | any = document.querySelector(".create-payment");
-
 
     document.querySelectorAll(".hero-tab").forEach(item => {
         item.addEventListener("click", handleHeroTab);
@@ -51,7 +53,7 @@ async function app(): Promise<void> {
                 }
             };
 
-            const inputs: (HTMLInputElement | null)[] = [description, amount];
+            const inputs: (HTMLInputElement | null)[] = [description, amount, participants];
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
@@ -62,7 +64,8 @@ async function app(): Promise<void> {
 
             if (formIsValid) {
                 if (form.checkValidity()) {
-                    await createExpense(description?.value, parseFloat(<string>amount?.value));
+                    const values: string[] = Array.from(participants.selectedOptions).map(({value}: any) => value);
+                    await createExpense(description?.value, parseFloat(<string>amount?.value), values);
                 }
             } else {
                 inputs.forEach((input: HTMLInputElement | null): void => {
@@ -94,15 +97,19 @@ function showCreateExpense(): void {
 function handleCreatePayment(): void {
     const createPaymentForm: Element | null = document.querySelector(".payment-form");
     createPaymentForm?.classList.remove("hidden");
+}
 
+function handlePopulateSelects(): void {
     const arr: any[] = [eventId];
     const participants: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.SELECT_PARTICIPANT_AND_USER_BY_EVENT, ...arr);
-    const select: HTMLSelectElement | any = document.querySelector("#payment-participant");
+    const expenseSelect: HTMLSelectElement | any = document.querySelector("#expense-participants");
+    const paymentSelect: HTMLSelectElement | any = document.querySelector("#payment-participant");
     participants.then(
         (participant: string | any[]): void => {
             if (typeof participant !== "string") {
                 participant.forEach(item => {
-                    select.options[select.options.length] = new Option(item.username, item.userId);
+                    expenseSelect.options[expenseSelect.options.length] = new Option(item.username, item.participantId);
+                    paymentSelect.options[paymentSelect.options.length] = new Option(item.username, item.participantId);
                 });
             }
         }
@@ -179,19 +186,42 @@ async function verifyUser(): Promise<void> {
 }
 
 
-async function createExpense(description: string | undefined, amount: number | undefined): Promise<void> {
-    const params: any[] = [description, amount, eventId];
+async function createExpense(description: string | undefined, amount: number | undefined, participants: any): Promise<void> {
+    const id: string = uuidv4();
+    const params: any[] = [id, description, amount, eventId];
     try {
+        const participantsAmount: number = participants.length;
+
         const payment: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.CREATE_EXPENSE, ...params);
         payment.then(
             (): void => {
                 console.log("Successfully created expense!");
-                location.reload();
+
+                participants.forEach((participant: any): void => {
+                    if (amount) {
+                        const cut: number = amount / participantsAmount;
+                        const data: any[] = [null, description, cut, eventId, parseFloat(<string>participant), id];
+                        const payment: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.CREATE_PAYMENT, ...data);
+
+                        payment.then(
+                            (): void => {
+                                console.log("Successfully made payment");
+                                hideCreateExpense();
+                                location.reload();
+                            },
+                            (): void => {
+                                console.log("Unsuccessfully made payment");
+                            }
+                        );
+                    }
+                });
+
             },
             (): void => {
                 console.log("Failed to create expense!");
             }
         );
+
     } catch (Error) {
         console.log(Error);
     }
@@ -199,7 +229,7 @@ async function createExpense(description: string | undefined, amount: number | u
 
 function addExpensesTable(): void {
     // Get token from session storage for userID
-    const tableBody: Element | null = document.querySelector(".payment-table-body");
+    const tableBody: Element | null = document.querySelector(".expense-table-body");
     const eventID: any = eventId;
 
     if (eventID) {
@@ -267,6 +297,50 @@ async function handleExpenseClick(this: HTMLElement): Promise<void> {
     document.querySelector(".dashboard-content")?.classList.add("hidden");
     document.querySelector(".payment-content")?.classList.remove("hidden");
 
+    await populatePaymentTable(expenseId);
 }
+
+
+async function populatePaymentTable(expenseId: string): Promise<void> {
+    if (expenseId && eventId) {
+        const tableBody: Element | null = document.querySelector(".payment-table-body");
+
+        console.log(tableBody);
+
+        const params: string[] = [eventId, expenseId];
+
+        const getPayments: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...params);
+
+        getPayments.then(
+            (payments: string | any[]): void => {
+                if (typeof payments !== "string") {
+                    payments.forEach((payment: any): void => {
+                        console.log(payment);
+                        const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
+                        if (tr) {
+
+                            console.log(payment);
+                            // Create the other table data for the current row
+                            tr.setAttribute("id", payment.paymentId);
+                            tr.setAttribute("class", "payment");
+                            tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(payment.paymentId));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.datePaid));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.description));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("€" + payment.customAmount));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.eventId));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.username));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("not paid!"));
+                            // Add event listeners
+                            tr.addEventListener("click", handleExpenseClick);
+                        }
+                    });
+                }
+            }
+        );
+    }
+
+
+}
+
 
 app();

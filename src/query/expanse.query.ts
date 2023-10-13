@@ -6,6 +6,6 @@ export const EXPENSE_QUERY: {
 } = {
     SELECT_EXPENSES: "SELECT * FROM expense LIMIT 50",
     SELECT_EXPENSES_BY_EVENT: "SELECT * FROM expense WHERE eventId = ?",
-    CREATE_EXPENSE: "INSERT INTO expense (description, totalAmount, eventId) VALUES(?, ?, ?)",
+    CREATE_EXPENSE: "INSERT INTO expense (expenseId, description, totalAmount, eventId) VALUES(?, ?, ?, ?)",
     DELETE_EXPENSE: "DELETE FROM expense WHERE expenseId = ?"
 };
