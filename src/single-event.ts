@@ -213,7 +213,7 @@ async function createExpense(description: string | undefined, amount: number | u
                         payment.then(
                             (): void => {
                                 hideCreateExpense();
-                                const message: Element | null = document.querySelector(".blur-container");
+                                const message: Element | null = document.querySelector(".filter");
                                 message?.classList.remove("hidden");
                             },
                             (): void => {
