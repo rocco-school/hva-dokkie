@@ -27,6 +27,9 @@ async function app(): Promise<void> {
     const amount: HTMLInputElement | any = document.querySelector("#amount");
     const participants: HTMLInputElement | any = document.querySelector("#expense-participants");
     const createPayment: Element | any = document.querySelector(".create-payment");
+    const messageButton: Element | any = document.querySelector(".continue-button");
+
+    messageButton?.addEventListener("click", handleSuccessMessage);
 
     document.querySelectorAll(".hero-tab").forEach(item => {
         item.addEventListener("click", handleHeroTab);
@@ -97,6 +100,10 @@ function showCreateExpense(): void {
 function handleCreatePayment(): void {
     const createPaymentForm: Element | null = document.querySelector(".payment-form");
     createPaymentForm?.classList.remove("hidden");
+}
+
+function handleSuccessMessage(): void {
+    location.reload();
 }
 
 function handlePopulateSelects(): void {
@@ -205,9 +212,9 @@ async function createExpense(description: string | undefined, amount: number | u
 
                         payment.then(
                             (): void => {
-                                console.log("Successfully made payment");
                                 hideCreateExpense();
-                                location.reload();
+                                const message: Element | null = document.querySelector(".blur-container");
+                                message?.classList.remove("hidden");
                             },
                             (): void => {
                                 console.log("Unsuccessfully made payment");
@@ -315,7 +322,6 @@ async function populatePaymentTable(expenseId: string): Promise<void> {
             (payments: string | any[]): void => {
                 if (typeof payments !== "string") {
                     payments.forEach((payment: any): void => {
-                        console.log(payment);
                         const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
                         if (tr) {
 
@@ -327,7 +333,7 @@ async function populatePaymentTable(expenseId: string): Promise<void> {
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.datePaid));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.description));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("€" + payment.customAmount));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.eventId));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("€" + payment.paymentAmount));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.username));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("not paid!"));
                             // Add event listeners

@@ -21,6 +21,50 @@
         </div>
     </div>
 
+
+    <div class="blur-container hidden">
+        <!-- Success message -->
+        <div id="successModal" tabindex="-1" aria-hidden="true" class="success-modal">
+            <div class="modal-wrapper">
+                <div class="modal-content">
+                    <!-- Modal content -->
+                    <button type="button" class="close-modal-button hidden" data-modal-toggle="successModal">
+                        <svg aria-hidden="true" class="close-icon" fill="currentColor" viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+
+                    <div class="icon-and-message success">
+                        <svg aria-hidden="true" class="icon success" fill="currentColor" viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Success</span>
+                    </div>
+                    <div class="icon-and-message failed hidden">
+                        <svg aria-hidden="true" class="icon failed" fill="currentColor" viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Failed</span>
+                    </div>
+                    <p class="message">Successfully created!</p>
+                    <button data-modal-toggle="successModal" type="button" class="continue-button">Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="hero-tabs">
         <div class="hero-tabs-inner">
             <a class="hero-tab dashboard is-active">
@@ -71,11 +115,13 @@
             <form id="payment-form">
                 <div class="description">
                     <label for="payment-description"><b>Expense description</b></label>
-                    <input id="payment-description" type="text" name="payment-description" placeholder="Description" required>
+                    <input id="payment-description" type="text" name="payment-description"
+                           placeholder="Description" required>
                 </div>
                 <div class="amount">
                     <label for="payment-amount"><b>Amount</b></label>
-                    <input id="payment-amount" type="number" name="payment-amount" placeholder="Amount" required>
+                    <input id="payment-amount" type="number" name="payment-amount" placeholder="Amount"
+                           required>
                 </div>
 
                 <div class="participant">
@@ -182,10 +228,10 @@
                                 description
                             </th>
                             <th scope="col">
-                                amount
+                                Custom amount
                             </th>
                             <th scope="col">
-                                eventId
+                                payment amount
                             </th>
                             <th scope="col">
                                 Participant

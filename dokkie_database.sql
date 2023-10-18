@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Payment` (
 `datePaid` DATE,
 `description` VARCHAR(100) NOT NULL,
 `customAmount` DOUBLE NULL DEFAULT NULL,
+`paymentAmount` DOUBLE NULL DEFAULT 0,
 `eventId` VARCHAR(36) NOT NULL,
 `expenseId` VARCHAR(36) NOT NULL,
 `participantId` INT NOT NULL,

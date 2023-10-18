@@ -38,8 +38,18 @@ async function addEventsToTable(): Promise<void> {
                             span.appendChild(document.createTextNode("Delete"));
 
                             // Add event listeners
-                            tr.addEventListener("click", handleEventClick);
-                            aButton.addEventListener("click", deleteEventFunction);
+                            tr.addEventListener("click", function (event: MouseEvent | null ): void {
+                                if (event) {
+                                    let target: HTMLElement = event.target as HTMLElement;
+                                    if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button"))) {
+                                        deleteEventFunction(tr);
+                                    } else {
+
+                                    }
+                                }
+
+                            });
+
                         }
                     });
                 }
@@ -66,10 +76,8 @@ async function createEvent(description: string | undefined): Promise<void> {
                 const logged: JWTPayload = await verify(token, __SECRET_KEY__);
                 // Create participant information with ID from session data
                 const participantInfo: any[] = [id, logged.id];
-                console.log(participantInfo);
                 // Create participant inside the database
                 const participant: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.CREATE_PARTICIPANT, ...participantInfo);
-                console.log(participant);
                 participant.then(
                     (): void => {
                         createEventForm?.classList.add("hidden");
@@ -79,6 +87,9 @@ async function createEvent(description: string | undefined): Promise<void> {
                         errorMessage?.classList.remove("hidden");
                     }
                 );
+            },
+            (): void => {
+                console.log("Failed to create event!");
             }
         );
     } catch (Error) {
@@ -86,9 +97,8 @@ async function createEvent(description: string | undefined): Promise<void> {
     }
 }
 
-async function deleteEventFunction(this: HTMLElement): Promise<void> {
+async function deleteEventFunction(row: HTMLTableRowElement): Promise<void> {
     // Get closest <tr> to get user ID
-    const row: HTMLTableRowElement | null = this.closest("tr");
     if (row) {
         const eventId: any = row.getAttribute("id");
         // Delete event in database
