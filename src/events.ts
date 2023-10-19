@@ -6,6 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import {JWTPayload} from "jose";
 import {verify} from "./authentication/jsonwebtoken";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
+import {Status} from "./enum/status.enum";
 
 async function addEventsToTable(): Promise<void> {
     // Get token from session storage for userID
@@ -98,6 +99,10 @@ async function createEvent(description: string | undefined): Promise<void> {
                     },
                     (): void => {
                         errorMessage?.classList.remove("hidden");
+                        if (errorMessage) {
+                            errorMessage.innerHTML = "Failed to create all participants, please try again later!";
+                        }
+                        console.log(Status.INTERNAL_SERVER_ERROR);
                     }
                 );
             },

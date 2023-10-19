@@ -21,6 +21,7 @@ async function app(): Promise<void> {
     const email: HTMLInputElement | null = document.querySelector("#email");
     const validRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const button: HTMLButtonElement | null = document.querySelector(".submit");
+    const customErrorMessage: HTMLButtonElement | null = document.querySelector(".error-message");
 
 
     // Show password / Hide password
@@ -68,15 +69,22 @@ async function app(): Promise<void> {
     }
 
     if (form) {
-        form.addEventListener("submit", (e: SubmitEvent): void => {
+        form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
+            let error: boolean = false;
             e.preventDefault();
 
             const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
                 if (input && input.value === "") {
-                    input.setCustomValidity(errorMessage);
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = errorMessage;
+                    }
+                    error = true;
                 } else {
                     if (input) {
-                        input.setCustomValidity("");
+                        if (customErrorMessage) {
+                            customErrorMessage.classList.add("hidden");
+                        }
                     }
                 }
             };
@@ -87,24 +95,34 @@ async function app(): Promise<void> {
                     const passwordValue: string = password.value;
 
                     if (passwordLength <= 6) {
-                        password.setCustomValidity("Password must be longer than 6 characters");
+                        if (customErrorMessage) {
+                            customErrorMessage.classList.remove("hidden");
+                            customErrorMessage.innerHTML = "Password must be longer than 6 characters";
+                        }
+                        error = true;
                     } else if (passwordLength >= 20) {
-                        password.setCustomValidity("Password must not be longer than 20 characters");
+                        if (customErrorMessage) {
+                            customErrorMessage.classList.remove("hidden");
+                            customErrorMessage.innerHTML = "Password must not be longer than 20 characters";
+                        }
+                        error = true;
                     } else if (passwordValue === "password") {
-                        password.setCustomValidity("Password cannot be password");
-                    } else {
-                        password.setCustomValidity("");
+                        if (customErrorMessage) {
+                            customErrorMessage.classList.remove("hidden");
+                            customErrorMessage.innerHTML = "Password cannot be password";
+                        }
+                        error = true;
                     }
                 }
             };
 
             const validateConfirmPassword: (confirmPassword: HTMLInputElement | null, password: HTMLInputElement | null) => void = (confirmPassword: HTMLInputElement | null, password: HTMLInputElement | null): void => {
                 if (confirmPassword && password && confirmPassword.value !== password.value) {
-                    confirmPassword.setCustomValidity("Does not match password");
-                } else {
-                    if (confirmPassword) {
-                        confirmPassword.setCustomValidity("");
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = "Password confirmation does not match password";
                     }
+                    error = true;
                 }
             };
 
@@ -115,44 +133,57 @@ async function app(): Promise<void> {
 
                     // Check database for existing users with input email.
                     const userEmail: string[] = [email.value];
-                    const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, ...userEmail);
+                    const users: Promise<string | any[]> = api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, ...userEmail);
 
-                    try {
-                        await user;
-                        emailExists = true;
-                    } catch (error) {
-                        emailExists = false;
-                    }
+                    await users.then(
+                        (user: string | any[]): void => {
+                            if (user.length === 0) {
+                                emailExists = false;
+                            }
+                            if (user.length > 0) {
+                                emailExists = true;
+                            }
+                        },
+                        (): void => {
+                            emailExists = false;
+                        }
+                    );
                 }
+
                 // Checks with RegExp if email is valid.
                 if (email && !email.value.match(validRegex)) {
-                    email.setCustomValidity("Invalid email");
-                } else if (email && emailExists) {
-                    email.setCustomValidity("This email is already registered!");
-                } else {
-                    if (email) {
-                        email.setCustomValidity("");
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = "Invalid email";
                     }
+                    error = true;
+                } else if (email && emailExists) {
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = "This email is already registered!";
+                    }
+                    error = true;
                 }
             };
 
             const inputs: (HTMLInputElement | null)[] = [name, password, confirmPassword, email];
 
 
+            error = false;
+
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
             });
             // Validates the input and if its invalid adds an customValidity warning.
-            validatePassword(password);
-            validateConfirmPassword(confirmPassword, password);
-            validateEmail(email, validRegex);
-
+            await validatePassword(password);
+            await validateConfirmPassword(confirmPassword, password);
+            await validateEmail(email, validRegex);
 
             // Check if all inputs are validated
             const formIsValid: boolean = inputs.every((input: HTMLInputElement | null) => input?.checkValidity());
 
             if (formIsValid) {
-                if (form.checkValidity()) {
+                if (!error) {
                     onsubmit().then();
                 }
             } else {
@@ -171,6 +202,8 @@ async function app(): Promise<void> {
 
     async function onsubmit(): Promise<void> {
         // make database entry with Hashed password.
+
+        console.log(password?.value, email?.value, name?.value);
         if (password) {
             const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
 

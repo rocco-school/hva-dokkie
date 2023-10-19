@@ -9,7 +9,6 @@ import {verifyUserRedirect} from "./authentication/verifyUser";
  * Entry point
  */
 async function app(): Promise<void> {
-
     // Checks if user is not already logged in if logged in redirects to homepage.
     await verifyUserRedirect("index.html");
 
@@ -17,29 +16,46 @@ async function app(): Promise<void> {
     const form: HTMLFormElement | null = document.querySelector("#form");
     const email: HTMLInputElement | null = document.querySelector("#email");
     const button: HTMLElement | null = document.querySelector(".submit");
+    const customErrorMessage: HTMLElement | null = document.querySelector(".error-message");
 
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
+            let error: boolean = false;
+
             e.preventDefault();
 
             const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
                 if (input && input.value === "") {
-                    input.setCustomValidity(errorMessage);
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = errorMessage;
+                    }
+                    error = true;
                 } else {
                     if (input) {
-                        input.setCustomValidity("");
+                        if (customErrorMessage) {
+                            customErrorMessage.classList.add("hidden");
+                        }
+                        error = false;
                     }
                 }
             };
 
             const validate: (password: HTMLInputElement | null, email: HTMLInputElement | null) => void = async (password: HTMLInputElement | null, email: HTMLInputElement | null): Promise<void> => {
                 if (password?.value && email?.value) {
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.add("hidden");
+                        error = false;
+                    }
                     // Check database for existing users with input email.
                     const user: any[] | string = await api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, email.value);
 
                     if (user.length === 0) {
-                        email.setCustomValidity("This email is not registered!");
-                        console.log("This email is not registered!");
+                        if (customErrorMessage) {
+                            customErrorMessage.classList.remove("hidden");
+                            customErrorMessage.innerHTML = "Email or password is incorrect!";
+                        }
+                        error = true;
                         return;
                     }
 
@@ -50,20 +66,33 @@ async function app(): Promise<void> {
                         //check if database password is equal to input password
                         bcrypt.compare(inputPassword, databasePassword, function (err: Error | null, result: boolean): void {
                             if (err) {
-                                password.setCustomValidity("Password does not match email!");
+                                if (customErrorMessage) {
+                                    customErrorMessage.classList.remove("hidden");
+                                    customErrorMessage.innerHTML = "Email or password is incorrect!";
+                                }
+                                error = true;
                             }
                             if (result) {
-                                console.log(user);
-                                console.log(result);
                                 assignToken(user).then(
                                     (): void => {
+                                        error = false;
                                         console.log("Succesfully logged in!");
                                         window.location.href = "index.html";
                                     },
                                     (): void => {
-                                        console.log("Login unsuccesful!");
+                                        if (customErrorMessage) {
+                                            customErrorMessage.classList.remove("hidden");
+                                            customErrorMessage.innerHTML = "Login unsuccessful!";
+                                        }
+                                        error = true;
                                     }
                                 );
+                            } else {
+                                if (customErrorMessage) {
+                                    customErrorMessage.classList.remove("hidden");
+                                    customErrorMessage.innerHTML = "Email or password are incorrect!";
+                                }
+                                error = true;
                             }
                         });
                     }
@@ -85,7 +114,7 @@ async function app(): Promise<void> {
             const formIsValid: boolean = inputs.every((input: HTMLInputElement | null) => input?.checkValidity());
 
             if (formIsValid) {
-                if (form.checkValidity()) {
+                if (error) {
                     console.log("Form fields valid!");
                 }
             } else {

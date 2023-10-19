@@ -277,7 +277,11 @@ input:focus {
 }
 
 .error-message {
-    margin: auto;
     color: red;
     text-align: center;
+    margin: 1rem auto auto;
+}
+
+.hidden {
+    display: none;
 }
