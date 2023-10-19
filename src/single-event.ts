@@ -30,6 +30,7 @@ async function app(): Promise<void> {
     const messageButton: HTMLButtonElement | any = document.querySelector(".continue-button");
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
     const returnButton: HTMLButtonElement | any = document.querySelector(".return");
+    const customErrorMessage: HTMLButtonElement | any = document.querySelector(".error-message");
 
     document.querySelectorAll(".hero-tab").forEach(item => {
         item.addEventListener("click", handleHeroTab);
@@ -47,19 +48,22 @@ async function app(): Promise<void> {
 
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
+            let error: boolean = false;
             e.preventDefault();
 
             const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
                 if (input && input.value === "") {
-                    input.setCustomValidity(errorMessage);
-                } else {
-                    if (input) {
-                        input.setCustomValidity("");
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = errorMessage;
                     }
+                    error = true;
                 }
             };
 
             const inputs: (HTMLInputElement | null)[] = [description, amount, participants];
+
+            error = false;
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
@@ -69,7 +73,7 @@ async function app(): Promise<void> {
             const formIsValid: boolean = inputs.every((input: HTMLInputElement | null) => input?.checkValidity());
 
             if (formIsValid) {
-                if (form.checkValidity()) {
+                if (!error) {
                     const values: string[] = Array.from(participants.selectedOptions).map(({value}: any) => value);
                     await createExpense(description?.value, parseFloat(<string>amount?.value), values);
                 }
