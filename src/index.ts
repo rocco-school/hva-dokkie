@@ -106,6 +106,7 @@ async function verifyUser(): Promise<void> {
         try {
             // Checks if user is verified with secret and token
             const logged: JWTPayload = await verify(token, secret);
+
             // gets elements and shows/hides them based on if user verified.
 
             if (logged) {
