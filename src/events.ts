@@ -1,12 +1,11 @@
 import "./hboictcloud-config";
 import {verifyUser} from "./authentication/verifyUser";
-import {api, get, session, utils} from "@hboictcloud/api";
+import {api, session, utils} from "@hboictcloud/api";
 import {EVENT_QUERY} from "./query/event.query";
 import {v4 as uuidv4} from "uuid";
 import {JWTPayload} from "jose";
 import {verify} from "./authentication/jsonwebtoken";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
-import {Status} from "./enum/status.enum";
 
 async function addEventsToTable(): Promise<void> {
     // Get token from session storage for userID
@@ -68,8 +67,10 @@ async function createEvent(description: string | undefined): Promise<void> {
 
     const errorMessage: Element | null = document.querySelector(".error-message");
     const createEventForm: Element | null = document.querySelector(".create");
-    const message: Element | null = document.querySelector(".filter");
+    const confirmation: Element | null = document.querySelector(".filter");
     const successMessage: Element | null = document.querySelector(".success");
+    const messageButton: Element | null = document.querySelector(".continue-button");
+    const message: Element | null = document.querySelector(".message");
     const params: any[] = [id, description];
     try {
         // Create event inside database
@@ -84,10 +85,16 @@ async function createEvent(description: string | undefined): Promise<void> {
                 // Create participant inside the database
                 const participant: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.CREATE_PARTICIPANT, ...participantInfo);
                 participant.then(
-                    (): void => {
+                    async (): Promise<void> => {
                         createEventForm?.classList.add("hidden");
                         successMessage?.classList.remove("hidden");
-                        message?.classList.remove("hidden");
+                        confirmation?.classList.remove("hidden");
+                        messageButton?.classList.add("hidden");
+                        if (message) {
+                            message.innerHTML = "Successfully created event!";
+                        }
+                        await delay(1000);
+                        location.reload();
                     },
                     (): void => {
                         errorMessage?.classList.remove("hidden");
@@ -146,7 +153,8 @@ async function deleteEventFunction(id: string): Promise<void> {
 }
 
 async function handleEventClick(row: HTMLTableRowElement): Promise<void> {
-    const id: string = row.getAttribute("id");
+    const id: string | null = row.getAttribute("id");
+
     if (id) {
         const url: string = utils.createUrl("single-event.html", {
             eventId: id,
@@ -157,10 +165,25 @@ async function handleEventClick(row: HTMLTableRowElement): Promise<void> {
     }
 }
 
-async function handleSuccessMessage(this: HTMLElement): void {
+async function handleMessage(this: HTMLElement): Promise<void> {
     if (this.id) {
         await deleteEventFunction(this.id);
     }
+}
+
+function delay(ms: number): Promise<void> {
+    // Sets time out with give ms
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function closeMessage(): Promise<void> {
+    const confirmation: Element | null = document.querySelector(".filter");
+    const deleteIcon: Element | null = document.querySelector(".delete");
+    const cancelButton: Element | null = document.querySelector(".close-modal-button");
+
+    cancelButton?.classList.add("hidden");
+    confirmation?.classList.add("hidden");
+    deleteIcon?.classList.add("hidden");
 }
 
 
@@ -175,9 +198,11 @@ async function app(): Promise<void> {
     const cancelButton: Element | any = document.querySelector(".cancel");
     const form: HTMLFormElement | any = document.querySelector("#form");
     const description: HTMLInputElement | any = document.querySelector("#description");
-    const messageButton: Element | any = document.querySelector(".continue-button");
+    const messageButton: HTMLButtonElement | any = document.querySelector(".continue-button");
+    const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
 
-    messageButton?.addEventListener("click", handleSuccessMessage);
+    messageButton?.addEventListener("click", handleMessage);
+    closeMessageButton?.addEventListener("click", closeMessage);
 
     // Handle logout event
     logout?.addEventListener("click", loggedOut);
@@ -241,8 +266,6 @@ async function app(): Promise<void> {
 
         });
     }
-
-
 }
 
 app();

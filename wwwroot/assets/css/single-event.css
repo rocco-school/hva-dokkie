@@ -166,25 +166,6 @@ main {
     font-size: 2.5rem;
 }
 
-.create {
-    width: 80%;
-    position: relative;
-    margin: 5rem auto 2rem;
-}
-
-.create-button {
-    background-color: white;
-    margin-top: 5rem;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
-}
-
-.create-button:hover {
-    background-color: #F9FAFB;
-}
-
 .table--outer {
     background-color: #F3F4F6;
     width: 80%;
@@ -261,5 +242,9 @@ main {
     line-height: 1.25rem;
     width: 100%;
     padding: 0.625rem;
+}
+
+.return {
+    cursor: pointer;
 }
 

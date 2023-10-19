@@ -160,6 +160,13 @@
     margin: 5rem auto 2rem;
 }
 
+.create-button-wrapper-80 {
+    width: 80%;
+    position: relative;
+    margin: 5rem auto 2rem;
+}
+
+
 
 .create-button {
     background-color: white;

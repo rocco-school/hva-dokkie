@@ -27,9 +27,9 @@ async function app(): Promise<void> {
     const amount: HTMLInputElement | any = document.querySelector("#amount");
     const participants: HTMLInputElement | any = document.querySelector("#expense-participants");
     const createPayment: Element | any = document.querySelector(".create-payment");
-    const messageButton: Element | any = document.querySelector(".continue-button");
-
-    messageButton?.addEventListener("click", handleSuccessMessage);
+    const messageButton: HTMLButtonElement | any = document.querySelector(".continue-button");
+    const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
+    const returnButton: HTMLButtonElement | any = document.querySelector(".return");
 
     document.querySelectorAll(".hero-tab").forEach(item => {
         item.addEventListener("click", handleHeroTab);
@@ -41,6 +41,9 @@ async function app(): Promise<void> {
     createButton?.addEventListener("click", showCreateExpense);
     cancelButton?.addEventListener("click", hideCreateExpense);
     createPayment?.addEventListener("click", handleCreatePayment);
+    messageButton?.addEventListener("click", handleMessage);
+    closeMessageButton?.addEventListener("click", closeMessage);
+    returnButton?.addEventListener("click", handleReturnClick);
 
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
@@ -88,12 +91,12 @@ async function app(): Promise<void> {
 
 
 function hideCreateExpense(): void {
-    const createPaymentForm: Element | null = document.querySelector(".create-form");
+    const createPaymentForm: Element | null = document.querySelector(".create");
     createPaymentForm?.classList.add("hidden");
 }
 
 function showCreateExpense(): void {
-    const createPaymentForm: Element | null = document.querySelector(".create-form");
+    const createPaymentForm: Element | null = document.querySelector(".create");
     createPaymentForm?.classList.remove("hidden");
 }
 
@@ -102,8 +105,10 @@ function handleCreatePayment(): void {
     createPaymentForm?.classList.remove("hidden");
 }
 
-function handleSuccessMessage(): void {
-    location.reload();
+async function handleMessage(this: HTMLElement): Promise<void> {
+    if (this.id) {
+        await deleteExpenseFunction(this.id);
+    }
 }
 
 function handlePopulateSelects(): void {
@@ -165,6 +170,17 @@ async function checkURLParams(): Promise<void> {
     }
 }
 
+async function closeMessage(): Promise<void> {
+    const confirmation: Element | null = document.querySelector(".filter");
+    const deleteIcon: Element | null = document.querySelector(".delete");
+    const cancelButton: Element | null = document.querySelector(".close-modal-button");
+
+    cancelButton?.classList.add("hidden");
+    confirmation?.classList.add("hidden");
+    deleteIcon?.classList.add("hidden");
+}
+
+
 async function verifyUser(): Promise<void> {
     try {
         // Get token from users session.
@@ -211,10 +227,24 @@ async function createExpense(description: string | undefined, amount: number | u
                         const payment: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.CREATE_PAYMENT, ...data);
 
                         payment.then(
-                            (): void => {
+                            async (): Promise<void> => {
                                 hideCreateExpense();
-                                const message: Element | null = document.querySelector(".filter");
-                                message?.classList.remove("hidden");
+                                const filter: Element | null = document.querySelector(".filter");
+                                const messageButton: Element | null = document.querySelector(".continue-button");
+                                const message: Element | null = document.querySelector(".message");
+                                const successIcon: Element | null = document.querySelector(".success");
+
+                                filter?.classList.remove("hidden");
+                                messageButton?.classList.add("hidden");
+                                successIcon?.classList.remove("hidden");
+
+                                if (message) {
+                                    message.innerHTML = "Successfully created expense!";
+                                }
+
+                                await delay(1000);
+                                location.reload();
+
                             },
                             (): void => {
                                 console.log("Unsuccessfully made payment");
@@ -232,6 +262,11 @@ async function createExpense(description: string | undefined, amount: number | u
     } catch (Error) {
         console.log(Error);
     }
+}
+
+function delay(ms: number): Promise<void> {
+    // Sets time out with give ms
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function addExpensesTable(): void {
@@ -266,8 +301,17 @@ function addExpensesTable(): void {
                             span.appendChild(document.createTextNode("Delete"));
 
                             // Add event listeners
-                            tr.addEventListener("click", handleExpenseClick);
-                            aButton.addEventListener("click", deleteExpenseFunction);
+                            tr.addEventListener("click", function (expense: MouseEvent | null): void {
+                                if (expense) {
+                                    let target: HTMLElement = expense.target as HTMLElement;
+                                    if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button"))) {
+                                        showDelete(tr);
+                                    } else {
+                                        handleExpenseClick(tr);
+                                    }
+                                }
+
+                            });
                         }
                     });
                 }
@@ -276,13 +320,34 @@ function addExpensesTable(): void {
     }
 }
 
-async function deleteExpenseFunction(this: HTMLElement): Promise<void> {
-    // Get closest <tr> to get user ID
-    const row: HTMLTableRowElement | null = this.closest("tr");
-    console.log(row);
+async function showDelete(row: HTMLTableRowElement): Promise<void> {
+    const confirmation: Element | null = document.querySelector(".filter");
+    const deleteIcon: Element | null = document.querySelector(".delete");
+    const message: Element | null = document.querySelector(".message");
+    const confirmationButton: Element | null = document.querySelector(".continue-button");
+    const cancelButton: Element | null = document.querySelector(".close-modal-button");
 
     if (row) {
-        const id: any = row.getAttribute("id");
+        const expenseId: any = row.getAttribute("id");
+        confirmationButton?.setAttribute("id", expenseId);
+
+        cancelButton?.classList.remove("hidden");
+        confirmation?.classList.remove("hidden");
+        deleteIcon?.classList.remove("hidden");
+        if (confirmationButton) {
+            confirmationButton.innerHTML = "Delete";
+            confirmationButton.classList.add("delete");
+        }
+        if (message) {
+            message.innerHTML = "Are you sure you want to delete this event?";
+        }
+    }
+}
+
+
+async function deleteExpenseFunction(id: string): Promise<void> {
+    if (id) {
+        // Delete expense in database
         const expense: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.DELETE_EXPENSE, id);
         expense.then(
             (): void => {
@@ -297,25 +362,31 @@ async function deleteExpenseFunction(this: HTMLElement): Promise<void> {
 }
 
 
-async function handleExpenseClick(this: HTMLElement): Promise<void> {
-    const expenseId: string = this.id;
+async function handleExpenseClick(row: HTMLTableRowElement): Promise<void> {
+    const expenseId: string | null = row.getAttribute("id");
     document.querySelector(".hero-tabs")?.classList.add("hidden");
     document.querySelector(".hero-tabs-underline")?.classList.add("hidden");
     document.querySelector(".dashboard-content")?.classList.add("hidden");
     document.querySelector(".payment-content")?.classList.remove("hidden");
 
-    await populatePaymentTable(expenseId);
+    if (expenseId) {
+        await populatePaymentTable(expenseId);
+    }
+}
+
+async function handleReturnClick(): Promise<void> {
+    document.querySelector(".hero-tabs")?.classList.remove("hidden");
+    document.querySelector(".hero-tabs-underline")?.classList.remove("hidden");
+    document.querySelector(".dashboard-content")?.classList.remove("hidden");
+    document.querySelector(".payment-content")?.classList.add("hidden");
 }
 
 
 async function populatePaymentTable(expenseId: string): Promise<void> {
     if (expenseId && eventId) {
+
         const tableBody: Element | null = document.querySelector(".payment-table-body");
-
-        console.log(tableBody);
-
         const params: string[] = [eventId, expenseId];
-
         const getPayments: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...params);
 
         getPayments.then(
@@ -324,8 +395,6 @@ async function populatePaymentTable(expenseId: string): Promise<void> {
                     payments.forEach((payment: any): void => {
                         const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
                         if (tr) {
-
-                            console.log(payment);
                             // Create the other table data for the current row
                             tr.setAttribute("id", payment.paymentId);
                             tr.setAttribute("class", "payment");
@@ -337,7 +406,9 @@ async function populatePaymentTable(expenseId: string): Promise<void> {
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.username));
                             tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("not paid!"));
                             // Add event listeners
-                            tr.addEventListener("click", handleExpenseClick);
+                            tr.addEventListener("click", (): void => {
+                                handleExpenseClick(tr);
+                            });
                         }
                     });
                 }
