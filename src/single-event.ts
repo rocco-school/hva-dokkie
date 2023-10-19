@@ -204,7 +204,6 @@ async function verifyUser(): Promise<void> {
             window.location.href = "index.html";
             return;
         }
-        console.log("User successfully verified!");
 
     } catch (error) {
         console.log(error);
@@ -219,11 +218,9 @@ async function createExpense(description: string | undefined, amount: number | u
     try {
         const participantsAmount: number = participants.length;
 
-        const payment: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.CREATE_EXPENSE, ...params);
-        payment.then(
+        const expense: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.CREATE_EXPENSE, ...params);
+        expense.then(
             (): void => {
-                console.log("Successfully created expense!");
-
                 participants.forEach((participant: any): void => {
                     if (amount) {
                         const cut: number = amount / participantsAmount;
@@ -256,7 +253,6 @@ async function createExpense(description: string | undefined, amount: number | u
                         );
                     }
                 });
-
             },
             (): void => {
                 console.log("Failed to create expense!");
@@ -281,7 +277,6 @@ function addExpensesTable(): void {
     if (eventID) {
         // Get all events from userID
         const getExpenses: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSES_BY_EVENT, eventID);
-        console.log(getExpenses);
 
         getExpenses.then(
             (events: string | any[]): void => {
@@ -355,7 +350,6 @@ async function deleteExpenseFunction(id: string): Promise<void> {
         const expense: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.DELETE_EXPENSE, id);
         expense.then(
             (): void => {
-                console.log("Successfully deleted expense!");
                 location.reload();
             },
             (): void => {
