@@ -26,7 +26,9 @@ async function addUsersToTable(): Promise<void> {
                         span.appendChild(document.createTextNode("Delete"));
 
                         // Add event listener to the delete button
-                        aButton.addEventListener("click", deleteUserFunction);
+                        aButton.addEventListener("click", (): void => {
+                            showDelete(tr);
+                        });
                     }
                 });
             }
@@ -35,16 +37,11 @@ async function addUsersToTable(): Promise<void> {
 }
 
 async function deleteUserFunction(this: HTMLElement): Promise<void> {
-    const row: HTMLTableRowElement | null = this.closest("tr");
-    if (row) {
-        // Get userID from the id from row in which clicked.
-        const userId: string | null = row.getAttribute("id");
+    if (this.id) {
         // Delete user from database with userID
-        const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.DELETE_USER, userId);
-        console.log(user);
+        const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.DELETE_USER, this.id);
         user.then(
             (): void => {
-                console.log("Successfully deleted user!");
                 location.reload();
             },
             (): void => {
@@ -54,6 +51,32 @@ async function deleteUserFunction(this: HTMLElement): Promise<void> {
     }
 }
 
+
+async function showDelete(row: HTMLTableRowElement): Promise<void> {
+    const confirmation: Element | null = document.querySelector(".filter");
+    const deleteIcon: Element | null = document.querySelector(".delete");
+    const message: Element | null = document.querySelector(".message");
+    const confirmationButton: Element | null = document.querySelector(".continue-button");
+    const cancelButton: Element | null = document.querySelector(".close-modal-button");
+
+    if (row) {
+        const userId: any = row.getAttribute("id");
+        confirmationButton?.setAttribute("id", userId);
+
+        cancelButton?.classList.remove("hidden");
+        confirmation?.classList.remove("hidden");
+        deleteIcon?.classList.remove("hidden");
+        if (confirmationButton) {
+            confirmationButton.innerHTML = "Delete";
+            confirmationButton.classList.add("delete");
+        }
+        if (message) {
+            message.innerHTML = "Are you sure you want to delete this event?";
+        }
+    }
+}
+
+
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
     await verifyUser();
@@ -62,6 +85,9 @@ async function app(): Promise<void> {
 
     // Handle logout event
     const logout: Element | null = document.querySelector(".logout");
+    const confirmationButton: Element | null = document.querySelector(".continue-button");
+
+    confirmationButton?.addEventListener("click", deleteUserFunction);
     logout?.addEventListener("click", loggedOut);
 
     async function loggedOut(this: HTMLElement): Promise<void> {
