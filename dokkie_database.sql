@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema Dokkie
+-- Schema pb1b2324_reusrjc_live
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Dokkie` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-USE `Dokkie` ;
+CREATE SCHEMA IF NOT EXISTS `pb1b2324_reusrjc_live` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `pb1b2324_reusrjc_live` ;
 
 -- -----------------------------------------------------
--- Table `Dokkie`.`Event`
+-- Table `pb1b2324_reusrjc_live`.`Event`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Dokkie`.`Event` (
-  `eventId` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Event` (
+  `eventId` VARCHAR(36) NOT NULL,
   `description` VARCHAR(100) NOT NULL,
   `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`eventId`))
@@ -23,60 +23,96 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
--- Table `Dokkie`.`User`
+-- Table `pb1b2324_reusrjc_live`.`User`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Dokkie`.`User` (
+CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`User` (
   `userId` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(60) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`userId`))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `Dokkie`.`Participant`
+-- Table `pb1b2324_reusrjc_live`.`Participant`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Dokkie`.`Participant` (
-  `eventId` INT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `userId` INT NULL,
-  PRIMARY KEY (`eventId`, `name`),
+CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Participant` (
+  `participantId` INT NOT NULL AUTO_INCREMENT,
+  `eventId` VARCHAR(36) NOT NULL,
+  `userId` INT NOT NULL,
+  PRIMARY KEY (`participantId`,`eventId`, `userId`),
   INDEX `event_idx` (`eventId` ASC),
   INDEX `user_idx` (`userId` ASC),
   CONSTRAINT `fk_participant_event`
     FOREIGN KEY (`eventId`)
-    REFERENCES `Dokkie`.`Event` (`eventId`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
+    REFERENCES `pb1b2324_reusrjc_live`.`Event` (`eventId`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_participant_user`
     FOREIGN KEY (`userId`)
-    REFERENCES `Dokkie`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `pb1b2324_reusrjc_live`.`User` (`userId`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
--- Table `Dokkie`.`Payment`
+-- Table `pb1b2324_reusrjc_live`.`Payment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Dokkie`.`Payment` (
-  `paymentId` INT NOT NULL AUTO_INCREMENT,
-  `datePaid` DATE NOT NULL,
-  `description` VARCHAR(100) NOT NULL,
-  `amount` DOUBLE NOT NULL,
-  `eventId` INT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`paymentId`),
-  INDEX `participant_idx` (`eventId` ASC, `name` ASC),
-  CONSTRAINT `fk_payment_participant`
-    FOREIGN KEY (`eventId` , `name`)
-    REFERENCES `Dokkie`.`Participant` (`eventId` , `name`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
+CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Payment` (
+`paymentId` INT NOT NULL AUTO_INCREMENT,
+`datePaid` DATE,
+`description` VARCHAR(100) NOT NULL,
+`customAmount` DOUBLE NULL DEFAULT NULL,
+`paymentAmount` DOUBLE NULL DEFAULT 0,
+`eventId` VARCHAR(36) NOT NULL,
+`expenseId` VARCHAR(36) NOT NULL,
+`participantId` INT NOT NULL,
+PRIMARY KEY (`paymentId`),
+INDEX `event_idx` (`eventId` ASC),
+INDEX `participant_idx` (`participantId` ASC),
+INDEX `expense_idx` (`expenseId` ASC),
+CONSTRAINT `fk_payment_event`
+ FOREIGN KEY (`eventId`)
+     REFERENCES `pb1b2324_reusrjc_live`.`Event` (`eventId`)
+     ON DELETE RESTRICT
+     ON UPDATE CASCADE,
+CONSTRAINT `fk_payment_participant`
+ FOREIGN KEY (`participantId`)
+     REFERENCES `pb1b2324_reusrjc_live`.`Participant` (`participantId`)
+     ON DELETE CASCADE
+     ON UPDATE CASCADE,
+CONSTRAINT `fk_payment_expense`
+    FOREIGN KEY (`expenseId`)
+        REFERENCES `pb1b2324_reusrjc_live`.`Expense` (`expenseId`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+)
 ENGINE = InnoDB;
 
-USE `Dokkie` ;
+
+-- -----------------------------------------------------
+-- Table `pb1b2324_reusrjc_live`.`expenses`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pb1b2324_reusrjc_live`.`Expense` (
+`expenseId` VARCHAR(36) NOT NULL,
+`totalAmount` DOUBLE NULL,
+`description` VARCHAR(100) NULL,
+`dateCreated` DATETIME DEFAULT CURRENT_TIMESTAMP,
+`eventId` VARCHAR(36) NOT NULL,
+PRIMARY KEY (`expenseId`),
+INDEX `event_idx` (`eventId` ASC),
+CONSTRAINT `fk_expense_event`
+  FOREIGN KEY (`eventId`)
+      REFERENCES `pb1b2324_reusrjc_live`.`Event` (`eventId`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+USE `pb1b2324_reusrjc_live`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

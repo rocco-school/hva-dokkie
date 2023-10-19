@@ -1,0 +1,250 @@
+/**
+primary color = dark blue = #051821
+Secondary color = dark green = #1A4645
+tertiary color = lighter green = #266867
+quaternary color = orange = #F58800
+quinary color = yellow = #F8BC24
+ */
+* {
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #F3F4F6;
+    display: flex;
+}
+
+main {
+    width: 100%;
+}
+
+.hero {
+    background-color: white;
+}
+
+.header {
+    overflow: hidden;
+    padding: .8rem 0;
+    vertical-align: center;
+    margin: 0 9rem;
+}
+
+@media screen and (max-width: 1250px) {
+    .header {
+        margin: 0 3rem;
+    }
+}
+
+.header .logo {
+    font-size: 2rem;
+}
+
+.header .highlight {
+    background-color: #F8BC24;
+    width: 8rem;
+    border-radius: 2rem;
+}
+
+.header .highlight:hover {
+    background-color: #051821;
+    color: white;
+}
+
+.header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.3rem;
+    line-height: 1rem;
+    border-radius: 1.2rem;
+    margin-right: 2rem;
+}
+
+.header .logout {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.2rem;
+    line-height: 1rem;
+    border-radius: 1.2rem;
+    margin-right: 2rem;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.header-right {
+    float: right;
+}
+
+@media screen and (max-width: 500px) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .header-right {
+        float: none;
+    }
+}
+
+.hero-tabs {
+    display: flex;
+    margin: 1rem auto;
+    width: 50%;
+}
+
+.hero-tabs-inner {
+    display: flex;
+    margin: auto;
+    gap: 16rem;
+}
+
+.hero-tab {
+    padding: .5rem;
+    border-radius: .8rem;
+    cursor: pointer;
+}
+
+.hero-tab:hover {
+    background-color: #ebebeb;
+}
+
+.hero-tabs-underline {
+    border: 1px solid #ebebeb;
+    width: 80%;
+    margin: auto;
+}
+
+.is-active {
+    background-color: #F8BC24;
+}
+
+.is-active:hover {
+    background-color: #F8BC24;
+}
+
+.dashboard-widgets {
+    margin: 2rem auto auto;
+    width: 80%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10rem;
+}
+
+
+.widget {
+    height: 10rem;
+    background-color: white;
+    border-radius: 1.5rem;
+}
+
+
+.information {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3em;
+    margin-left: 3rem;
+}
+
+.title {
+    color: #818181;
+    margin-bottom: .5rem;
+}
+
+.text {
+    font-size: 2.5rem;
+}
+
+.table--outer {
+    background-color: #F3F4F6;
+    width: 80%;
+    margin: auto;
+    margin-top: 4rem;
+    border-radius: 0.5rem;
+}
+
+.table--inner {
+    position: relative;
+    overflow-x: auto;
+    border-radius: 0.5rem;
+}
+
+.table--outer .table {
+    width: 100%;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+    color: #6B7280;
+}
+
+.table--outer .table .thead {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: #374151;
+    text-transform: uppercase;
+    background-color: #F9FAFB;
+}
+
+.table--outer .table .table-head th {
+    padding: 0.75rem 1.5rem;
+}
+
+.table--outer .table tbody tr {
+    background-color: #FFFFFF;
+    cursor: pointer;
+    border-bottom-width: 1px;
+}
+
+.table--outer .table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.table--outer .table tbody th {
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.table--outer .table tbody td {
+    padding: 1rem 1.5rem;
+}
+
+.delete-button {
+    color: red;
+    cursor: pointer;
+}
+
+.dropdown-label {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.dropdown {
+    margin-top: .5rem;
+    background-color: #F9FAFB;
+    border-width: 1px;
+    border-color: #D1D5DB;
+    border-radius: 0.5rem;
+    color: #111827;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    width: 100%;
+    padding: 0.625rem;
+}
+
+.return {
+    cursor: pointer;
+}
+

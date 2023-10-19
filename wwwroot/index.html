@@ -1,74 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-        <title>Dokkie Startproject</title>
+    <title>Dokkie homepage</title>
 
-        <link rel="stylesheet" href="/assets/css/index.css" />
-    </head>
-    <body>
-        <nav class="pages">
-            <p>Navigatie</p>
-            <ul class="navigation">
-                <li>
-                    <a href="javascript.html">JavaScript</a>
-                </li>
-                <li>
-                    <a href="hboictcloud.html">HBO-ICT.Cloud</a>
-                </li>
-            </ul>
-        </nav>
+    <link rel="stylesheet" href="./assets/css/index.css"/>
+    <link rel="stylesheet" href="./assets/css/header.css"/>
+</head>
+<body>
+<main>
+    <div class="hero">
+        <div class="header">
+            <a href="index.html" class="logo">Dokkie</a>
+            <div class="header-right">
+                <div class="header-items not-logged">
+                    <a class="login highlight" href="login.html">login</a>
+                    <a class="signup" href="signup.html">signup</a>
+                    <a class="events hidden" href="events.html">events</a>
+                    <a class="users hidden" href="user.html">users</a>
+                    <div class="logout hidden highlight">Log out!</div>
+                </div>
+                <div class="mobile-menu">
+                    <img src="assets/images/icons/menu.svg" alt="menu icon" class="menu-icon">
+                </div>
+            </div>
+        </div>
 
-        <main class="container">
-            <h1>Startproject Dokkie</h1>
-            <p>Je kunt nu beginnen met het bouwen van de Dokkie-opdracht!</p>
-            <ol>
-                <li>
-                    <p>
-                        In de <code>wwwroot</code> vind je alle HTML en CSS. Er zijn twee voorbeeldpagina's,
-                        éen daarvan is dit bestand!
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        In <code>src</code> folder vind je TypeScript-bestanden. TypeScript lijkt op
-                        JavaScript en gebruik je om je pagina's interactief te maken.
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        Stel eerst je HBO-ICT.Cloud gegevens goed in, zodat je onder andere gegevens kunt
-                        opslaan en uitlezen met een database.
-                    </p>
+        <div class="overlay">
+            <div class="overlay-content">
+                <div class="close-menu">
+                    <a class="close-btn">&times;</a>
+                </div>
+                <a class="login" href="login.html">login</a>
+                <a class="signup" href="signup.html">signup</a>
+                <a class="events hidden" href="events.html">events</a>
+                <a class="users hidden" href="user.html">users</a>
+                <a class="logout hidden">Log out!</a>
+            </div>
+        </div>
 
-                    <p>
-                        Voor het vinden van jouw gegevens log je in op de
-                        <a href="https://hbo-ict.cloud">HBO-ICT.Cloud</a>.
-                    </p>
+        <div class="container">
+            <div class="container__content">
+                <h1 class="content__title">Money tracker Dokkie</h1>
+                <p class="content__text">Dokkie is a great application that helps its user track all their
+                    money
+                    on events so everyone knows what they need to expact</p>
+                <a class="start_button">Start now!</a>
+            </div>
+        </div>
+    </div>
 
-                    <p>
-                        <b>Let op!</b> Na het aanmaken van je repository kan het nog maximaal een uur duren
-                        voordat je bij deze gegevens kunt!
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        Begin met het maken van <i>user stories</i>, deze vind je op het Agile Board van je
-                        Gitlab-repository.
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        Al ben je wat verder met je HTML en CSS, bekijk dan
-                        <a href="https://docs.hbo-ict.cloud">de documentatie</a>
-                        voor het werken met de Cloud omgeving.
-                    </p>
-                </li>
-            </ol>
-        </main>
+    <div class="main_content">
+        <div class="faq_content">
+            <div class="faq_content_text-block">
+                <h2 class="faq_content__title">Here are our frequently asked questions!</h2>
+                <p class="faq_content__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq faq__height">
+                    <div class="faq--question">
+                        <h3 class="faq-title">Can you pay via dokkie?</h3>
+                        <img class="faq--question-arrow" src="assets/images/arrow.svg" alt=""/>
+                    </div>
+                    <div class="faq--answer">
+                        <hr>
+                        <p>No unfortunately you can't pay through dokkie, dokkie is really just for tracking of expenses at an event.</p>
+                    </div>
+                </div>
 
-        <script src="/src/index.ts" type="module"></script>
-    </body>
+                <div class="faq faq__height">
+                    <div class="faq--question">
+                        <h3 class="faq-title">Can you pay via dokkie?</h3>
+                        <img class="faq--question-arrow" src="assets/images/arrow.svg" alt=""/>
+                    </div>
+                    <div class="faq--answer">
+                        <hr>
+                        <p>No unfortunately you can't pay through dokkie, dokkie is really just for tracking of expenses at an event.</p>
+                    </div>
+                </div>
+
+                <div class="faq faq__height">
+                    <div class="faq--question">
+                        <h3 class="faq-title">Can you pay via dokkie?</h3>
+                        <img class="faq--question-arrow" src="assets/images/arrow.svg" alt=""/>
+                    </div>
+                    <div class="faq--answer">
+                        <hr>
+                        <p>No unfortunately you can't pay through dokkie, dokkie is really just for tracking of expenses at an event.</p>
+                    </div>
+                </div>
+
+                <div class="faq faq__height">
+                    <div class="faq--question">
+                        <h3 class="faq-title">Can you pay via dokkie?</h3>
+                        <img class="faq--question-arrow" src="assets/images/arrow.svg" alt=""/>
+                    </div>
+                    <div class="faq--answer">
+                        <hr>
+                        <p>No unfortunately you can't pay through dokkie, dokkie is really just for tracking of expenses at an event.</p>
+                    </div>
+                </div>
+
+                <div class="faq faq__height">
+                    <div class="faq--question">
+                        <h3 class="faq-title">Can you pay via dokkie?</h3>
+                        <img class="faq--question-arrow" src="assets/images/arrow.svg" alt=""/>
+                    </div>
+                    <div class="faq--answer">
+                        <hr>
+                        <p>No unfortunately you can't pay through dokkie, dokkie is really just for tracking of expenses at an event.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<script src="/src/index.ts" type="module"></script>
+</body>
 </html>

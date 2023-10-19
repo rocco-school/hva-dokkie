@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Dokkie homepage</title>
+
+    <link rel="stylesheet" href="./assets/css/single-event.css"/>
+    <link rel="stylesheet" href="./assets/css/general.css"/>
+</head>
+<body>
+<main>
+    <div class="hero">
+        <div class="header">
+            <a href="index.html" class="logo">Dokkie</a>
+            <div class="header-right">
+                <a class="users" href="events.html">Events</a>
+                <a class="users" href="user.html">Users</a>
+                <div class="logout highlight">Log out!</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="darkness-container filter hidden">
+        <!-- Success message -->
+        <div id="successModal" tabindex="-1" aria-hidden="true" class="success-modal">
+            <div class="modal-wrapper">
+                <div class="modal-content">
+                    <!-- Modal content -->
+                    <button type="button" class="close-modal-button hidden" data-modal-toggle="successModal">
+                        <svg class="close-icon" width="800px" height="800px" viewBox="0 0 512 512" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <title>cancel</title>
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
+                                <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
+                                    <polygon id="Close"
+                                             points="328.96 30.2933333 298.666667 1.42108547e-14 164.48 134.4 30.2933333 1.42108547e-14 1.42108547e-14 30.2933333 134.4 164.48 1.42108547e-14 298.666667 30.2933333 328.96 164.48 194.56 298.666667 328.96 328.96 298.666667 194.56 164.48">
+
+                                    </polygon>
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+
+                    <div class="icon-and-message success hidden">
+                        <svg class="icon success" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="sr-only">Success</span>
+                    </div>
+                    <div class="icon-and-message delete hidden">
+                        <svg class="icon delete" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                            <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                            <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                            <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                            <path d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
+                                  stroke="currentColor"
+                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
+                                  stroke="currentColor"
+                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="sr-only">Delete</span>
+                    </div>
+                    <div class="icon-and-message failed hidden">
+                        <svg class="icon failed" width="800px" height="800px" viewBox="0 0 512 512" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
+                                <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
+                                    <polygon id="Close"
+                                             points="328.96 30.2933333 298.666667 1.42108547e-14 164.48 134.4 30.2933333 1.42108547e-14 1.42108547e-14 30.2933333 134.4 164.48 1.42108547e-14 298.666667 30.2933333 328.96 164.48 194.56 298.666667 328.96 328.96 298.666667 194.56 164.48">
+
+                                    </polygon>
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="sr-only">Delete</span>
+                    </div>
+                    <p class="message">Successfully created!</p>
+                    <button data-modal-toggle="successModal" type="button" class="continue-button">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="hero-tabs">
+        <div class="hero-tabs-inner">
+            <a class="hero-tab dashboard is-active">
+                <div>Dashboard</div>
+            </a>
+            <a class="hero-tab participants">
+                <div>Participants</div>
+            </a>
+        </div>
+    </div>
+    <hr class="hero-tabs-underline">
+
+    <div class="darkness-container create hidden">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Create Expense!</h2>
+                <form id="form">
+                    <div class="description">
+                        <label for="description"><b>Expense description</b></label>
+                        <input id="description" type="text" name="description" placeholder="Description"
+                               required>
+                    </div>
+                    <div class="amount">
+                        <label for="amount"><b>Total expense</b></label>
+                        <input id="amount" type="number" name="amount" placeholder="Amount" required>
+                    </div>
+
+                    <div class="participants">
+                        <label class="dropdown-label" for="expense-participants">
+                            <b>Choose participants</b>
+                        </label>
+                        <select class="dropdown" id="expense-participants" name="expense-participants"
+                                multiple>
+                            <option value="none" selected disabled>Select participants</option>
+                        </select>
+                    </div>
+
+                    <div class="error-message hidden">Error when creating Expense</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="create-form payment-form hidden">
+        <div class="container">
+            <h2 class="container--title">Create Expense!</h2>
+            <form id="payment-form">
+                <div class="description">
+                    <label for="payment-description"><b>Expense description</b></label>
+                    <input id="payment-description" type="text" name="payment-description"
+                           placeholder="Description" required>
+                </div>
+                <div class="amount">
+                    <label for="payment-amount"><b>Amount</b></label>
+                    <input id="payment-amount" type="number" name="payment-amount" placeholder="Amount"
+                           required>
+                </div>
+
+                <div class="participant">
+                    <label class="dropdown-label" for="payment-participant"><b>Participant</b></label>
+                    <select class="dropdown" id="payment-participant" name="payment-participant">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                    </select>
+                </div>
+
+
+                <div class="error-message hidden">Error when creating Expense</div>
+
+                <div class="form-buttons">
+                    <button class="submit" type="submit">Create</button>
+                    <button class="cancel" type="button">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="content dashboard-content">
+        <div class="dashboard-widgets">
+            <div class="widget">
+                <div class="information">
+                    <span class="title">Total cost:</span>
+                    <span class="text">$5000</span>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="information">
+                    <span class="title">Total participants:</span>
+                    <span class="text">50</span>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="information">
+                    <span class="title">Total open Payments:</span>
+                    <span class="text">50</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="expense-table">
+            <div class="create-button-wrapper-80">
+                <a class="create-button"><span>Create Expense!</span></a>
+            </div>
+
+            <div class="table--outer">
+                <div class="table--inner">
+                    <table class="table">
+                        <thead class="thead">
+                        <tr class="table-head">
+                            <th scope="col">
+                                ExpenseID
+                            </th>
+                            <th scope="col">
+                                Description
+                            </th>
+                            <th scope="col">
+                                Total cost
+                            </th>
+                            <th scope="col">
+                                Created at
+                            </th>
+                            <th scope="col">
+                                Status
+                            </th>
+                            <th scope="col">
+
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-body expense-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="content payment-content hidden">
+        <div class="payment-table">
+
+            <div class="create-button-wrapper-80">
+                <a class="return"><span>Return</span></a>
+            </div>
+
+            <div class="create-button-wrapper-80">
+                <a class="create-button create-payment"><span>Create Payment</span></a>
+            </div>
+
+            <div class="table--outer">
+                <div class="table--inner">
+                    <table class="table">
+                        <thead class="thead">
+                        <tr class="table-head">
+                            <th scope="col">
+                                paymentID
+                            </th>
+                            <th scope="col">
+                                datePaid
+                            </th>
+                            <th scope="col">
+                                description
+                            </th>
+                            <th scope="col">
+                                Custom amount
+                            </th>
+                            <th scope="col">
+                                payment amount
+                            </th>
+                            <th scope="col">
+                                Participant
+                            </th>
+                            <th scope="col">
+                                Status
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-body payment-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content participant-content hidden">
+
+    </div>
+
+</main>
+
+<script src="/src/single-event.ts" type="module"></script>
+</body>
+</html>

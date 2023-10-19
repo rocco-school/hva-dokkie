@@ -1,0 +1,68 @@
+.header {
+    overflow: hidden;
+    padding: .8rem 0;
+    vertical-align: center;
+    margin: 0 9rem;
+}
+
+@media screen and (max-width: 1250px) {
+    .header {
+        margin: 0 3rem;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .header {
+        margin: 0 2rem;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .header {
+        margin: 0 1rem;
+    }
+}
+
+.header .logo {
+    font-size: 2rem;
+}
+
+.header .highlight {
+    background-color: #F8BC24;
+    width: 8rem;
+    border-radius: 2rem;
+}
+
+.header .highlight:hover {
+    background-color: #051821;
+    color: white;
+}
+
+.header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.3rem;
+    line-height: 1rem;
+    border-radius: 1.2rem;
+    margin-right: 2rem;
+}
+
+.header .logout {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.2rem;
+    line-height: 1rem;
+    border-radius: 1.2rem;
+    margin-right: 2rem;
+    cursor: pointer;
+}
+
+.header-right {
+    float: right;
+}

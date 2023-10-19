@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Dokkie signup</title>
+
+    <link rel="stylesheet" href="./assets/css/signup.css"/>
+    <link rel="stylesheet" href="./assets/css/general.css"/>
+</head>
+<body>
+<main>
+    <div class="container">
+        <div class="container--inner">
+            <a href="index.html">
+                <h2 class="title">Signup</h2>
+            </a>
+
+            <form id="form">
+                <div class="name">
+                    <label for="name"><b>Name</b></label>
+                    <input id="name" type="text" placeholder="Enter Username" name="name" required>
+                </div>
+                <div class="password">
+                    <label for="password"><b>Password</b></label>
+                    <input id="password" type="password" placeholder="Create password" name="password" required>
+                    <div id="show-password"><img src="assets/images/icons/eye-hidden-com.svg" alt="show password" class="icon-eye open"></div>
+                    <br>
+                    <label for="confirm-password"><b>Confirm password</b></label>
+                    <input id="confirm-password" type="password" placeholder="Confirm password" name="confirm-password" required>
+                    <div id="show-confirmation-password"><img src="assets/images/icons/eye-hidden-com.svg" alt="show password" class="icon-eye open"></div>
+                </div>
+
+                <div class="additional-info">
+                    <label for="email"><b>Email</b></label>
+                    <input id="email" type="text" placeholder="Enter Email" name="email" required>
+                </div>
+
+                <div class="error-message hidden">Error when creating account!</div>
+
+                <button class="submit" type="submit">Signup</button>
+
+                <div class="subtext">
+                    <span class="text">Already registered?</span>
+                    <a class="link" href="login.html">Log in!</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>
+<script src="/src/signup.ts" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+&:before {
+    background-image: url("../images/geld3.png");
+    content: '';
+    display: block;
+    height: 100%;
+    filter: blur(4px);
+    position: absolute;
+    width: 100%;
+}
+
+.container {
+    background-color: white;
+    border-radius: 1.5rem;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 60%;
+    width: 30rem;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+}
+
+@media screen and (max-height: 500px) {
+    .container {
+        width: 25rem;
+    }
+}
+
+@media screen and (max-height: 425px) {
+    .container {
+        width: 20rem;
+    }
+}
+
+.container--inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.container--inner .name {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.container--inner .password {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.container--inner .additional-info {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.container--inner .additional-info {
+    text-align: start;
+}
+
+.container--inner .name label {
+    text-align: start;
+}
+
+.container--inner .password label {
+    text-align: start;
+}
+
+.remember__checkbox {
+    vertical-align: middle;
+}
+
+.remember span {
+    vertical-align: middle;
+}
+
+.remember {
+    margin-top: 1rem;
+}
+
+input {
+    height: 2rem;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+}
+
+input:focus {
+    outline: none;
+}
+
+.submit {
+    margin-top: 1.5rem;
+    height: 2.5rem;
+    border-radius: 1.5rem;
+    border: 0;
+    width: 20rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+@media screen and (max-height: 425px) {
+    .submit {
+        width: 16rem;
+    }
+}
+
+.submit:hover {
+    transform: scale(1.03);
+}
+
+.active {
+    background-color: lightgray;
+}
+
+.title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.icon-eye {
+    float: right;
+    margin-left: -25px;
+    margin-top: -25px;
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    z-index: 2;
+}
+
+.subtext {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.subtext .link {
+    margin-left: 1rem;
+    text-underline-offset: .3rem;
+    color: #051821;
+}
