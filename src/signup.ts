@@ -202,15 +202,12 @@ async function app(): Promise<void> {
 
     async function onsubmit(): Promise<void> {
         // make database entry with Hashed password.
-
-        console.log(password?.value, email?.value, name?.value);
         if (password) {
             const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
 
             // Check if Promise was resolved successful
             hashedPassword.then(
                 (): void => {
-                    console.log("Successfull!");
                     window.location.href = "login.html";
                 },
                 (): void => {
