@@ -19,6 +19,7 @@ async function addEventsToTable(): Promise<void> {
         // Get all events from userID
         const getEvents: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.SELECT_EVENTS_BY_USER, userID);
 
+        console.log(getEvents);
 
         getEvents.then(
             (events: string | any[]): void => {

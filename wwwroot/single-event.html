@@ -104,7 +104,7 @@
     </div>
     <hr class="hero-tabs-underline">
 
-    <div class="darkness-container create hidden">
+    <div class="darkness-container create-expense hidden">
         <div class="create-form">
             <div class="container">
                 <h2 class="container--title">Create Expense!</h2>
@@ -133,12 +133,39 @@
 
                     <div class="form-buttons">
                         <button class="submit" type="submit">Create</button>
-                        <button class="cancel" type="button">Cancel</button>
+                        <button class="cancel cancel-create-expense" type="button">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+
+
+    <div class="darkness-container add-participant hidden">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Add participant!</h2>
+                <form id="participant-form">
+                    <div class="participant">
+                        <label class="dropdown-label" for="participant"><b>Participant</b></label>
+                        <select class="dropdown" id="participant" name="participant">
+                            <option value="none" selected disabled hidden>Select an Option</option>
+                        </select>
+                    </div>
+
+                    <div class="error-message hidden">Error when creating Expense</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel cancel-create-participant" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="create-form payment-form hidden">
         <div class="container">
@@ -162,12 +189,11 @@
                     </select>
                 </div>
 
-
                 <div class="error-message hidden">Error when creating Expense</div>
 
                 <div class="form-buttons">
                     <button class="submit" type="submit">Create</button>
-                    <button class="cancel" type="button">Cancel</button>
+                    <button class="cancel cancel-create-payment" type="button">Cancel</button>
                 </div>
             </form>
         </div>
@@ -201,7 +227,7 @@
 
         <div class="expense-table">
             <div class="create-button-wrapper-80">
-                <a class="create-button"><span>Create Expense!</span></a>
+                <a class="create-button create-expense-button"><span>Create Expense!</span></a>
             </div>
 
             <div class="table--outer">
@@ -246,7 +272,7 @@
             </div>
 
             <div class="create-button-wrapper-80">
-                <a class="create-button create-payment"><span>Create Payment</span></a>
+                <a class="create-button create-payment-button"><span>Create Payment</span></a>
             </div>
 
             <div class="table--outer">
@@ -286,7 +312,36 @@
     </div>
 
     <div class="content participant-content hidden">
+        <div class="participant-table">
+            <div class="create-button-wrapper-80">
+                <a class="create-button create-participant-button"><span>Add participant!</span></a>
+            </div>
 
+            <div class="table--outer">
+                <div class="table--inner">
+                    <table class="table">
+                        <thead class="thead">
+                        <tr class="table-head">
+                            <th scope="col">
+                                ParticipantId
+                            </th>
+                            <th scope="col">
+                                Name
+                            </th>
+                            <th scope="col">
+                                email
+                            </th>
+                            <th scope="col">
+
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-body participant-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
 </main>
