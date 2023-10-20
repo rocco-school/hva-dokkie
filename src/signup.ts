@@ -20,7 +20,7 @@ async function app(): Promise<void> {
     const form: HTMLFormElement | null = document.querySelector("#form");
     const email: HTMLInputElement | null = document.querySelector("#email");
     const validRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    const button: HTMLButtonElement | null = document.querySelector(".submit");
+    const button: HTMLButtonElement | any = document.querySelector(".submit");
     const customErrorMessage: HTMLButtonElement | null = document.querySelector(".error-message");
 
 
@@ -132,7 +132,7 @@ async function app(): Promise<void> {
                 if (email) {
 
                     // Check database for existing users with input email.
-                    const userEmail: string[] = [email.value];
+                    const userEmail: any[] = [email.value];
                     const users: Promise<string | any[]> = api.queryDatabase(USER_QUERY.FIND_USER_BY_EMAIL, ...userEmail);
 
                     await users.then(
@@ -203,6 +203,7 @@ async function app(): Promise<void> {
     async function onsubmit(): Promise<void> {
         // make database entry with Hashed password.
         if (password) {
+
             const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
 
             // Check if Promise was resolved successful

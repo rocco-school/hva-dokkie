@@ -22,11 +22,12 @@ async function addUsersToTable(): Promise<void> {
                         const button: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
                         const aButton: HTMLElement = button.appendChild(document.createElement("a"));
                         aButton.classList.add("delete-button");
+                        aButton.innerHTML = "<img src='assets/images/icons/delete-color.svg' alt='delete expense' class='icon-delete'>";
                         const span: HTMLSpanElement = aButton.appendChild(document.createElement("span"));
                         span.appendChild(document.createTextNode("Delete"));
 
                         // Add event listener to the delete button
-                        aButton.addEventListener("click", (): void => {
+                        button.addEventListener("click", (): void => {
                             showDelete(tr);
                         });
                     }
@@ -36,7 +37,7 @@ async function addUsersToTable(): Promise<void> {
     );
 }
 
-async function deleteUserFunction(this: HTMLElement): Promise<void> {
+async function deleteUserFunction(this: HTMLElement | any): Promise<void> {
     if (this.id) {
         // Delete user from database with userID
         const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.DELETE_USER, this.id);
@@ -54,7 +55,7 @@ async function deleteUserFunction(this: HTMLElement): Promise<void> {
 
 async function showDelete(row: HTMLTableRowElement): Promise<void> {
     const confirmation: Element | null = document.querySelector(".filter");
-    const deleteIcon: Element | null = document.querySelector(".delete");
+    const deleteIcon: Element | null = document.querySelector(".delete-background");
     const message: Element | null = document.querySelector(".message");
     const confirmationButton: Element | null = document.querySelector(".continue-button");
     const cancelButton: Element | null = document.querySelector(".close-modal-button");
@@ -76,6 +77,16 @@ async function showDelete(row: HTMLTableRowElement): Promise<void> {
     }
 }
 
+async function closeMessage(): Promise<void> {
+    const confirmation: Element | null = document.querySelector(".filter");
+    const deleteIcon: Element | null = document.querySelector(".delete-background");
+    const cancelButton: Element | null = document.querySelector(".close-modal-button");
+
+    cancelButton?.classList.add("hidden");
+    confirmation?.classList.add("hidden");
+    deleteIcon?.classList.add("hidden");
+}
+
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
@@ -84,9 +95,11 @@ async function app(): Promise<void> {
     await addUsersToTable();
 
     // Handle logout event
-    const logout: Element | null = document.querySelector(".logout");
-    const confirmationButton: Element | null = document.querySelector(".continue-button");
+    const logout: Element | any = document.querySelector(".logout");
+    const confirmationButton: Element | any = document.querySelector(".continue-button");
+    const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
 
+    closeMessageButton.addEventListener("click", closeMessage);
     confirmationButton?.addEventListener("click", deleteUserFunction);
     logout?.addEventListener("click", loggedOut);
 

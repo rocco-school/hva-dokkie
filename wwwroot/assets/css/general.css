@@ -92,17 +92,17 @@
     height: 2rem;
 }
 
-.success {
+.success-background {
     background-color: #f0fff4;
     color: #48bb78;
 }
 
-.failed {
+.failed-background {
     color: #f56565;
     background-color: #fff5f5;
 }
 
-.delete {
+.delete-background {
     color: #f56565;
     background-color: #fff5f5;
 }
@@ -167,7 +167,6 @@
 }
 
 
-
 .create-button {
     background-color: white;
     margin-top: 5rem;
@@ -208,18 +207,32 @@
     margin-bottom: 2rem;
 }
 
-.container .description {
+.field {
     margin-top: 1rem;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
 }
 
-.container .amount {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+.status-title {
+    font-weight: bold;
+}
+
+.status {
     display: flex;
     flex-direction: column;
+}
+
+.status input[type="radio"] {
+    margin-top: -1px;
+    height: 1rem;
+    width: 1rem;
+    vertical-align: middle;
+    margin-right: .5rem;
+}
+
+.option {
+    margin-top: 1rem;
 }
 
 input {
@@ -284,4 +297,36 @@ input:focus {
 
 .hidden {
     display: none;
+}
+
+.icon-eye {
+    float: right;
+    margin-left: -25px;
+    margin-top: -25px;
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    z-index: 2;
+}
+
+.icon-edit {
+    position: relative;
+    top: .2rem;
+    width: 1rem;
+    height: 1rem;
+    margin-right: .3rem;
+}
+
+
+.icon-delete {
+    position: relative;
+    top: .2rem;
+    width: 1rem;
+    height: 1rem;
+    margin-right: .3rem;
+}
+
+.delete-button {
+    color: #f56565;
+    cursor: pointer;
 }

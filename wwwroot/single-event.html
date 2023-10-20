@@ -45,16 +45,16 @@
                         <span class="sr-only">Close modal</span>
                     </button>
 
-                    <div class="icon-and-message success hidden">
-                        <svg class="icon success" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    <div class="icon-and-message success-background hidden">
+                        <svg class="icon success-background" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                             <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="currentColor" stroke-width="2"
                                   stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <span class="sr-only">Success</span>
                     </div>
-                    <div class="icon-and-message delete hidden">
-                        <svg class="icon delete" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                    <div class="icon-and-message delete-background hidden">
+                        <svg class="icon delete-background" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
                             <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                   stroke-linejoin="round"/>
                             <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -70,8 +70,8 @@
                         </svg>
                         <span class="sr-only">Delete</span>
                     </div>
-                    <div class="icon-and-message failed hidden">
-                        <svg class="icon failed" width="800px" height="800px" viewBox="0 0 512 512" version="1.1"
+                    <div class="icon-and-message failed-background hidden">
+                        <svg class="icon failed-background" width="800px" height="800px" viewBox="0 0 512 512" version="1.1"
                              xmlns="http://www.w3.org/2000/svg">
                             <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
                                 <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
@@ -109,18 +109,18 @@
             <div class="container">
                 <h2 class="container--title">Create Expense!</h2>
                 <form id="form">
-                    <div class="description">
-                        <label for="description"><b>Expense description</b></label>
+                    <div class="description field">
+                        <label for="description" class="required"><b>Expense description</b></label>
                         <input id="description" type="text" name="description" placeholder="Description"
                                required>
                     </div>
-                    <div class="amount">
-                        <label for="amount"><b>Total expense</b></label>
+                    <div class="amount field">
+                        <label for="amount" class="required"><b>Total expense</b></label>
                         <input id="amount" type="number" name="amount" placeholder="Amount" required>
                     </div>
 
-                    <div class="participants">
-                        <label class="dropdown-label" for="expense-participants">
+                    <div class="participants field">
+                        <label class="dropdown-label required" for="expense-participants">
                             <b>Choose participants</b>
                         </label>
                         <select class="dropdown" id="expense-participants" name="expense-participants"
@@ -140,15 +140,13 @@
         </div>
     </div>
 
-
-
     <div class="darkness-container add-participant hidden">
         <div class="create-form">
             <div class="container">
                 <h2 class="container--title">Add participant!</h2>
                 <form id="participant-form">
-                    <div class="participant">
-                        <label class="dropdown-label" for="participant"><b>Participant</b></label>
+                    <div class="participant field">
+                        <label class="dropdown-label required" for="participant"><b>Participant</b></label>
                         <select class="dropdown" id="participant" name="participant">
                             <option value="none" selected disabled hidden>Select an Option</option>
                         </select>
@@ -165,40 +163,43 @@
         </div>
     </div>
 
+    <div class="darkness-container edit-payment hidden">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Edit payment</h2>
+                <form id="edit-payment-form" novalidate>
+                    <div class="amount field">
+                        <label for="edit-payment-amount" class="required"><b>Custom Amount</b></label>
+                        <input id="edit-payment-amount" type="number" name="Custom amount" placeholder="Amount" required>
+                    </div>
 
+                    <div class="date-paid field">
+                        <label for="edit-date-paid"><b>Date paid</b></label>
+                        <input id="edit-date-paid" type="date" name="Date paid" class="date-input" placeholder="Date">
+                    </div>
 
-    <div class="create-form payment-form hidden">
-        <div class="container">
-            <h2 class="container--title">Create Expense!</h2>
-            <form id="payment-form">
-                <div class="description">
-                    <label for="payment-description"><b>Expense description</b></label>
-                    <input id="payment-description" type="text" name="payment-description"
-                           placeholder="Description" required>
-                </div>
-                <div class="amount">
-                    <label for="payment-amount"><b>Amount</b></label>
-                    <input id="payment-amount" type="number" name="payment-amount" placeholder="Amount"
-                           required>
-                </div>
+                    <div class="status">
+                        <p class="status-title">Payment status</p>
+                        <div class="option">
+                            <input id="edit-status-unpaid" type="radio" name="edit-status" placeholder="Unpaid" value="0" checked="checked">
+                            <label for="edit-status-unpaid">Unpaid</label>
+                        </div>
+                        <div class="option">
+                            <input id="edit-status-paid" type="radio" name="edit-status" placeholder="Paid" value="1">
+                            <label for="edit-status-paid">Paid</label>
+                        </div>
+                    </div>
 
-                <div class="participant">
-                    <label class="dropdown-label" for="payment-participant"><b>Participant</b></label>
-                    <select class="dropdown" id="payment-participant" name="payment-participant">
-                        <option value="none" selected disabled hidden>Select an Option</option>
-                    </select>
-                </div>
+                    <div class="error-message edit-payment-message hidden">Error when editing Payment!</div>
 
-                <div class="error-message hidden">Error when creating Expense</div>
-
-                <div class="form-buttons">
-                    <button class="submit" type="submit">Create</button>
-                    <button class="cancel cancel-create-payment" type="button">Cancel</button>
-                </div>
-            </form>
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel cancel-edit-payment" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
 
     <div class="content dashboard-content">
         <div class="dashboard-widgets">
@@ -284,10 +285,10 @@
                                 paymentID
                             </th>
                             <th scope="col">
-                                datePaid
+                                description
                             </th>
                             <th scope="col">
-                                description
+                                Participant
                             </th>
                             <th scope="col">
                                 Custom amount
@@ -296,10 +297,13 @@
                                 payment amount
                             </th>
                             <th scope="col">
-                                Participant
+                                datePaid
                             </th>
                             <th scope="col">
                                 Status
+                            </th>
+                            <th scope="col">
+
                             </th>
                         </tr>
                         </thead>

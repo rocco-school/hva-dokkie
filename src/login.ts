@@ -41,7 +41,7 @@ async function app(): Promise<void> {
                 }
             };
 
-            const validate: (password: HTMLInputElement | null, email: HTMLInputElement | null) => void = async (password: HTMLInputElement | null, email: HTMLInputElement | null): Promise<void> => {
+            const validate: (password: HTMLInputElement | null, email: HTMLInputElement | null) => void = async (password: HTMLInputElement | any, email: HTMLInputElement | any): Promise<void> => {
                 if (password?.value && email?.value) {
                     if (customErrorMessage) {
                         customErrorMessage.classList.add("hidden");

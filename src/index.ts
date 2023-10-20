@@ -10,9 +10,9 @@ async function app(): Promise<void> {
     // Verify user and sets buttons based on verified user
     await verifyUser();
 
-    const mobileNav: Element | null = document.querySelector(".overlay");
+    const mobileNav: Element | any = document.querySelector(".overlay");
     // Handle open mobile nav menu
-    const openMobileMenu: Element | null = document.querySelector(".mobile-menu");
+    const openMobileMenu: Element | any = document.querySelector(".mobile-menu");
     openMobileMenu?.addEventListener("click", openMenu);
 
     function openMenu(): void {
@@ -21,7 +21,7 @@ async function app(): Promise<void> {
     }
 
     // Handle closing mobile nav menu
-    const closeMobileMenu: Element | null = document.querySelector(".close-menu");
+    const closeMobileMenu: Element | any = document.querySelector(".close-menu");
     closeMobileMenu?.addEventListener("click", closeMenu);
 
     function closeMenu(): void {
@@ -41,7 +41,7 @@ async function app(): Promise<void> {
     }
 
     async function handleClick(event: MouseEvent): Promise<void> {
-        const click: EventTarget | null = event.target;
+        const click: EventTarget | any = event.target;
 
         // Get all FAQ items
         const items: NodeListOf<Element> = document.querySelectorAll(".faq");
@@ -63,7 +63,7 @@ async function app(): Promise<void> {
     });
 
     // Handle start button click
-    const button: Element | null = document.querySelector(".start_button");
+    const button: Element | any = document.querySelector(".start_button");
     button?.addEventListener("click", scrollDown);
 
     async function closeAllFAQ(): Promise<void> {

@@ -221,11 +221,6 @@ main {
     padding: 1rem 1.5rem;
 }
 
-.delete-button {
-    color: red;
-    cursor: pointer;
-}
-
 .dropdown-label {
     margin-top: auto;
     margin-bottom: auto;
@@ -248,3 +243,11 @@ main {
     cursor: pointer;
 }
 
+.required:after {
+    content: " *";
+    color: red;
+}
+
+.edit-button {
+    color: #48bb78;
+}

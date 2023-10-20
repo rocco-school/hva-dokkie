@@ -153,8 +153,3 @@ main {
 .table--outer .table tbody td {
     padding: 1rem 1.5rem;
 }
-
-.delete-button {
-    color: red;
-    cursor: pointer;
-}
