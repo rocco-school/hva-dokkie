@@ -197,6 +197,10 @@
     transform: translate(-50%, -50%);
 }
 
+.create-form.payment {
+    height: 40rem;
+}
+
 .container {
     display: flex;
     flex-direction: column;

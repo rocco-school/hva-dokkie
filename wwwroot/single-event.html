@@ -30,11 +30,14 @@
                 <div class="modal-content">
                     <!-- Modal content -->
                     <button type="button" class="close-modal-button hidden" data-modal-toggle="successModal">
-                        <svg class="close-icon" width="800px" height="800px" viewBox="0 0 512 512" version="1.1"
+                        <svg class="close-icon" width="800px" height="800px" viewBox="0 0 512 512"
+                             version="1.1"
                              xmlns="http://www.w3.org/2000/svg">
                             <title>cancel</title>
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
-                                <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor"
+                               fill-rule="evenodd">
+                                <g id="work-case" fill="currentColor"
+                                   transform="translate(91.520000, 91.520000)">
                                     <polygon id="Close"
                                              points="328.96 30.2933333 298.666667 1.42108547e-14 164.48 134.4 30.2933333 1.42108547e-14 1.42108547e-14 30.2933333 134.4 164.48 1.42108547e-14 298.666667 30.2933333 328.96 164.48 194.56 298.666667 328.96 328.96 298.666667 194.56 164.48">
 
@@ -46,7 +49,8 @@
                     </button>
 
                     <div class="icon-and-message success-background hidden">
-                        <svg class="icon success-background" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        <svg class="icon success-background" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                             <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="currentColor" stroke-width="2"
                                   stroke-linecap="round" stroke-linejoin="round"/>
@@ -54,7 +58,8 @@
                         <span class="sr-only">Success</span>
                     </div>
                     <div class="icon-and-message delete-background hidden">
-                        <svg class="icon delete-background" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                        <svg class="icon delete-background" width="800px" height="800px" viewBox="0 0 24 24"
+                             fill="none">
                             <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                   stroke-linejoin="round"/>
                             <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -71,10 +76,13 @@
                         <span class="sr-only">Delete</span>
                     </div>
                     <div class="icon-and-message failed-background hidden">
-                        <svg class="icon failed-background" width="800px" height="800px" viewBox="0 0 512 512" version="1.1"
+                        <svg class="icon failed-background" width="800px" height="800px" viewBox="0 0 512 512"
+                             version="1.1"
                              xmlns="http://www.w3.org/2000/svg">
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
-                                <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor"
+                               fill-rule="evenodd">
+                                <g id="work-case" fill="currentColor"
+                                   transform="translate(91.520000, 91.520000)">
                                     <polygon id="Close"
                                              points="328.96 30.2933333 298.666667 1.42108547e-14 164.48 134.4 30.2933333 1.42108547e-14 1.42108547e-14 30.2933333 134.4 164.48 1.42108547e-14 298.666667 30.2933333 328.96 164.48 194.56 298.666667 328.96 328.96 298.666667 194.56 164.48">
 
@@ -85,7 +93,8 @@
                         <span class="sr-only">Delete</span>
                     </div>
                     <p class="message">Successfully created!</p>
-                    <button data-modal-toggle="successModal" type="button" class="continue-button">Continue</button>
+                    <button data-modal-toggle="successModal" type="button" class="continue-button">Continue
+                    </button>
                 </div>
             </div>
         </div>
@@ -140,6 +149,64 @@
         </div>
     </div>
 
+    <div class="darkness-container payment-form hidden">
+        <div class="create-form payment">
+            <div class="container">
+                <h2 class="container--title">Create Payment!</h2>
+                <form id="payment-form" novalidate>
+
+                    <div class="description field">
+                        <label for="payment-description" class="required"><b>Expense description</b></label>
+                        <input id="payment-description" type="text" name="description"
+                               placeholder="Description"
+                               required>
+                    </div>
+
+                    <div class="amount field">
+                        <label for="payment-amount"><b>Custom amount</b></label>
+                        <input id="payment-amount" type="number" name="payment-amount" placeholder="Amount">
+                    </div>
+
+                    <div class="date-paid field">
+                        <label for="payment-date-paid"><b>Date paid</b></label>
+                        <input id="payment-date-paid" type="date" name="Date paid" class="date-input"
+                               placeholder="Date">
+                    </div>
+
+                    <div class="status">
+                        <p class="status-title">Payment status</p>
+                        <div class="option">
+                            <input id="payment-status-unpaid" type="radio" name="payment-status"
+                                   placeholder="Unpaid" value="0" checked="checked">
+                            <label for="payment-status-unpaid">Unpaid</label>
+                        </div>
+                        <div class="option">
+                            <input id="payment-status-paid" type="radio" name="payment-status"
+                                   placeholder="Paid"
+                                   value="1">
+                            <label for="payment-status-paid">Paid</label>
+                        </div>
+                    </div>
+
+                    <div class="participant field">
+                        <label class="dropdown-label required"
+                               for="payment-participant"><b>Participant</b></label>
+                        <select class="dropdown" id="payment-participant" name="payment-participant">
+                            <option value="none" selected disabled hidden>Select an Option</option>
+                        </select>
+                    </div>
+
+                    <div class="error-message create-payment-message hidden">Error when creating Expense</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel cancel-create-payment" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="darkness-container add-participant hidden">
         <div class="create-form">
             <div class="container">
@@ -170,22 +237,26 @@
                 <form id="edit-payment-form" novalidate>
                     <div class="amount field">
                         <label for="edit-payment-amount" class="required"><b>Custom Amount</b></label>
-                        <input id="edit-payment-amount" type="number" name="Custom amount" placeholder="Amount" required>
+                        <input id="edit-payment-amount" type="number" name="Custom amount"
+                               placeholder="Amount" required>
                     </div>
 
                     <div class="date-paid field">
                         <label for="edit-date-paid"><b>Date paid</b></label>
-                        <input id="edit-date-paid" type="date" name="Date paid" class="date-input" placeholder="Date">
+                        <input id="edit-date-paid" type="date" name="Date paid" class="date-input"
+                               placeholder="Date">
                     </div>
 
                     <div class="status">
                         <p class="status-title">Payment status</p>
                         <div class="option">
-                            <input id="edit-status-unpaid" type="radio" name="edit-status" placeholder="Unpaid" value="0" checked="checked">
+                            <input id="edit-status-unpaid" type="radio" name="edit-status"
+                                   placeholder="Unpaid" value="0" checked="checked">
                             <label for="edit-status-unpaid">Unpaid</label>
                         </div>
                         <div class="option">
-                            <input id="edit-status-paid" type="radio" name="edit-status" placeholder="Paid" value="1">
+                            <input id="edit-status-paid" type="radio" name="edit-status" placeholder="Paid"
+                                   value="1">
                             <label for="edit-status-paid">Paid</label>
                         </div>
                     </div>
