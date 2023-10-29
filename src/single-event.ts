@@ -141,9 +141,7 @@ async function app(): Promise<void> {
         });
     }
 
-
     // Edit payment form validation
-
     if (editPaymentForm) {
         editPaymentForm.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             let error: boolean;
@@ -155,8 +153,6 @@ async function app(): Promise<void> {
 
             async function validateInput(input: (HTMLInputElement | null), errorMessage: string): Promise<void> {
                 if (input && input.value === "") {
-                    console.log(customErrorMessage);
-                    console.log("nogood!");
                     if (customErrorMessage) {
                         customErrorMessage.classList.remove("hidden");
                         customErrorMessage.innerHTML = errorMessage;
@@ -190,6 +186,7 @@ async function app(): Promise<void> {
         });
     }
 
+    // Create payment form validation
     if (paymentForm) {
         paymentForm.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             e.preventDefault();
@@ -236,7 +233,7 @@ async function app(): Promise<void> {
                 await createPayment(data);
                 await calculatePayments();
                 await hidePaymentForm();
-                await showSuccessMessage("Payment successfully updated");
+                await showSuccessMessage("Payment successfully created!");
                 await removeAllChildren();
                 await syncAllTables();
             }
@@ -253,10 +250,7 @@ export async function calculatePayments(): Promise<void> {
     const expenseId: string | any = document.querySelector(".payment-content")?.id;
     let total: number = 0;
 
-    console.log(expenseId, "expenseId");
-
     const getExpense: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, expenseId);
-    console.log(getExpense, "getExpense");
     await getExpense.then(
         (expenses: string | any[]): void => {
             if (typeof expenses !== "string") {
@@ -271,12 +265,9 @@ export async function calculatePayments(): Promise<void> {
         }
     );
 
-    console.log(total, "total");
-
     if (expenseId) {
         const data: any[] = [eventId, expenseId];
         const getPayments: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...data);
-        console.log(getPayments, "getPayments");
         const participants: any = {};
         await getPayments.then(
             (payments: string | any[]): void => {
@@ -291,26 +282,21 @@ export async function calculatePayments(): Promise<void> {
             }
         );
 
-        console.log(participants, "Participants");
-
         // Update total value.
-
         for (const participant in participants) {
             total = total - participants[participant].amount;
         }
 
         // Get Number of people
         const numberOfParticipants: number = Object.keys(participants).length;
-        console.log(numberOfParticipants, "number of people");
+
         // Get New total divided by number of persons
         const equalRemains: number = total / numberOfParticipants;
-        console.log(equalRemains, "equalRemains");
 
         // Update each persons value to new value.
         for (const participant in participants) {
             const newPaymentAmount: number = participants[participant].amount + equalRemains;
             const data: any[] = [newPaymentAmount, participants[participant].id];
-            console.log(data, "data");
             const updatePayment: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.UPDATE_PAYMENT_AMOUNT, ...data);
             updatePayment.then(
                 (): void => {
@@ -326,7 +312,6 @@ export async function calculatePayments(): Promise<void> {
 
 }
 
-
 async function createPayment(data: any[]): Promise<void> {
     try {
         const updatedPayment: string | any[] = await api.queryDatabase(PAYMENT_QUERY.CREATE_PAYMENT, ...data);
@@ -340,7 +325,6 @@ async function createPayment(data: any[]): Promise<void> {
         console.log(e);
     }
 }
-
 
 async function editPayment(data: any[]): Promise<void> {
     try {
@@ -408,7 +392,7 @@ async function createExpense(description: string | undefined, amount: number | u
                 participants.forEach(async (participant: any): Promise<void> => {
                     if (amount) {
                         const cut: number = amount / participantsAmount;
-                        const data: any[] = [null, description, cut, eventId, parseFloat(<string>participant), id];
+                        const data: any[] = [null, description, cut, eventId, parseFloat(<string>participant), id, 0];
                         createPayments(data);
                     }
                     count++;
@@ -419,6 +403,8 @@ async function createExpense(description: string | undefined, amount: number | u
                 });
 
                 async function callback(): Promise<void> {
+                    hideExpenseForm();
+                    await showSuccessMessage("Successfully created expense!");
                     await removeAllChildren();
                     await syncAllTables();
                 }
@@ -433,18 +419,21 @@ async function createExpense(description: string | undefined, amount: number | u
     }
 }
 
-function createPayments(data: any[]): void {
-    const payment: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.CREATE_PAYMENT, ...data);
+async function createPayments(data: any[]): Promise<void> {
+    try {
+        const payment: string | any[] = await api.queryDatabase(PAYMENT_QUERY.CREATE_DEFAULT_PAYMENT, ...data);
 
-    payment.then(
-        async (): Promise<void> => {
+        if (payment) {
             hideExpenseForm();
             await showSuccessMessage("Successfully made expense!");
-        },
-        (): void => {
+        } else {
             console.log("Unsuccessfully made payment");
         }
-    );
+    } catch (e) {
+        console.log(e);
+    }
+
+
 }
 
 async function showSuccessMessage(message: string): Promise<void> {
@@ -480,7 +469,6 @@ export async function syncAllTables(): Promise<void> {
     }
 }
 
-
 async function checkURLParams(): Promise<void> {
     try {
         let params: URLSearchParams = new URLSearchParams(location.search);
@@ -493,7 +481,6 @@ async function checkURLParams(): Promise<void> {
     }
 }
 
-
 function showExpenseForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".create-expense");
     createPaymentForm?.classList.remove("hidden");
@@ -505,6 +492,14 @@ function hideExpenseForm(): void {
 }
 
 function showPaymentForm(): void {
+
+    const paymentContent: Element | null = document.querySelector(".payment-content");
+    const expenseId: string | undefined = paymentContent?.id;
+
+    if (expenseId) {
+        populatePaymentSelect(expenseId);
+    }
+
     const createPaymentForm: Element | null = document.querySelector(".payment-form");
     createPaymentForm?.classList.remove("hidden");
 }
@@ -529,7 +524,6 @@ function hideParticipantForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".add-participant");
     createPaymentForm?.classList.add("hidden");
 }
-
 
 async function handleHeroTab(this: HTMLElement): Promise<void> {
     const dashboard: Element | null = document.querySelector(".dashboard-content");
@@ -559,7 +553,6 @@ async function loggedOut(this: HTMLElement): Promise<void> {
     location.reload();
 }
 
-
 async function createParticipant(participant: any): Promise<void> {
     try {
         const data: any[] = [eventId, participant.value];
@@ -580,6 +573,38 @@ async function createParticipant(participant: any): Promise<void> {
     }
 }
 
+function populatePaymentSelect(expenseId): void {
+    const arr: any[] = [eventId, expenseId];
+    const getParticipants: Promise<string | any[]> = api.queryDatabase(USER_QUERY.GET_LEFT_OVER_USERS_FROM_EXPENSE, ...arr);
+
+    const paymentSelect: HTMLSelectElement | any = document.querySelector("#payment-participant");
+    const paymentChildren: HTMLCollection | undefined = paymentSelect.children;
+
+    if (paymentChildren) {
+        Array.from(paymentChildren).forEach(child => {
+            child.remove();
+        });
+    }
+
+    const paymentOption: HTMLOptionElement = paymentSelect.options[paymentSelect.options.length] = new Option("Select an option!", "", false, true);
+
+    paymentOption.setAttribute("disabled", "true");
+    paymentOption.setAttribute("selected", "selected");
+    paymentOption.setAttribute("hidden", "hidden");
+
+    console.log(getParticipants);
+
+    getParticipants.then(
+        (participant: string | any[]): void => {
+            if (typeof participant !== "string") {
+                participant.forEach(item => {
+                    paymentSelect.options[paymentSelect.options.length] = new Option(item.username, item.participantId);
+                });
+            }
+        }
+    );
+}
+
 function handlePopulateSelects(): void {
     const arr: any[] = [eventId];
     const participants: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.SELECT_PARTICIPANT_AND_USER_BY_EVENT, ...arr);
@@ -587,12 +612,9 @@ function handlePopulateSelects(): void {
 
     const expenseSelect: HTMLSelectElement | any = document.querySelector("#expense-participants");
     const participantSelect: HTMLSelectElement | any = document.querySelector("#participant");
-    const paymentSelect: HTMLSelectElement | any = document.querySelector("#payment-participant");
 
     const expenseChildren: HTMLCollection | undefined = expenseSelect.children;
     const participantChildren: HTMLCollection | undefined = participantSelect.children;
-    const paymentChildren: HTMLCollection | undefined = paymentSelect.children;
-
 
     if (participantChildren) {
         Array.from(participantChildren).forEach(child => {
@@ -606,23 +628,12 @@ function handlePopulateSelects(): void {
         });
     }
 
-    if (paymentChildren) {
-        Array.from(paymentChildren).forEach(child => {
-            child.remove();
-        });
-    }
-
     const expenseOption: HTMLOptionElement = expenseSelect.options[expenseSelect.options.length] = new Option("Select an option!", "", false, true);
-    const paymentOption: HTMLOptionElement = paymentSelect.options[paymentSelect.options.length] = new Option("Select an option!", "", false, true);
     const option: HTMLOptionElement = participantSelect.options[participantSelect.options.length] = new Option("Select an option!", "", false, true);
 
     expenseOption.setAttribute("disabled", "true");
     expenseOption.setAttribute("selected", "selected");
     expenseOption.setAttribute("hidden", "hidden");
-
-    paymentOption.setAttribute("disabled", "true");
-    paymentOption.setAttribute("selected", "selected");
-    paymentOption.setAttribute("hidden", "hidden");
 
     option.setAttribute("disabled", "true");
     option.setAttribute("selected", "selected");
@@ -633,7 +644,6 @@ function handlePopulateSelects(): void {
             if (typeof participant !== "string") {
                 participant.forEach(item => {
                     expenseSelect.options[expenseSelect.options.length] = new Option(item.username, item.participantId);
-                    paymentSelect.options[paymentSelect.options.length] = new Option(item.username, item.participantId);
                 });
             }
         }

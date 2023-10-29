@@ -2,6 +2,7 @@ export const PAYMENT_QUERY: {
     SELECT_PAYMENTS: string;
     SELECT_PAYMENT: string;
     CREATE_PAYMENT: string;
+    CREATE_DEFAULT_PAYMENT: string;
     DELETE_PAYMENT: string;
     UPDATE_PAYMENT: string;
     UPDATE_PAYMENT_AMOUNT: string;
@@ -11,6 +12,7 @@ export const PAYMENT_QUERY: {
     SELECT_PAYMENTS: "SELECT * FROM payment LIMIT 50",
     SELECT_PAYMENT: "SELECT * FROM payment WHERE paymentId = ?",
     CREATE_PAYMENT: "INSERT INTO payment (datePaid, description, customAmount, eventId, participantId, expenseId, paymentStatus) VALUES(?, ?, ?, ?, ?, ?, ?)",
+    CREATE_DEFAULT_PAYMENT: "INSERT INTO payment (datePaid, description, paymentAmount, eventId, participantId, expenseId, paymentStatus) VALUES(?, ?, ?, ?, ?, ?, ?)",
     DELETE_PAYMENT: "DELETE FROM payment WHERE paymentId = ?",
     UPDATE_PAYMENT: "UPDATE payment SET customAmount = ?, datePaid = ?, paymentStatus = ? WHERE paymentId = ?",
     UPDATE_PAYMENT_AMOUNT: "UPDATE payment SET paymentAmount = ? WHERE paymentId = ?",
