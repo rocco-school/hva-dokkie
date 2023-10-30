@@ -151,7 +151,11 @@ main {
     padding: 1rem 1.5rem;
 }
 
+.table--outer .table tbody td:last-of-type {
+    padding: 0;
+    max-width: 9rem;
+}
+
 .event {
     cursor: pointer;
 }
-

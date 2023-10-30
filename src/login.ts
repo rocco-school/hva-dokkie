@@ -4,6 +4,7 @@ import {USER_QUERY} from "./query/user.query";
 import bcrypt from "bcryptjs";
 import {sign} from "./authentication/jsonwebtoken";
 import {verifyUserRedirect} from "./authentication/verifyUser";
+import {delay} from "./components/delay";
 
 /**
  * Entry point
@@ -15,7 +16,7 @@ async function app(): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     const form: HTMLFormElement | null = document.querySelector("#form");
     const email: HTMLInputElement | null = document.querySelector("#email");
-    const button: HTMLElement | null = document.querySelector(".submit");
+    const button: HTMLElement | any = document.querySelector(".submit");
     const customErrorMessage: HTMLElement | null = document.querySelector(".error-message");
 
     if (form) {
@@ -156,12 +157,6 @@ async function assignToken(user: any[] | string): Promise<void> {
 
     // Put JWT inside user session storage
     session.set("JWTToken", jwtToken);
-}
-
-
-function delay(ms: number): Promise<void> {
-    // Sets time out with give ms
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 app();

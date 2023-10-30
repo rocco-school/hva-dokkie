@@ -22,7 +22,6 @@
         </div>
     </div>
 
-
     <div class="darkness-container filter hidden">
         <!-- Success message -->
         <div id="successModal" tabindex="-1" aria-hidden="true" class="success-modal">
@@ -100,17 +99,58 @@
         </div>
     </div>
 
+    <div class="breadcrumb-container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="index.html" class="breadcrumb-link">
+                        <svg class="breadcrumb-home-icon" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <div class="breadcrumb-subitem">
+                        <svg class="breadcrumb-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <a href="events.html" class="breadcrumb-link">Events</a>
+                    </div>
+                </li>
+                <li class="breadcrumb-item">
+                    <div class="breadcrumb-subitem">
+                        <svg class="breadcrumb-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <a href="events.html" class="breadcrumb-link single-event">single-event</a>
+                    </div>
+                </li>
 
-    <div class="hero-tabs">
-        <div class="hero-tabs-inner">
-            <a class="hero-tab dashboard is-active">
-                <div>Dashboard</div>
-            </a>
-            <a class="hero-tab participants">
-                <div>Participants</div>
-            </a>
-        </div>
+                <li class="breadcrumb-item" aria-current="page">
+                    <div class="breadcrumb-subitem">
+                        <svg class="breadcrumb-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <span class="breadcrumb-text current-page">payments</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
     </div>
+
     <hr class="hero-tabs-underline">
 
     <div class="darkness-container create-expense hidden">
@@ -238,7 +278,7 @@
                     <div class="amount field">
                         <label for="edit-payment-amount" class="required"><b>Custom Amount</b></label>
                         <input id="edit-payment-amount" type="number" name="Custom amount"
-                               placeholder="Amount" required>
+                               placeholder="Amount">
                     </div>
 
                     <div class="date-paid field">
@@ -264,8 +304,43 @@
                     <div class="error-message edit-payment-message hidden">Error when editing Payment!</div>
 
                     <div class="form-buttons">
-                        <button class="submit" type="submit">Create</button>
+                        <button class="submit" type="submit">Save</button>
                         <button class="cancel cancel-edit-payment" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="darkness-container hidden edit-expense">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Edit expense</h2>
+                <form id="edit-expense-form" novalidate>
+                    <div class="amount field">
+                        <label for="edit-expense-amount"><b>Total Cost</b></label>
+                        <input id="edit-expense-amount" type="number" name="Total Cost" placeholder="Amount">
+                    </div>
+
+                    <div class="status">
+                        <p class="status-title">Expense status</p>
+                        <div class="option">
+                            <input id="expense-status-open" type="radio" name="edit-status"
+                                   placeholder="Open" value="0" checked="checked">
+                            <label for="expense-status-open">Open</label>
+                        </div>
+                        <div class="option">
+                            <input id="expense-status-closed" type="radio" name="edit-status" placeholder="Closed"
+                                   value="1">
+                            <label for="expense-status-closed">Closed</label>
+                        </div>
+                    </div>
+
+                    <div class="error-message edit-expense-message hidden">Error when editing Payment!</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Save</button>
+                        <button class="cancel cancel-edit-expense" type="button">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -277,29 +352,45 @@
             <div class="widget">
                 <div class="information">
                     <span class="title">Total cost:</span>
-                    <span class="text">$5000</span>
+                    <span class="text total-cost">€0</span>
                 </div>
             </div>
 
             <div class="widget">
                 <div class="information">
                     <span class="title">Total participants:</span>
-                    <span class="text">50</span>
+                    <span class="text total-participants">0</span>
                 </div>
             </div>
 
             <div class="widget">
                 <div class="information">
                     <span class="title">Total open Payments:</span>
-                    <span class="text">50</span>
+                    <span class="text total-payments">0</span>
                 </div>
             </div>
 
         </div>
 
+        <div class="hero-tabs">
+            <div class="hero-tabs-inner">
+                <a class="hero-tab dashboard is-active">
+                    <div>Dashboard</div>
+                </a>
+                <a class="hero-tab participants">
+                    <div>Participants</div>
+                </a>
+            </div>
+        </div>
+
         <div class="expense-table">
+
+            <div class="table-name-wrapper-80">
+                <span class="table-name">Expenses</span>
+            </div>
+
             <div class="create-button-wrapper-80">
-                <a class="create-button create-expense-button"><span>Create Expense!</span></a>
+                <a class="create-button create-expense-button hidden"><span>Create Expense!</span></a>
             </div>
 
             <div class="table--outer">
@@ -338,13 +429,12 @@
 
     <div class="content payment-content hidden">
         <div class="payment-table">
-
-            <div class="create-button-wrapper-80">
-                <a class="return"><span>Return</span></a>
+            <div class="table-name-wrapper-80">
+                <span class="table-name">Expenses</span>
             </div>
 
             <div class="create-button-wrapper-80">
-                <a class="create-button create-payment-button"><span>Create Payment</span></a>
+                <a class="create-button create-payment-button hidden"><span>Create Payment</span></a>
             </div>
 
             <div class="table--outer">
@@ -388,8 +478,13 @@
 
     <div class="content participant-content hidden">
         <div class="participant-table">
+
+            <div class="table-name-wrapper-80">
+                <span class="table-name">Participants</span>
+            </div>
+
             <div class="create-button-wrapper-80">
-                <a class="create-button create-participant-button"><span>Add participant!</span></a>
+                <a class="create-button create-participant-button hidden"><span>Add participant!</span></a>
             </div>
 
             <div class="table--outer">

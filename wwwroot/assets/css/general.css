@@ -168,6 +168,9 @@
 
 
 .create-button {
+    position: absolute;
+    right: 0;
+    top: -9rem;
     background-color: white;
     margin-top: 5rem;
     cursor: pointer;
@@ -332,5 +335,119 @@ input:focus {
 
 .delete-button {
     color: #f56565;
+    padding: 1rem;
     cursor: pointer;
+    background-color: transparent;
+    border: 0;
+}
+
+.delete-button:disabled {
+    cursor: not-allowed;
+}
+
+.breadcrumb-container {
+    width: 80%;
+    margin: auto;
+    background-color: #F3F4F6;
+}
+
+.breadcrumb {
+    display: flex;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: #374151;
+    border-width: 1px;
+    border-color: #E5E7EB;
+    border-radius: 0.5rem;
+}
+
+.breadcrumb-list {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.25rem;
+    @media (min-width: 768px) {
+        margin-left: 0.75rem;
+    }
+}
+
+.breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+}
+
+.breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.breadcrumb-link:hover {
+    color: #2563EB;
+}
+
+.breadcrumb-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.625rem;
+    margin-left: .625rem;
+}
+
+.breadcrumb-home-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.625rem;
+}
+
+.breadcrumb-subitem {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-text {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: #6B7280;
+}
+
+.table-name {
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    cursor: default;
+    top: -3.5rem;
+    padding: 1rem;
+    font-size: 1.250rem;
+    line-height: 1.75rem;
+}
+
+.table-name-wrapper-80 {
+    width: 80%;
+    position: relative;
+    margin: 5rem auto 2rem;
+}
+
+.event-page {
+    width: 70%;
+}
+
+.user-page {
+    width: 100%;
+}
+
+.edit-button {
+    color: #48bb78;
+    padding: 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+}
+
+.edit-button:disabled {
+    cursor: not-allowed;
 }

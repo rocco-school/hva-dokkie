@@ -2,7 +2,8 @@ import "./hboictcloud-config";
 import {v4 as uuidv4} from "uuid";
 import {
     addExpensesTable,
-    populateParticipantTable, populatePaymentTable,
+    populateParticipantTable,
+    populatePaymentTable,
     removeAllChildren
 } from "./components/createTable";
 import {api, session} from "@hboictcloud/api";
@@ -11,6 +12,9 @@ import {EXPENSE_QUERY} from "./query/expanse.query";
 import {PAYMENT_QUERY} from "./query/payment.query";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
 import {USER_QUERY} from "./query/user.query";
+import {delay} from "./components/delay";
+import {Status} from "./enum/status.enum";
+import {EVENT_QUERY} from "./query/event.query";
 
 /**
  * Entry point
@@ -21,7 +25,11 @@ async function app(): Promise<void> {
     await checkURLParams();
     await verifyUserForEvent(eventId);
     await syncAllTables();
+    await hideAllCreateButtons();
     await handlePopulateSelects();
+    await showEventData();
+
+    await handleBreadcrumbs();
 
     const showExpense: HTMLAnchorElement | any = document.querySelector(".create-expense-button");
     const hideExpense: HTMLAnchorElement | any = document.querySelector(".cancel-create-expense");
@@ -33,12 +41,14 @@ async function app(): Promise<void> {
     const hidePayment: HTMLAnchorElement | any = document.querySelector(".cancel-create-payment");
 
     const hideEditPayment: HTMLAnchorElement | any = document.querySelector(".cancel-edit-payment");
+    const hideEditExpense: HTMLAnchorElement | any = document.querySelector(".cancel-edit-expense");
 
     const expenseDescription: HTMLInputElement | any = document.querySelector("#description");
     const expenseAmount: HTMLInputElement | any = document.querySelector("#amount");
     const expenseParticipants: HTMLInputElement | any = document.querySelector("#expense-participants");
 
     const editPaymentAmount: HTMLInputElement | any = document.querySelector("#edit-payment-amount");
+    const editExpenseAmount: HTMLInputElement | any = document.querySelector("#edit-expense-amount");
     const editPaymentDatePaid: HTMLInputElement | any = document.querySelector("#edit-date-paid");
 
     const participant: HTMLInputElement | any = document.querySelector("#participant");
@@ -48,6 +58,7 @@ async function app(): Promise<void> {
 
 
     const editPaymentForm: HTMLFormElement | any = document.querySelector("#edit-payment-form");
+    const editExpenseForm: HTMLFormElement | any = document.querySelector("#edit-expense-form");
     const paymentForm: HTMLFormElement | any = document.querySelector("#payment-form");
 
     const customErrorMessage: HTMLButtonElement | any = document.querySelector(".error-message");
@@ -62,6 +73,7 @@ async function app(): Promise<void> {
     hideExpense?.addEventListener("click", hideExpenseForm);
 
     hideEditPayment?.addEventListener("click", hideEditPaymentForm);
+    hideEditExpense?.addEventListener("click", hideEditExpenseForm);
 
     showParticipant?.addEventListener("click", showParticipantForm);
     hideParticipant?.addEventListener("click", hideParticipantForm);
@@ -162,7 +174,7 @@ async function app(): Promise<void> {
             }
 
 
-            const inputs: (HTMLInputElement | null)[] = [editPaymentAmount, editPaymentStatus[0]];
+            const inputs: (HTMLInputElement | null)[] = [editPaymentStatus[0]];
 
             error = false;
 
@@ -173,11 +185,71 @@ async function app(): Promise<void> {
             if (!error) {
                 customErrorMessage.classList.add("hidden");
 
+                if (!editPaymentAmount.value) {
+                    editPaymentAmount.value = 0;
+                }
+
                 const data: any[] = [editPaymentAmount.value, editPaymentDatePaid.value, editPaymentStatus[0].value, editPaymentId.id];
                 await editPayment(data);
-                await calculatePayments();
+                await calculatePayments(null);
                 await hideEditPaymentForm();
-                await showSuccessMessage("Payment successfully updated");
+                await showSuccessMessage("Payment successfully updated", null);
+                await removeAllChildren();
+                await syncAllTables();
+
+            }
+
+        });
+    }
+
+    // Edit payment form validation
+    if (editExpenseForm) {
+        editExpenseForm.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
+            let error: boolean;
+            const editExpenseStatus: HTMLInputElement | any = editExpenseForm.querySelectorAll("input[name='edit-status']:checked");
+            const customErrorMessage: HTMLButtonElement | any = document.querySelector(".edit-expense-message");
+            const editExpenseId: HTMLButtonElement | any = document.querySelector(".edit-expense");
+            e.preventDefault();
+
+
+            async function validateInput(input: (HTMLInputElement | null), errorMessage: string): Promise<void> {
+                if (input && input.value === "") {
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = errorMessage;
+                    }
+                    error = true;
+                }
+            }
+
+
+            const inputs: (HTMLInputElement | null)[] = [editExpenseStatus[0]];
+
+            error = false;
+
+            for (const input of inputs) {
+                await validateInput(input, input?.name + " is required");
+            }
+
+            if (!error) {
+                customErrorMessage.classList.add("hidden");
+
+                if (!editExpenseAmount.value) {
+                    try {
+                        const expense: any[] | string = await api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, editExpenseId.id);
+                        if (expense) {
+                            editExpenseAmount.value = expense[0].totalAmount;
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+
+                const data: any[] = [editExpenseAmount.value, editExpenseStatus[0].value, editExpenseId.id];
+                await editExpense(data);
+                await calculatePayments(editExpenseId.id);
+                await hideEditExpenseForm();
+                await showSuccessMessage("Expense successfully updated", null);
                 await removeAllChildren();
                 await syncAllTables();
 
@@ -231,9 +303,9 @@ async function app(): Promise<void> {
 
                 const data: any[] = [datePaid, createPaymentDescription.value, customAmount, eventId, createPaymentParticipant.value, expenseId, paymentStatus[0].value];
                 await createPayment(data);
-                await calculatePayments();
+                await calculatePayments(expenseId);
                 await hidePaymentForm();
-                await showSuccessMessage("Payment successfully created!");
+                await showSuccessMessage("Payment successfully updated!", null);
                 await removeAllChildren();
                 await syncAllTables();
             }
@@ -246,70 +318,165 @@ async function app(): Promise<void> {
 app();
 
 
-export async function calculatePayments(): Promise<void> {
-    const expenseId: string | any = document.querySelector(".payment-content")?.id;
-    let total: number = 0;
-
-    const getExpense: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, expenseId);
-    await getExpense.then(
-        (expenses: string | any[]): void => {
-            if (typeof expenses !== "string") {
-                expenses.forEach(item => {
-                    total = item.totalAmount;
-                    return;
-                });
-            }
-        },
-        (): void => {
-            console.log("Failed to retrieve expense!");
-        }
-    );
-
-    if (expenseId) {
-        const data: any[] = [eventId, expenseId];
-        const getPayments: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...data);
-        const participants: any = {};
-        await getPayments.then(
-            (payments: string | any[]): void => {
-                if (typeof payments !== "string") {
-                    payments.forEach(item => {
-                        participants[item.username] = {id: item.paymentId, amount: item.customAmount};
-                    });
+async function hideAllCreateButtons(): Promise<void> {
+    if (eventId) {
+        try {
+            const event: string | any[] = await api.queryDatabase(EVENT_QUERY.SELECT_EVENT, eventId);
+            if (event) {
+                if (event[0].eventStatus !== 1) {
+                    const createExpenseButton: Element | null = document.querySelector(".create-expense-button");
+                    const createParticipantButton: Element | null = document.querySelector(".create-participant-button");
+                    const createPaymentButton: Element | null = document.querySelector(".create-payment-button");
+                    createExpenseButton?.classList.remove("hidden");
+                    createParticipantButton?.classList.remove("hidden");
+                    createPaymentButton?.classList.remove("hidden");
                 }
-            },
-            (): void => {
-                console.log("Failed to retrieve payments!");
             }
-        );
-
-        // Update total value.
-        for (const participant in participants) {
-            total = total - participants[participant].amount;
+        } catch (e) {
+            console.log(e);
         }
+    }
+}
 
-        // Get Number of people
-        const numberOfParticipants: number = Object.keys(participants).length;
+export async function handleBreadcrumbs(): Promise<void> {
+    const dashboard: Element | null = document.querySelector(".expense-table");
 
-        // Get New total divided by number of persons
-        const equalRemains: number = total / numberOfParticipants;
-
-        // Update each persons value to new value.
-        for (const participant in participants) {
-            const newPaymentAmount: number = participants[participant].amount + equalRemains;
-            const data: any[] = [newPaymentAmount, participants[participant].id];
-            const updatePayment: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.UPDATE_PAYMENT_AMOUNT, ...data);
-            updatePayment.then(
-                (): void => {
-                    console.log("Successfully updated payment amount!");
+    if (!dashboard?.classList.contains("hidden")) {
+        const breadCrumbList: Element | null = document.querySelector(".breadcrumb-list");
+        breadCrumbList?.lastElementChild?.classList.add("hidden");
+        const id: any = eventId;
+        if (id) {
+            const event: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.SELECT_EVENT, id);
+            event.then(
+                (item: string): void => {
+                    if (breadCrumbList?.lastElementChild) {
+                        breadCrumbList.children[2].firstElementChild.children[1].remove();
+                        const span: HTMLSpanElement = breadCrumbList.children[2].firstElementChild.appendChild(document.createElement("span"));
+                        span.classList.add("breadcrumb-text");
+                        span.appendChild(document.createTextNode(item[0]["description"]));
+                    }
                 },
                 (): void => {
-                    console.log("Could not update payment amount!");
+                    console.log(Status.NOT_FOUND);
                 }
             );
         }
+    }
+}
 
+async function showEventData(): Promise<void> {
+    const totalCostText: Element | any = document.querySelector(".total-cost");
+    const totalParticipantsText: Element | any = document.querySelector(".total-participants");
+    const totalPaymentsText: Element | any = document.querySelector(".total-payments");
+    const id: string | any = eventId;
+    if (id) {
+        const totalCost: Promise<string> = api.queryDatabase(EXPENSE_QUERY.GET_TOTAL_COST_BY_EVENT_ID, id);
+        const totalParticipants: Promise<string> = api.queryDatabase(PARTICIPANT_QUERY.GET_AMOUNT_OF_PARTICIPANTS_BY_EVENT_ID, id);
+        const totalPayments: Promise<string> = api.queryDatabase(PAYMENT_QUERY.GET_TOTAL_AMOUNT_OF_PAYMENTS_BY_EVENT_ID, id);
+        totalCost.then(
+            (item: string | any[]): void => {
+                if (typeof item !== "string") {
+                    if (item[0].totalCost) {
+                        totalCostText.innerHTML = "€" + item[0].totalCost;
+                    }
+                }
+            },
+            (): void => {
+                console.log("Could not retrieve totalCost!");
+            }
+        );
+
+        totalParticipants.then(
+            (item: string | any[]): void => {
+                if (typeof item !== "string") {
+                    if (item[0].totalParticipants) {
+                        totalParticipantsText.innerHTML = item[0].totalParticipants;
+                    }
+                }
+            },
+            (): void => {
+                console.log("Could not retrieve totalParticipants!");
+            }
+        );
+
+        totalPayments.then(
+            (item: string | any[]): void => {
+                if (typeof item !== "string") {
+                    if (item[0].totalPayments) {
+                        totalPaymentsText.innerHTML = item[0].totalPayments;
+                    }
+                }
+            },
+            (): void => {
+                console.log("Could not retrieve totalPayments!");
+            }
+        );
+    }
+}
+
+export async function calculatePayments(expense: string | undefined | null): Promise<void> {
+    let expenseId: string | any = document.querySelector(".payment-content")?.id;
+
+    if (expense) {
+        expenseId = expense;
     }
 
+    let total: number = 0;
+
+    try {
+        const expenses: string | any[] = await api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, expenseId);
+
+        if (typeof expenses !== "string") {
+            expenses.forEach(item => {
+                total = item.totalAmount;
+                return;
+            });
+        } else {
+            console.log("Failed to retrieve expense!");
+            return;
+        }
+
+        if (expenseId) {
+            const data: any[] = [eventId, expenseId];
+            const payments: string | any[] = await api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...data);
+            const participants: any = {};
+
+            if (typeof payments !== "string") {
+                payments.forEach(item => {
+                    participants[item.username] = {id: item.paymentId, amount: item.customAmount};
+                });
+
+                // Calculate the total amount paid by all participants
+                let totalPaid: number = 0;
+                for (const participant in participants) {
+                    totalPaid += participants[participant].amount;
+                }
+
+                // Calculate the new equal share for both participants
+                const numberOfParticipants: number = Object.keys(participants).length;
+                const equalShare: number = total / numberOfParticipants;
+
+                // Calculate the adjustment needed for each participant
+                for (const participant in participants) {
+                    participants[participant].adjustment = equalShare - participants[participant].amount;
+                }
+
+                // Update each participant's payment amount and send a notification
+                for (const participant in participants) {
+                    const newPaymentAmount: number = participants[participant].adjustment;
+                    const data: any[] = [newPaymentAmount, participants[participant].id];
+
+                    try {
+                        await api.queryDatabase(PAYMENT_QUERY.UPDATE_PAYMENT_AMOUNT, ...data);
+                    } catch (error) {
+                        console.log("Could not update payment amount!");
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.log("Error: An error occurred while processing payments.");
+    }
 }
 
 async function createPayment(data: any[]): Promise<void> {
@@ -317,7 +484,7 @@ async function createPayment(data: any[]): Promise<void> {
         const updatedPayment: string | any[] = await api.queryDatabase(PAYMENT_QUERY.CREATE_PAYMENT, ...data);
 
         if (updatedPayment) {
-            console.log("Successfully created payment!");
+            console.log(Status.OK);
         } else {
             console.log("Failed to create payment!");
         }
@@ -332,9 +499,24 @@ async function editPayment(data: any[]): Promise<void> {
         const updatedPayment: string | any[] = await api.queryDatabase(PAYMENT_QUERY.UPDATE_PAYMENT, ...data);
 
         if (updatedPayment) {
-            console.log("Successfully updated payment!");
+            console.log(Status.OK);
         } else {
             console.log("Failed to update payment!");
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function editExpense(data: any[]): Promise<void> {
+    try {
+        data[1] = data[1] === "" ? null : data[1];
+        const updatedExpense: string | any[] = await api.queryDatabase(EXPENSE_QUERY.UPDATE_EXPENSE, ...data);
+
+        if (updatedExpense) {
+            console.log(Status.OK);
+        } else {
+            console.log("Failed to update expense!");
         }
     } catch (e) {
         console.log(e);
@@ -377,6 +559,24 @@ function deleteFunction(this: HTMLElement): void {
             }
         );
     }
+
+    if (this.classList.contains("payment")) {
+        const paymentId: any = this.id;
+        const deletePayment: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.DELETE_PAYMENT, paymentId);
+
+        deletePayment.then(
+            async (): Promise<void> => {
+                await calculatePayments(null);
+                confirmation?.classList.add("hidden");
+                deleteIcon?.classList.add("hidden");
+                await removeAllChildren();
+                await syncAllTables();
+            },
+            (): void => {
+                console.log("Failed to delete participant!");
+            }
+        );
+    }
 }
 
 async function createExpense(description: string | undefined, amount: number | undefined, participants: any): Promise<void> {
@@ -404,7 +604,7 @@ async function createExpense(description: string | undefined, amount: number | u
 
                 async function callback(): Promise<void> {
                     hideExpenseForm();
-                    await showSuccessMessage("Successfully created expense!");
+                    await showSuccessMessage("Successfully created expense!", null);
                     await removeAllChildren();
                     await syncAllTables();
                 }
@@ -425,7 +625,7 @@ async function createPayments(data: any[]): Promise<void> {
 
         if (payment) {
             hideExpenseForm();
-            await showSuccessMessage("Successfully made expense!");
+            await showSuccessMessage("Successfully made expense!", null);
         } else {
             console.log("Unsuccessfully made payment");
         }
@@ -436,7 +636,7 @@ async function createPayments(data: any[]): Promise<void> {
 
 }
 
-async function showSuccessMessage(message: string): Promise<void> {
+async function showSuccessMessage(message: string, duration: number | null): Promise<void> {
     const filter: Element | null = document.querySelector(".filter");
     const messageButton: Element | null = document.querySelector(".continue-button");
     const CustomMessage: Element | null = document.querySelector(".message");
@@ -450,7 +650,11 @@ async function showSuccessMessage(message: string): Promise<void> {
         CustomMessage.innerHTML = message ?? "Successful!";
     }
 
-    await delay(1000);
+    if (!duration) {
+        duration = 1000;
+    }
+
+    await delay(duration);
 
     successIcon?.classList.add("hidden");
     filter?.classList.add("hidden");
@@ -467,6 +671,7 @@ export async function syncAllTables(): Promise<void> {
     if (expenseId) {
         await populatePaymentTable(expenseId, eventId);
     }
+    await showEventData();
 }
 
 async function checkURLParams(): Promise<void> {
@@ -489,6 +694,11 @@ function showExpenseForm(): void {
 function hideExpenseForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".create-expense");
     createPaymentForm?.classList.add("hidden");
+}
+
+function hideEditExpenseForm(): void {
+    const editExpenseForm: Element | null = document.querySelector(".edit-expense");
+    editExpenseForm?.classList.add("hidden");
 }
 
 function showPaymentForm(): void {
@@ -527,6 +737,7 @@ function hideParticipantForm(): void {
 
 async function handleHeroTab(this: HTMLElement): Promise<void> {
     const dashboard: Element | null = document.querySelector(".dashboard-content");
+    const expenseTable: Element | null = document.querySelector(".expense-table");
     const payment: Element | null = document.querySelector(".payment-content");
     const participants: Element | null = document.querySelector(".participant-content");
     document.querySelectorAll(".hero-tab").forEach(item => {
@@ -539,10 +750,13 @@ async function handleHeroTab(this: HTMLElement): Promise<void> {
     })
     ;
     if (this.classList.contains("dashboard")) {
+        expenseTable?.classList.remove("hidden");
         dashboard?.classList.remove("hidden");
     } else if (this.classList.contains("payment")) {
         payment?.classList.remove("hidden");
     } else if (this.classList.contains("participants")) {
+        expenseTable?.classList.add("hidden");
+        dashboard?.classList.remove("hidden");
         participants?.classList.remove("hidden");
     }
 }
@@ -563,7 +777,7 @@ async function createParticipant(participant: any): Promise<void> {
         }
 
         hideParticipantForm();
-        await showSuccessMessage("Successfully created participant!");
+        await showSuccessMessage("Successfully created participant!", null);
 
         await removeAllChildren();
         await syncAllTables();
@@ -591,8 +805,6 @@ function populatePaymentSelect(expenseId): void {
     paymentOption.setAttribute("disabled", "true");
     paymentOption.setAttribute("selected", "selected");
     paymentOption.setAttribute("hidden", "hidden");
-
-    console.log(getParticipants);
 
     getParticipants.then(
         (participant: string | any[]): void => {
@@ -659,11 +871,6 @@ function handlePopulateSelects(): void {
         }
     );
 
-}
-
-function delay(ms: number): Promise<void> {
-    // Sets time out with give ms
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function closeMessage(): Promise<void> {

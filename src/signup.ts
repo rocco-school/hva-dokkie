@@ -4,6 +4,7 @@ import {api} from "@hboictcloud/api";
 import {USER_QUERY} from "./query/user.query";
 import {Status} from "./enum/status.enum";
 import {verifyUserRedirect} from "./authentication/verifyUser";
+import {delay} from "./components/delay";
 
 
 /**
@@ -220,10 +221,6 @@ async function app(): Promise<void> {
         }
     }
 
-}
-
-function delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 app();

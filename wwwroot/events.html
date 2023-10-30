@@ -22,6 +22,36 @@
     </div>
 
 
+    <div class="breadcrumb-container event-page">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="index.html" class="breadcrumb-link">
+                        <svg class="breadcrumb-home-icon" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+
+                <li class="breadcrumb-item" aria-current="page">
+                    <div class="breadcrumb-subitem">
+                        <svg class="breadcrumb-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <span class="breadcrumb-text current-page">Events</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+    </div>
+
     <div class="darkness-container filter hidden">
         <!-- Success message -->
         <div id="successModal" tabindex="-1" aria-hidden="true" class="success-modal">
@@ -29,10 +59,13 @@
                 <div class="modal-content">
                     <!-- Modal content -->
                     <button type="button" class="close-modal-button hidden" data-modal-toggle="successModal">
-                        <svg class="close-icon" width="800px" height="800px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="close-icon" width="800px" height="800px" viewBox="0 0 512 512"
+                             version="1.1" xmlns="http://www.w3.org/2000/svg">
                             <title>cancel</title>
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
-                                <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor"
+                               fill-rule="evenodd">
+                                <g id="work-case" fill="currentColor"
+                                   transform="translate(91.520000, 91.520000)">
                                     <polygon id="Close"
                                              points="328.96 30.2933333 298.666667 1.42108547e-14 164.48 134.4 30.2933333 1.42108547e-14 1.42108547e-14 30.2933333 134.4 164.48 1.42108547e-14 298.666667 30.2933333 328.96 164.48 194.56 298.666667 328.96 328.96 298.666667 194.56 164.48">
 
@@ -44,29 +77,38 @@
                     </button>
 
                     <div class="icon-and-message success-background hidden">
-                        <svg class="icon success-background" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <svg class="icon success-background" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <span class="sr-only">Success</span>
                     </div>
                     <div class="icon-and-message delete-background hidden">
-                        <svg class="icon delete-background" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                        <svg class="icon delete-background" width="800px" height="800px" viewBox="0 0 24 24"
+                             fill="none">
                             <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                   stroke-linejoin="round"/>
                             <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                   stroke-linejoin="round"/>
-                            <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10" stroke="currentColor"
+                            <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                            <path d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
+                                  stroke="currentColor"
                                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="currentColor"
+                            <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
+                                  stroke="currentColor"
                                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <span class="sr-only">Delete</span>
                     </div>
                     <div class="icon-and-message failed-background hidden">
-                        <svg class="icon failed-background" width="800px" height="800px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
-                                <g id="work-case" fill="currentColor" transform="translate(91.520000, 91.520000)">
+                        <svg class="icon failed-background" width="800px" height="800px" viewBox="0 0 512 512"
+                             version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor"
+                               fill-rule="evenodd">
+                                <g id="work-case" fill="currentColor"
+                                   transform="translate(91.520000, 91.520000)">
                                     <polygon id="Close"
                                              points="328.96 30.2933333 298.666667 1.42108547e-14 164.48 134.4 30.2933333 1.42108547e-14 1.42108547e-14 30.2933333 134.4 164.48 1.42108547e-14 298.666667 30.2933333 328.96 164.48 194.56 298.666667 328.96 328.96 298.666667 194.56 164.48">
 
@@ -77,41 +119,83 @@
                         <span class="sr-only">Delete</span>
                     </div>
                     <p class="message">Successfully created!</p>
-                    <button data-modal-toggle="successModal" type="button" class="continue-button">Continue</button>
+                    <button data-modal-toggle="successModal" type="button" class="continue-button">Continue
+                    </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="darkness-container hidden edit-event">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Edit expense</h2>
+                <form id="edit-event" novalidate>
+                    <div class="description field">
+                        <label for="edit-event-description"><b>Description</b></label>
+                        <input id="edit-event-description" type="text" name="Description"
+                               placeholder="Description">
+                    </div>
+
+                    <div class="status">
+                        <p class="status-title">Event status</p>
+                        <div class="option">
+                            <input id="event-status-open" type="radio" name="edit-status"
+                                   placeholder="Open" value="0" checked="checked">
+                            <label for="event-status-open">Open</label>
+                        </div>
+                        <div class="option">
+                            <input id="event-status-closed" type="radio" name="edit-status"
+                                   placeholder="Closed"
+                                   value="1">
+                            <label for="event-status-closed">Closed</label>
+                        </div>
+                    </div>
+
+                    <div class="error-message edit-event-message hidden">Error when editing Event!</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Save</button>
+                        <button class="cancel cancel-edit-event" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="darkness-container create hidden">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Create Event!</h2>
+                <form id="create-event">
+                    <div class="description field">
+                        <label for="description"><b>Event Description</b></label>
+                        <input id="description" type="text" name="description" placeholder="Description"
+                               required>
+                    </div>
+
+                    <div class="error-message hidden">Error when creating Event</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel" type="button">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
 
     <div class="content">
+
+        <div class="table-name-wrapper-80 event-page">
+            <span class="table-name">Events</span>
+        </div>
+
+
         <div class="create-button-wrapper">
             <a class="create-button"><span>Create Event</span></a>
         </div>
-
-
-        <div class="darkness-container create hidden">
-            <div class="create-form">
-                <div class="container">
-                    <h2 class="container--title">Create Event!</h2>
-                    <form id="form">
-                        <div class="description">
-                            <label for="description"><b>Event Description</b></label>
-                            <input id="description" type="text" name="description" placeholder="Description"
-                                   required>
-                        </div>
-
-                        <div class="error-message hidden">Error when creating Event</div>
-
-                        <div class="form-buttons">
-                            <button class="submit" type="submit">Create</button>
-                            <button class="cancel" type="button">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
 
         <div class="events_table">
             <div class="table--outer">

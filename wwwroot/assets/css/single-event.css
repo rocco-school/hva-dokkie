@@ -99,38 +99,51 @@ main {
 
 .hero-tabs {
     display: flex;
-    margin: 1rem auto;
-    width: 50%;
+    margin: 2rem auto auto;
+    max-width: 100%;
 }
 
 .hero-tabs-inner {
     display: flex;
+    padding: .5rem;
+    filter: drop-shadow(0 5px 4px rgb(0 0 0 / 0.01)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.1));
+    column-gap: 0.25rem;
     margin: auto;
-    gap: 16rem;
+    background-color: #fff;
+    border-radius: 0.75rem;
 }
 
 .hero-tab {
-    padding: .5rem;
-    border-radius: .8rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.75rem;
+    column-gap: 0.5rem;
     cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 75ms;
 }
 
 .hero-tab:hover {
-    background-color: #ebebeb;
+    background-color: #F9FAFB;
+    color: #F8BC24;
+}
+
+.is-active {
+    color: #F8BC24;
+    background-color: #F9FAFB;
 }
 
 .hero-tabs-underline {
     border: 1px solid #ebebeb;
     width: 80%;
     margin: auto;
-}
-
-.is-active {
-    background-color: #F8BC24;
-}
-
-.is-active:hover {
-    background-color: #F8BC24;
 }
 
 .dashboard-widgets {
@@ -221,6 +234,11 @@ main {
     padding: 1rem 1.5rem;
 }
 
+.table--outer .table tbody td:last-of-type {
+    padding: 0;
+    max-width: 9rem;
+}
+
 .dropdown-label {
     margin-top: auto;
     margin-bottom: auto;
@@ -246,8 +264,4 @@ main {
 .required:after {
     content: " *";
     color: red;
-}
-
-.edit-button {
-    color: #48bb78;
 }
