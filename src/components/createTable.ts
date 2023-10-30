@@ -203,7 +203,7 @@ export function populatePaymentTable(expenseId: string, eventId: string): void {
 
                             const expense: Promise<string | any> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, expenseId);
                             expense.then(
-                                (item: string): void => {
+                                async (item: string): Promise<void> => {
                                     if (item[0]["expenseStatus"] === 1) {
                                         const createButton: Element | any = document.querySelector(".create-payment-button");
                                         createButton.classList.add("hidden");
@@ -212,17 +212,34 @@ export function populatePaymentTable(expenseId: string, eventId: string): void {
                                     }
 
                                     if (item[0]["expenseStatus"] === 0) {
-                                        tr.addEventListener("click", async function (expense: MouseEvent | null): Promise<void> {
-                                            if (expense) {
-                                                let target: HTMLElement = expense.target as HTMLElement;
-                                                if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button"))) {
-                                                    await showDeleteConfirmation(deleteButton);
-                                                } else {
-                                                    await editRecord(tr);
-                                                }
-                                            }
 
-                                        });
+                                        if (eventId) {
+                                            try {
+                                                const event: string | any[] = await api.queryDatabase(EVENT_QUERY.SELECT_EVENT, eventId);
+                                                if (event) {
+                                                    if (event[0].eventStatus === 1) {
+                                                        const createButton: Element | any = document.querySelector(".create-payment-button");
+                                                        createButton.classList.add("hidden");
+                                                        editButton.classList.add("hidden");
+                                                        deleteButton.classList.add("hidden");
+                                                    } else {
+                                                        tr.addEventListener("click", async function (expense: MouseEvent | null): Promise<void> {
+                                                            if (expense) {
+                                                                let target: HTMLElement = expense.target as HTMLElement;
+                                                                if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button"))) {
+                                                                    await showDeleteConfirmation(deleteButton);
+                                                                } else {
+                                                                    await editRecord(tr);
+                                                                }
+                                                            }
+
+                                                        });
+                                                    }
+                                                }
+                                            } catch (e) {
+                                                console.log(e);
+                                            }
+                                        }
                                     }
                                 },
                                 (): void => {
@@ -246,7 +263,7 @@ export async function addExpensesTable(eventId: string | any, tableBody: Element
         const getExpenses: Promise<string | any[]> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSES_BY_EVENT, eventId);
 
         getExpenses.then(
-            async (events: string | any[]): void => {
+            async (events: string | any[]): Promise<void> => {
                 if (typeof events !== "string") {
                     for (const expense of events) {
                         //Create <tr> for the table row
