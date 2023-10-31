@@ -12,6 +12,7 @@ import {EXPENSE_QUERY} from "./query/expanse.query";
 import {PAYMENT_QUERY} from "./query/payment.query";
 import {showSuccessMessage} from "./components/successMessage";
 import {closeDeleteMessage} from "./components/deleteMessage";
+import {loggedOut} from "./components/handleLogout";
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
@@ -157,13 +158,6 @@ function hideCreateEvent(): void {
 function showCreateEvent(): void {
     const createEventForm: Element | null = document.querySelector(".create");
     createEventForm?.classList.remove("hidden");
-}
-
-// Function to handle logging out
-function loggedOut(): void {
-    // Remove JWTToken From session
-    session.remove("JWTToken");
-    location.reload();
 }
 
 // Function to add data to event table

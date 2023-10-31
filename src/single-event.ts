@@ -16,6 +16,7 @@ import {Status} from "./enum/status.enum";
 import {EVENT_QUERY} from "./query/event.query";
 import {showSuccessMessage} from "./components/successMessage";
 import {closeDeleteMessage} from "./components/deleteMessage";
+import {loggedOut} from "./components/handleLogout";
 
 /**
  * Entry point
@@ -755,13 +756,6 @@ async function handleHeroTab(this: HTMLElement): Promise<void> {
         dashboard?.classList.remove("hidden");
         participants?.classList.remove("hidden");
     }
-}
-
-// Function to handle logging out
-async function loggedOut(this: HTMLElement): Promise<void> {
-    // Remove JWTToken From session
-    session.remove("JWTToken");
-    location.reload();
 }
 
 // Function to handle adding a participant

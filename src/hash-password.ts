@@ -3,7 +3,15 @@ import {api} from "@hboictcloud/api";
 import {USER_QUERY} from "./query/user.query";
 import {Status} from "./enum/status.enum";
 
-export async function hashPassword(password: string, email: string | undefined, name: string | undefined): Promise<Status | void> {
+/**
+ * Hashes the user's password and creates a new user in the database.
+ * @param {string} password - The user's password to be hashed.
+ * @param {string} email - The user's email address.
+ * @param {string} name - The user's name.
+ * @returns {Promise<Status | void>} A Promise that resolves to a status or void.
+ * @throws {Status} Throws an error if the operation fails.
+ */
+export async function hashPassword(password, email, name): Promise<Status | void> {
     try {
         // Generates a random salt(unique text) to add to hash.
         return bcrypt.genSalt(10, function (err: Error | null, salt: string): Status | void {

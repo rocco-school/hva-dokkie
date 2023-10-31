@@ -4,6 +4,7 @@ import {PAYMENT_QUERY} from "../query/payment.query";
 import {EXPENSE_QUERY} from "../query/expanse.query";
 import {PARTICIPANT_QUERY} from "../query/participant.query";
 import {EVENT_QUERY} from "../query/event.query";
+import {USER_QUERY} from "../query/user.query";
 
 export async function removeAllChildren(): Promise<void> {
     const tablePayment: Element | null = document.querySelector(".payment-table-body");
@@ -122,7 +123,7 @@ async function showDeleteConfirmation(row: HTMLElement): Promise<void> {
     // Check if row is defined
     if (!row) return;
 
-    // Get the ID of the row (expense, participant, or payment)
+    // Get the ID of the row (expense, participant, payment or user)
     const id: string = row.id;
 
     // Get references to various HTML elements used in the confirmation dialog
@@ -155,13 +156,19 @@ async function showDeleteConfirmation(row: HTMLElement): Promise<void> {
                 message.innerHTML = "Are you sure you want to delete this payment?";
             }
         }
+
+        if (row.classList.contains("user")) {
+            confirmButton.classList.add("user");
+            if (message) {
+                message.innerHTML = "Are you sure you want to delete this user?";
+            }
+        }
     }
 
     // Show the confirmation dialog elements
     cancelButton?.classList.remove("hidden");
     confirmation?.classList.remove("hidden");
     deleteIcon?.classList.remove("hidden");
-
 }
 
 /**
@@ -360,7 +367,7 @@ export async function populatePaymentTable(expenseId, eventId): Promise<void> {
                 paidDate,
                 paymentStatus
             } = payment;
-            const tr: HTMLTableRowElement = tableBody?.appendChild(document.createElement("tr"));
+            const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
 
             // Determine the status based on expenseStatus
             const status: string = paymentStatus === 0 ? "Unpaid" : "Paid";
@@ -425,6 +432,66 @@ export async function populatePaymentTable(expenseId, eventId): Promise<void> {
                     } else {
                         // Handle edit button click
                         await editRecord(tr);
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Add participant data to a table within the provided tableBody element.
+ *
+ * @param {participantInterface[eventId]} eventId - The ID of the event for which participants should be added.
+ * @param {Element} tableBody - The HTML element where the expense data should be added.
+ * @returns {Promise<void>}
+ */
+export async function addUsersToTable(tableBody): Promise<void> {
+    try {
+        // Fetch all users
+        const users: any | string = await api.queryDatabase(USER_QUERY.SELECT_USERS);
+
+        console.log(users);
+
+        // Check if the response is a string (error) or an array (data)
+        if (typeof users === "string") return;
+
+        // Iterate through each expense and create a table row for it
+        for (const user: any of users) {
+            const {userId, username, email} = user;
+            const tr: HTMLTableRowElement = tableBody?.appendChild(document.createElement("tr"));
+
+            if (tr) {
+                // Set attributes for the table row
+                tr.setAttribute("id", userId);
+                tr.setAttribute("class", "user");
+
+                // Helper function to create and append table cells
+                const createTableCell: (text) => Text = (text) => tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(text));
+
+                // Create table cells for each expense detail
+                createTableCell(userId);
+                createTableCell(username);
+                createTableCell(email);
+
+                // Create Edit and Delete buttons
+                const deleteButton: any = createButton("Delete", "delete-button user", userId, "assets/images/icons/delete-color.svg");
+
+                // Append the buttons to the table cell
+                const buttonCell: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
+                buttonCell.appendChild(deleteButton);
+
+                // Add event listeners for clicking on rows and buttons
+                tr.addEventListener("click", async function (event: MouseEvent): Promise<void> {
+                    const target: HTMLElement = event.target as HTMLElement;
+
+                    if (target.parentElement && target.parentElement.classList.contains("delete-button") ||
+                        (target.firstElementChild && target.firstElementChild.classList.contains("delete-button")) ||
+                        target.classList.contains("delete-button")) {
+                        // Handle delete button click
+                        await showDeleteConfirmation(deleteButton);
                     }
                 });
             }

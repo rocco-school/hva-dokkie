@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import {sign} from "./authentication/jsonwebtoken";
 import {verifyUserRedirect} from "./authentication/verifyUser";
 import {delay} from "./components/delay";
+import {showSuccessMessage} from "./components/successMessage";
 
 /**
  * Entry point
@@ -15,6 +16,7 @@ async function app(): Promise<void> {
 
     const password: HTMLInputElement | null = document.querySelector("#password");
     const form: HTMLFormElement | null = document.querySelector("#form");
+    const container: HTMLFormElement | null = document.querySelector(".container");
     const email: HTMLInputElement | null = document.querySelector("#email");
     const button: HTMLElement | any = document.querySelector(".submit");
     const customErrorMessage: HTMLElement | null = document.querySelector(".error-message");
@@ -83,9 +85,11 @@ async function app(): Promise<void> {
                             }
                             if (result) {
                                 assignToken(user).then(
-                                    (): void => {
+                                    async (): Promise<void> => {
                                         error = false;
                                         console.log("Succesfully logged in!");
+                                        container?.classList.add("hidden");
+                                        await showSuccessMessage("Successfully logged-in!", 2000);
                                         window.location.href = "index.html";
                                     },
                                     (): void => {
@@ -141,7 +145,7 @@ async function app(): Promise<void> {
 
 app();
 
-
+// Function to handle changing password type on click
 async function handleShowPasswordClick(this: HTMLImageElement): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     this.classList.toggle("open");
@@ -151,21 +155,16 @@ async function handleShowPasswordClick(this: HTMLImageElement): Promise<void> {
     // Check what the parentID is if it checks call function.
     if (parentElementId) {
         if (password) {
-            togglePasswordVisibility(password, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
+            // Get image with class open and change password type to plain text
+            // Change the image of the clicked icon.
+            const isOpen: boolean = this.classList.contains("open");
+            password.type = isOpen ? "password" : "text";
+            this.src = isOpen ? "assets/images/icons/eye-hidden-com.svg" : "assets/images/icons/eye-open-com.svg";
         }
     }
 }
 
-function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
-    if (input) {
-        // Get image with class open and change password type to plain text
-        // Change the image of the clicked icon.
-        const isOpen: boolean = image.classList.contains("open");
-        input.type = isOpen ? "password" : "text";
-        image.src = isOpen ? hiddenSrc : openSrc;
-    }
-}
-
+// Function to handle submit button click
 async function handleClick(this: HTMLElement): Promise<void> {
     // Upon button click adds class and then removes it again.
     this.classList.add("active");
@@ -173,6 +172,7 @@ async function handleClick(this: HTMLElement): Promise<void> {
     this.classList.remove("active");
 }
 
+// Function to assign JWT token to logged-in user.
 async function assignToken(user: any[] | string): Promise<void> {
     // Get secret key from env file
     const secret: string = __SECRET_KEY__;

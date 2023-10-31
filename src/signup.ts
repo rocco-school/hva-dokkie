@@ -5,6 +5,7 @@ import {USER_QUERY} from "./query/user.query";
 import {Status} from "./enum/status.enum";
 import {verifyUserRedirect} from "./authentication/verifyUser";
 import {delay} from "./components/delay";
+import {showSuccessMessage} from "./components/successMessage";
 
 
 /**
@@ -165,6 +166,7 @@ async function app(): Promise<void> {
 
 app();
 
+// Function to handle submit button click
 async function buttonClickEvent(this: HTMLElement): Promise<void> {
     // Upon button click adds class and then removes it again.
     this.classList.add("active");
@@ -172,6 +174,7 @@ async function buttonClickEvent(this: HTMLElement): Promise<void> {
     this.classList.remove("active");
 }
 
+// Function to handle changing password or confirmations-password type on click
 async function handleClick(this: HTMLImageElement): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     const confirmPassword: HTMLInputElement | null = document.querySelector("#confirm-password");
@@ -194,6 +197,7 @@ async function handleClick(this: HTMLImageElement): Promise<void> {
     }
 }
 
+// Function to handle changing password or confirmation-password icon and type.
 function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
     if (input) {
         // Get image with class open and change password type to plain text
@@ -204,18 +208,21 @@ function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLIma
     }
 }
 
+// Function to handle creating new user and redirecting to login page
 async function onsubmit(): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     const name: HTMLInputElement | null = document.querySelector("#name");
     const email: HTMLInputElement | null = document.querySelector("#email");
+    const form: HTMLInputElement | null = document.querySelector(".container");
 
     // make database entry with Hashed password.
     if (password) {
         const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
-
         // Check if Promise was resolved successful
         hashedPassword.then(
-            (): void => {
+            async (): Promise<void> => {
+                form?.classList.add("hidden");
+                await showSuccessMessage("Successfully signed up", 2000);
                 window.location.href = "login.html";
             },
             (): void => {

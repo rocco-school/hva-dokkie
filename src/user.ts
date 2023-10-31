@@ -3,12 +3,17 @@ import {verifyUser} from "./authentication/verifyUser";
 import {api, session} from "@hboictcloud/api";
 import {USER_QUERY} from "./query/user.query";
 import {closeDeleteMessage} from "./components/deleteMessage";
+import {loggedOut} from "./components/handleLogout";
+import {addUsersToTable} from "./components/createTable";
+import {calculatePayments} from "./single-event";
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
     await verifyUser();
     // Adds users to table
-    await addUsersToTable();
+    const tableBody: Element | null = document.querySelector(".table-body");
+
+    await addUsersToTable(tableBody);
 
     // Handle logout event
     const logout: Element | any = document.querySelector(".logout");
@@ -22,40 +27,7 @@ async function app(): Promise<void> {
 
 app();
 
-async function addUsersToTable(): Promise<void> {
-    const tableBody: Element | null = document.querySelector(".table-body");
-    // Get all users form the database.
-    const getUsers: Promise<any[] | string> = api.queryDatabase(USER_QUERY.SELECT_USERS);
-    getUsers.then(
-        (users: string | any[]): void => {
-            if (typeof users !== "string") {
-                users.forEach((user: any): void => {
-                    //Create <tr> for the table row
-                    const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
-                    if (tr) {
-                        // Create the other table data for the current row
-                        tr.setAttribute("id", user.userId);
-                        tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(user.userId));
-                        tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(user.username));
-                        tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(user.email));
-                        const button: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
-                        const aButton: HTMLElement = button.appendChild(document.createElement("a"));
-                        aButton.classList.add("delete-button");
-                        aButton.innerHTML = "<img src='assets/images/icons/delete-color.svg' alt='delete expense' class='icon-delete'>";
-                        const span: HTMLSpanElement = aButton.appendChild(document.createElement("span"));
-                        span.appendChild(document.createTextNode("Delete"));
-
-                        // Add event listener to the delete button
-                        button.addEventListener("click", (): void => {
-                            showDelete(tr);
-                        });
-                    }
-                });
-            }
-        }
-    );
-}
-
+// Function to handle deleting a user
 async function deleteUserFunction(this: HTMLElement | any): Promise<void> {
     const userid: userInterface["userId"] = this.id;
     if (userid) {
@@ -70,34 +42,4 @@ async function deleteUserFunction(this: HTMLElement | any): Promise<void> {
             }
         );
     }
-}
-
-async function showDelete(row: HTMLTableRowElement): Promise<void> {
-    const confirmation: Element | null = document.querySelector(".filter");
-    const deleteIcon: Element | null = document.querySelector(".delete-background");
-    const message: Element | null = document.querySelector(".message");
-    const confirmationButton: Element | null = document.querySelector(".continue-button");
-    const cancelButton: Element | null = document.querySelector(".close-modal-button");
-
-    if (row) {
-        const userId: userInterface["userId"] = row.getAttribute("id");
-        confirmationButton?.setAttribute("id", userId);
-
-        cancelButton?.classList.remove("hidden");
-        confirmation?.classList.remove("hidden");
-        deleteIcon?.classList.remove("hidden");
-        if (confirmationButton) {
-            confirmationButton.innerHTML = "Delete";
-            confirmationButton.classList.add("delete");
-        }
-        if (message) {
-            message.innerHTML = "Are you sure you want to delete this event?";
-        }
-    }
-}
-
-async function loggedOut(this: HTMLElement): Promise<void> {
-    // Remove JWTToken From session
-    session.remove("JWTToken");
-    location.reload();
 }
