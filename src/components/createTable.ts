@@ -3,7 +3,6 @@ import {api} from "@hboictcloud/api";
 import {PAYMENT_QUERY} from "../query/payment.query";
 import {EXPENSE_QUERY} from "../query/expanse.query";
 import {PARTICIPANT_QUERY} from "../query/participant.query";
-import {handleBreadcrumbs} from "../single-event";
 import {EVENT_QUERY} from "../query/event.query";
 import {Status} from "../enum/status.enum";
 
@@ -53,16 +52,15 @@ async function editRecord(row: HTMLTableRowElement): Promise<void> {
     }
 }
 
-
-async function showPaymentsTable(row: HTMLTableRowElement, eventId: any): Promise<void> {
-    const expenseId: string | null = row.getAttribute("id");
+async function showPaymentsTable(row: HTMLTableRowElement, eventId: paymentInterface["eventId"]): Promise<void> {
+    const expenseId: expenseInterface["expenseId"] = row.getAttribute("id");
     document.querySelector(".hero-tabs")?.classList.add("hidden");
     document.querySelector(".hero-tabs-underline")?.classList.add("hidden");
     document.querySelector(".dashboard-content")?.classList.add("hidden");
     const paymentContent: Element | null = document.querySelector(".payment-content");
 
     const breadCrumbList: Element | null = document.querySelector(".breadcrumb-list");
-    const id: any = eventId;
+    const id: eventInterface["eventId"] = eventId;
     if (id) {
         const event: Promise<string | any[]> = api.queryDatabase(EVENT_QUERY.SELECT_EVENT, id);
         event.then(
@@ -144,119 +142,7 @@ async function showDeleteConfirmation(row: HTMLElement): Promise<void> {
     }
 }
 
-
-export function populatePaymentTable(expenseId: string, eventId: string): void {
-    if (expenseId && eventId) {
-        const tableBody: Element | null = document.querySelector(".payment-table-body");
-        const params: any[] = [eventId, expenseId];
-        const getPayments: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...params);
-
-        getPayments.then(
-            (payments: string | any[]): void => {
-                if (typeof payments !== "string") {
-                    payments.forEach((payment: any): void => {
-                        const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
-                        const status: string = payment.paymentStatus === 0 ? "Unpaid" : "Paid";
-                        let paidDate: string | Date;
-                        if (typeof payment.datePaid === "string") {
-                            paidDate = new Date(payment.datePaid).toDateString();
-                        } else {
-                            paidDate = "Unkown";
-                        }
-                        let paymentAmount: string = "";
-                        if (payment.paymentAmount < 0) {
-                            const amount: number = payment.paymentAmount * -1;
-                            paymentAmount = `To receive: € ${amount}`;
-                        } else {
-                            paymentAmount = `To pay: € ${payment.paymentAmount}`;
-                        }
-
-                        const customAmount: string = payment.customAmount === null ? 0 : payment.customAmount;
-                        if (tr) {
-                            // Create the other table data for the current row
-                            tr.setAttribute("id", payment.paymentId);
-                            tr.setAttribute("class", "payment");
-                            tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(payment.paymentId));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.description));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.username));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("€ " + customAmount));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(paymentAmount));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(paidDate));
-                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(status));
-                            const button: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
-                            const editButton: HTMLElement = button.appendChild(document.createElement("a"));
-                            editButton.classList.add("edit-button");
-                            editButton.classList.add("payment");
-                            editButton.id = payment.paymentId;
-                            editButton.innerHTML = "<img src='assets/images/icons/edit.svg' alt='edit payment' class='icon-edit'>";
-                            const editSpan: HTMLSpanElement = editButton.appendChild(document.createElement("span"));
-                            editSpan.appendChild(document.createTextNode("Edit"));
-
-                            const deleteButton: HTMLElement = button.appendChild(document.createElement("a"));
-                            deleteButton.classList.add("payment");
-                            deleteButton.classList.add("delete-button");
-                            deleteButton.classList.add("payment");
-                            deleteButton.id = payment.paymentId;
-                            deleteButton.innerHTML = "<img src='assets/images/icons/delete-color.svg' alt='delete payment' class='icon-delete'>";
-                            const deleteSpan: HTMLSpanElement = deleteButton.appendChild(document.createElement("span"));
-                            deleteSpan.appendChild(document.createTextNode("Delete"));
-
-                            const expense: Promise<string | any> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, expenseId);
-                            expense.then(
-                                async (item: string): Promise<void> => {
-                                    if (item[0]["expenseStatus"] === 1) {
-                                        const createButton: Element | any = document.querySelector(".create-payment-button");
-                                        createButton.classList.add("hidden");
-                                        editButton.classList.add("hidden");
-                                        deleteButton.classList.add("hidden");
-                                    }
-
-                                    if (item[0]["expenseStatus"] === 0) {
-
-                                        if (eventId) {
-                                            try {
-                                                const event: string | any[] = await api.queryDatabase(EVENT_QUERY.SELECT_EVENT, eventId);
-                                                if (event) {
-                                                    if (event[0].eventStatus === 1) {
-                                                        const createButton: Element | any = document.querySelector(".create-payment-button");
-                                                        createButton.classList.add("hidden");
-                                                        editButton.classList.add("hidden");
-                                                        deleteButton.classList.add("hidden");
-                                                    } else {
-                                                        tr.addEventListener("click", async function (expense: MouseEvent | null): Promise<void> {
-                                                            if (expense) {
-                                                                let target: HTMLElement = expense.target as HTMLElement;
-                                                                if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button"))) {
-                                                                    await showDeleteConfirmation(deleteButton);
-                                                                } else {
-                                                                    await editRecord(tr);
-                                                                }
-                                                            }
-
-                                                        });
-                                                    }
-                                                }
-                                            } catch (e) {
-                                                console.log(e);
-                                            }
-                                        }
-                                    }
-                                },
-                                (): void => {
-                                    console.log(Status.NOT_FOUND);
-                                }
-                            );
-
-
-                        }
-                    });
-                }
-            }
-        );
-    }
-}
-
-export async function addExpensesTable(eventId: string | any, tableBody: Element | null): Promise<void> {
+export async function addExpensesTable(eventId: expenseInterface["eventId"], tableBody: Element | null): Promise<void> {
     // Get token from session storage for userID
     if (eventId) {
         // Get all events from userID
@@ -276,7 +162,7 @@ export async function addExpensesTable(eventId: string | any, tableBody: Element
                             const date: Date = new Date(expense.dateCreated);
                             createdAt = date.toUTCString().replace(" GMT", "");
                         } else {
-                            createdAt = "Unkown";
+                            createdAt = "Unknown";
                         }
 
                         if (tr) {
@@ -324,7 +210,6 @@ export async function addExpensesTable(eventId: string | any, tableBody: Element
                                         console.log(e);
                                     }
                                 }
-
                             }
 
                             tr.addEventListener("click", async function (expense: MouseEvent | null): Promise<void> {
@@ -348,8 +233,7 @@ export async function addExpensesTable(eventId: string | any, tableBody: Element
     }
 }
 
-
-export function populateParticipantTable(eventId: string | any, tableBody: Element | null): void {
+export function populateParticipantTable(eventId: participantInterface["eventId"], tableBody: Element | null): void {
     if (eventId) {
         const getParticipants: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.SELECT_PARTICIPANT_AND_USER_BY_EVENT, eventId);
 
@@ -377,6 +261,116 @@ export function populateParticipantTable(eventId: string | any, tableBody: Eleme
                             button.addEventListener("click", async (): Promise<void> => {
                                 await showDeleteConfirmation(aButton);
                             });
+                        }
+                    });
+                }
+            }
+        );
+    }
+}
+
+export function populatePaymentTable(expenseId: paymentInterface["expenseId"], eventId: paymentInterface["eventId"]): void {
+    if (expenseId && eventId) {
+        const tableBody: Element | null = document.querySelector(".payment-table-body");
+        const params: any[] = [eventId, expenseId];
+        const getPayments: Promise<string | any[]> = api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...params);
+
+        getPayments.then(
+            (payments: string | any[]): void => {
+                if (typeof payments !== "string") {
+                    payments.forEach((payment: any): void => {
+                        const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
+                        const status: string = payment.paymentStatus === 0 ? "Unpaid" : "Paid";
+                        let paidDate: string | Date;
+                        if (typeof payment.datePaid === "string") {
+                            paidDate = new Date(payment.datePaid).toDateString();
+                        } else {
+                            paidDate = "Unknown";
+                        }
+                        let paymentAmount: string = "";
+                        if (payment.paymentAmount < 0) {
+                            const amount: number = payment.paymentAmount * -1;
+                            paymentAmount = `To receive: € ${amount}`;
+                        } else {
+                            paymentAmount = `To pay: € ${payment.paymentAmount}`;
+                        }
+
+                        const customAmount: paymentInterface["customAmount"] = payment.customAmount === null ? 0 : payment.customAmount;
+                        if (tr) {
+                            // Create the other table data for the current row
+                            tr.setAttribute("id", payment.paymentId);
+                            tr.setAttribute("class", "payment");
+                            tr.appendChild(document.createElement("th")).appendChild(document.createTextNode(payment.paymentId));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.description));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(payment.username));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode("€ " + customAmount));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(paymentAmount));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(paidDate));
+                            tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(status));
+                            const button: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
+                            const editButton: HTMLElement = button.appendChild(document.createElement("a"));
+                            editButton.classList.add("edit-button");
+                            editButton.classList.add("payment");
+                            editButton.id = payment.paymentId;
+                            editButton.innerHTML = "<img src='assets/images/icons/edit.svg' alt='edit payment' class='icon-edit'>";
+                            const editSpan: HTMLSpanElement = editButton.appendChild(document.createElement("span"));
+                            editSpan.appendChild(document.createTextNode("Edit"));
+
+                            const deleteButton: HTMLElement = button.appendChild(document.createElement("a"));
+                            deleteButton.classList.add("payment");
+                            deleteButton.classList.add("delete-button");
+                            deleteButton.classList.add("payment");
+                            deleteButton.id = payment.paymentId;
+                            deleteButton.innerHTML = "<img src='assets/images/icons/delete-color.svg' alt='delete payment' class='icon-delete'>";
+                            const deleteSpan: HTMLSpanElement = deleteButton.appendChild(document.createElement("span"));
+                            deleteSpan.appendChild(document.createTextNode("Delete"));
+
+                            const expense: Promise<string | any> = api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSE, expenseId);
+                            expense.then(
+                                async (item: string): Promise<void> => {
+                                    if (item[0]["expenseStatus"] === 1) {
+                                        const createButton: Element | any = document.querySelector(".create-payment-button");
+                                        createButton.classList.add("hidden");
+                                        editButton.classList.add("hidden");
+                                        deleteButton.classList.add("hidden");
+                                    }
+
+                                    if (item[0]["expenseStatus"] === 0) {
+                                        if (eventId) {
+                                            try {
+                                                const event: string | any[] = await api.queryDatabase(EVENT_QUERY.SELECT_EVENT, eventId);
+                                                if (event) {
+                                                    if (event[0].eventStatus === 1) {
+                                                        const createButton: Element | any = document.querySelector(".create-payment-button");
+                                                        createButton.classList.add("hidden");
+                                                        editButton.classList.add("hidden");
+                                                        deleteButton.classList.add("hidden");
+                                                    } else {
+                                                        tr.addEventListener("click", async function (expense: MouseEvent | null): Promise<void> {
+                                                            if (expense) {
+                                                                let target: HTMLElement = expense.target as HTMLElement;
+                                                                if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button"))) {
+                                                                    await showDeleteConfirmation(deleteButton);
+                                                                } else {
+                                                                    await editRecord(tr);
+                                                                }
+                                                            }
+
+                                                        });
+                                                    }
+                                                }
+                                            } catch (e) {
+                                                console.log(e);
+                                            }
+                                        }
+                                    }
+                                },
+                                (): void => {
+                                    console.log(Status.NOT_FOUND);
+                                }
+                            );
+
+
                         }
                     });
                 }

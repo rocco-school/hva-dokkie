@@ -24,50 +24,12 @@ async function app(): Promise<void> {
     const button: HTMLButtonElement | any = document.querySelector(".submit");
     const customErrorMessage: HTMLButtonElement | null = document.querySelector(".error-message");
 
-
     // Show password / Hide password
     document.querySelectorAll(".icon-eye").forEach(item => {
         item.addEventListener("click", handleClick);
     });
 
     button?.addEventListener("click", buttonClickEvent);
-
-    async function buttonClickEvent(this: HTMLElement): Promise<void> {
-        // Upon button click adds class and then removes it again.
-        this.classList.add("active");
-        await delay(400);
-        this.classList.remove("active");
-    }
-
-    async function handleClick(this: HTMLImageElement): Promise<void> {
-        this.classList.toggle("open");
-
-        const parentElementId: string | undefined = this.parentElement?.id;
-
-        // Check what the parentID is if it checks call function.
-        switch (parentElementId) {
-            case "show-password":
-                if (password) {
-                    togglePasswordVisibility(password, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
-                }
-                break;
-            case "show-confirmation-password":
-                if (confirmPassword) {
-                    togglePasswordVisibility(confirmPassword, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
-                }
-                break;
-        }
-    }
-
-    function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
-        if (input) {
-            // Get image with class open and change password type to plain text
-            // Change the image of the clicked icon.
-            const isOpen: boolean = image.classList.contains("open");
-            input.type = isOpen ? "password" : "text";
-            image.src = isOpen ? hiddenSrc : openSrc;
-        }
-    }
 
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
@@ -169,7 +131,6 @@ async function app(): Promise<void> {
 
             const inputs: (HTMLInputElement | null)[] = [name, password, confirmPassword, email];
 
-
             error = false;
 
             inputs.forEach((input: HTMLInputElement | null): void => {
@@ -200,27 +161,68 @@ async function app(): Promise<void> {
         });
     }
 
-
-    async function onsubmit(): Promise<void> {
-        // make database entry with Hashed password.
-        if (password) {
-
-            const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
-
-            // Check if Promise was resolved successful
-            hashedPassword.then(
-                (): void => {
-                    window.location.href = "login.html";
-                },
-                (): void => {
-                    console.log("Unsucessfull!");
-                }
-            );
-
-
-        }
-    }
-
 }
 
 app();
+
+async function buttonClickEvent(this: HTMLElement): Promise<void> {
+    // Upon button click adds class and then removes it again.
+    this.classList.add("active");
+    await delay(400);
+    this.classList.remove("active");
+}
+
+async function handleClick(this: HTMLImageElement): Promise<void> {
+    const password: HTMLInputElement | null = document.querySelector("#password");
+    const confirmPassword: HTMLInputElement | null = document.querySelector("#confirm-password");
+    this.classList.toggle("open");
+
+    const parentElementId: string | undefined = this.parentElement?.id;
+
+    // Check what the parentID is if it checks call function.
+    switch (parentElementId) {
+        case "show-password":
+            if (password) {
+                togglePasswordVisibility(password, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
+            }
+            break;
+        case "show-confirmation-password":
+            if (confirmPassword) {
+                togglePasswordVisibility(confirmPassword, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
+            }
+            break;
+    }
+}
+
+function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
+    if (input) {
+        // Get image with class open and change password type to plain text
+        // Change the image of the clicked icon.
+        const isOpen: boolean = image.classList.contains("open");
+        input.type = isOpen ? "password" : "text";
+        image.src = isOpen ? hiddenSrc : openSrc;
+    }
+}
+
+async function onsubmit(): Promise<void> {
+    const password: HTMLInputElement | null = document.querySelector("#password");
+    const name: HTMLInputElement | null = document.querySelector("#name");
+    const email: HTMLInputElement | null = document.querySelector("#email");
+
+    // make database entry with Hashed password.
+    if (password) {
+        const hashedPassword: Promise<Status | void> = hashPassword(password.value, email?.value, name?.value);
+
+        // Check if Promise was resolved successful
+        hashedPassword.then(
+            (): void => {
+                window.location.href = "login.html";
+            },
+            (): void => {
+                console.log("Unsuccessful!");
+            }
+        );
+
+
+    }
+}

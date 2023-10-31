@@ -38,7 +38,7 @@ export async function verifyUser(): Promise<void> {
 }
 
 
-export async function verifyUserForEvent(eventId: string): Promise<void> {
+export async function verifyUserForEvent(eventId: eventInterface["eventId"]): Promise<void> {
     try {
         // Get token from users session.
         const token: string = session.get("JWTToken");

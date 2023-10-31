@@ -8,9 +8,6 @@ import {verify} from "./authentication/jsonwebtoken";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
 import {Status} from "./enum/status.enum";
 import {delay} from "./components/delay";
-import {EXPENSE_QUERY} from "./query/expanse.query";
-import {removeAllChildren} from "./components/createTable";
-import {calculatePayments, syncAllTables} from "./single-event";
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
@@ -42,22 +39,6 @@ async function app(): Promise<void> {
 
     hideEditEvent?.addEventListener("click", hideEditEventForm);
 
-    function hideCreateEvent(): void {
-        const createEventForm: Element | null = document.querySelector(".create");
-        createEventForm?.classList.add("hidden");
-    }
-
-    function showCreateEvent(): void {
-        const createEventForm: Element | null = document.querySelector(".create");
-        createEventForm?.classList.remove("hidden");
-    }
-
-    function loggedOut(): void {
-        // Remove JWTToken From session
-        session.remove("JWTToken");
-        location.reload();
-    }
-
     if (createEvent) {
         createEvent.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             e.preventDefault();
@@ -83,7 +64,7 @@ async function app(): Promise<void> {
 
             if (formIsValid) {
                 if (createEvent.checkValidity()) {
-                    await createEvent(description?.value);
+                    await createNewEvent(description?.value);
                 }
             } else {
                 inputs.forEach((input: HTMLInputElement | null): void => {
@@ -156,11 +137,27 @@ async function app(): Promise<void> {
 
 app();
 
+function hideCreateEvent(): void {
+    const createEventForm: Element | null = document.querySelector(".create");
+    createEventForm?.classList.add("hidden");
+}
+
+function showCreateEvent(): void {
+    const createEventForm: Element | null = document.querySelector(".create");
+    createEventForm?.classList.remove("hidden");
+}
+
+function loggedOut(): void {
+    // Remove JWTToken From session
+    session.remove("JWTToken");
+    location.reload();
+}
+
 async function addEventsToTable(): Promise<void> {
     // Get token from session storage for userID
     const token: string = session.get("JWTToken");
     const logged: JWTPayload = await verify(token, __SECRET_KEY__);
-    const userID: any = logged.id;
+    const userID: eventInterface["userId"] = logged.id;
     const tableBody: Element | null = document.querySelector(".table-body");
 
     if (userID) {
@@ -198,7 +195,6 @@ async function addEventsToTable(): Promise<void> {
                             deleteButton.innerHTML = "<img src='assets/images/icons/delete-color.svg' alt='delete event' class='icon-delete'>";
                             const deleteSpan: HTMLSpanElement = deleteButton.appendChild(document.createElement("span"));
                             deleteSpan.appendChild(document.createTextNode("Delete"));
-
 
                             if (event) {
                                 if (event.eventStatus === 1) {
@@ -243,9 +239,9 @@ function hideEditEventForm(): void {
     editEventForm?.classList.add("hidden");
 }
 
-async function createEvent(description: string | undefined): Promise<void> {
+async function createNewEvent(description: string | undefined): Promise<void> {
     // Generate an random uuidv4 ID
-    const id: string = uuidv4();
+    const id: eventInterface["eventId"] = uuidv4();
 
     const errorMessage: Element | null = document.querySelector(".error-message");
     const createEventForm: Element | null = document.querySelector(".create");
@@ -304,7 +300,7 @@ async function showDeleteConfirmation(row: HTMLTableRowElement): Promise<void> {
     const cancelButton: Element | null = document.querySelector(".close-modal-button");
 
     if (row) {
-        const eventId: any = row.getAttribute("id");
+        const eventId: eventInterface["eventId"] = row.getAttribute("id");
         confirmationButton?.setAttribute("id", eventId);
 
         cancelButton?.classList.remove("hidden");
@@ -345,7 +341,7 @@ async function showSuccessMessage(message: string, duration: number | null): Pro
     messageButton?.classList.remove("hidden");
 }
 
-async function deleteEventFunction(id: string | any): Promise<void> {
+async function deleteEventFunction(id: eventInterface["eventId"]): Promise<void> {
     // Get closest <tr> to get user ID
     if (id) {
         // Delete event in database
@@ -363,7 +359,7 @@ async function deleteEventFunction(id: string | any): Promise<void> {
 }
 
 async function handleEventClick(row: HTMLTableRowElement): Promise<void> {
-    const id: string | null = row.getAttribute("id");
+    const id: eventInterface["eventId"] = row.getAttribute("id");
 
     if (id) {
         const url: string = utils.createUrl("single-event.html", {

@@ -3,6 +3,24 @@ import {verifyUser} from "./authentication/verifyUser";
 import {api, session} from "@hboictcloud/api";
 import {USER_QUERY} from "./query/user.query";
 
+async function app(): Promise<void> {
+    // Verify user before rest of page loads.
+    await verifyUser();
+    // Adds users to table
+    await addUsersToTable();
+
+    // Handle logout event
+    const logout: Element | any = document.querySelector(".logout");
+    const confirmationButton: Element | any = document.querySelector(".continue-button");
+    const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
+
+    closeMessageButton.addEventListener("click", closeMessage);
+    confirmationButton?.addEventListener("click", deleteUserFunction);
+    logout?.addEventListener("click", loggedOut);
+}
+
+app();
+
 async function addUsersToTable(): Promise<void> {
     const tableBody: Element | null = document.querySelector(".table-body");
     // Get all users form the database.
@@ -38,9 +56,10 @@ async function addUsersToTable(): Promise<void> {
 }
 
 async function deleteUserFunction(this: HTMLElement | any): Promise<void> {
-    if (this.id) {
+    const userid: userInterface["userId"] = this.id;
+    if (userid) {
         // Delete user from database with userID
-        const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.DELETE_USER, this.id);
+        const user: Promise<string | any[]> = api.queryDatabase(USER_QUERY.DELETE_USER, userid);
         user.then(
             (): void => {
                 location.reload();
@@ -52,7 +71,6 @@ async function deleteUserFunction(this: HTMLElement | any): Promise<void> {
     }
 }
 
-
 async function showDelete(row: HTMLTableRowElement): Promise<void> {
     const confirmation: Element | null = document.querySelector(".filter");
     const deleteIcon: Element | null = document.querySelector(".delete-background");
@@ -61,7 +79,7 @@ async function showDelete(row: HTMLTableRowElement): Promise<void> {
     const cancelButton: Element | null = document.querySelector(".close-modal-button");
 
     if (row) {
-        const userId: any = row.getAttribute("id");
+        const userId: userInterface["userId"] = row.getAttribute("id");
         confirmationButton?.setAttribute("id", userId);
 
         cancelButton?.classList.remove("hidden");
@@ -87,28 +105,8 @@ async function closeMessage(): Promise<void> {
     deleteIcon?.classList.add("hidden");
 }
 
-
-async function app(): Promise<void> {
-    // Verify user before rest of page loads.
-    await verifyUser();
-    // Adds users to table
-    await addUsersToTable();
-
-    // Handle logout event
-    const logout: Element | any = document.querySelector(".logout");
-    const confirmationButton: Element | any = document.querySelector(".continue-button");
-    const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
-
-    closeMessageButton.addEventListener("click", closeMessage);
-    confirmationButton?.addEventListener("click", deleteUserFunction);
-    logout?.addEventListener("click", loggedOut);
-
-    async function loggedOut(this: HTMLElement): Promise<void> {
-        // Remove JWTToken From session
-        session.remove("JWTToken");
-        location.reload();
-    }
-
+async function loggedOut(this: HTMLElement): Promise<void> {
+    // Remove JWTToken From session
+    session.remove("JWTToken");
+    location.reload();
 }
-
-app();

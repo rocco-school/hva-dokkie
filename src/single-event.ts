@@ -19,7 +19,7 @@ import {EVENT_QUERY} from "./query/event.query";
 /**
  * Entry point
  */
-let eventId: string = "";
+let eventId: string | any = "";
 
 async function app(): Promise<void> {
     await checkURLParams();
@@ -67,12 +67,8 @@ async function app(): Promise<void> {
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
     const returnButton: HTMLButtonElement | any = document.querySelector(".return");
 
-    confirmButton?.addEventListener("click", deleteFunction);
-
     showExpense?.addEventListener("click", showExpenseForm);
     hideExpense?.addEventListener("click", hideExpenseForm);
-
-    hideEditPayment?.addEventListener("click", hideEditPaymentForm);
     hideEditExpense?.addEventListener("click", hideEditExpenseForm);
 
     showParticipant?.addEventListener("click", showParticipantForm);
@@ -80,7 +76,9 @@ async function app(): Promise<void> {
 
     showPayment?.addEventListener("click", showPaymentForm);
     hidePayment?.addEventListener("click", hidePaymentForm);
+    hideEditPayment?.addEventListener("click", hideEditPaymentForm);
 
+    confirmButton?.addEventListener("click", deleteFunction);
     closeMessageButton?.addEventListener("click", closeMessage);
     returnButton?.addEventListener("click", handleReturnClick);
 
@@ -93,6 +91,7 @@ async function app(): Promise<void> {
     });
 
 
+    // EXPENSE
     // Expense form validation
     if (expenseForm) {
         expenseForm?.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
@@ -125,84 +124,7 @@ async function app(): Promise<void> {
         });
     }
 
-    // Participant form validation
-    if (participantForm) {
-        participantForm?.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
-            let error: boolean;
-            e.preventDefault();
-
-            error = false;
-
-            function checkParticipants(): void {
-                if (participant && participant.value === "") {
-                    if (customErrorMessage) {
-                        customErrorMessage.classList.remove("hidden");
-                        customErrorMessage.innerHTML = participant.name + "is required";
-                    }
-                    error = true;
-                }
-            }
-
-            await checkParticipants();
-
-            // Check if all inputs are validated
-            if (!error) {
-                await createParticipant(participant);
-            }
-
-        });
-    }
-
-    // Edit payment form validation
-    if (editPaymentForm) {
-        editPaymentForm.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
-            let error: boolean;
-            const editPaymentStatus: HTMLInputElement | any = editPaymentForm.querySelectorAll("input[name='edit-status']:checked");
-            const customErrorMessage: HTMLButtonElement | any = document.querySelector(".edit-payment-message");
-            const editPaymentId: HTMLButtonElement | any = document.querySelector(".edit-payment");
-            e.preventDefault();
-
-
-            async function validateInput(input: (HTMLInputElement | null), errorMessage: string): Promise<void> {
-                if (input && input.value === "") {
-                    if (customErrorMessage) {
-                        customErrorMessage.classList.remove("hidden");
-                        customErrorMessage.innerHTML = errorMessage;
-                    }
-                    error = true;
-                }
-            }
-
-
-            const inputs: (HTMLInputElement | null)[] = [editPaymentStatus[0]];
-
-            error = false;
-
-            for (const input of inputs) {
-                await validateInput(input, input?.name + " is required");
-            }
-
-            if (!error) {
-                customErrorMessage.classList.add("hidden");
-
-                if (!editPaymentAmount.value) {
-                    editPaymentAmount.value = 0;
-                }
-
-                const data: any[] = [editPaymentAmount.value, editPaymentDatePaid.value, editPaymentStatus[0].value, editPaymentId.id];
-                await editPayment(data);
-                await calculatePayments(null);
-                await hideEditPaymentForm();
-                await showSuccessMessage("Payment successfully updated", null);
-                await removeAllChildren();
-                await syncAllTables();
-
-            }
-
-        });
-    }
-
-    // Edit payment form validation
+    // Edit expense form validation
     if (editExpenseForm) {
         editExpenseForm.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             let error: boolean;
@@ -250,6 +172,85 @@ async function app(): Promise<void> {
                 await calculatePayments(editExpenseId.id);
                 await hideEditExpenseForm();
                 await showSuccessMessage("Expense successfully updated", null);
+                await removeAllChildren();
+                await syncAllTables();
+
+            }
+
+        });
+    }
+
+    // PARTICIPANT
+    // Participant form validation
+    if (participantForm) {
+        participantForm?.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
+            let error: boolean;
+            e.preventDefault();
+
+            error = false;
+
+            function checkParticipants(): void {
+                if (participant && participant.value === "") {
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = participant.name + "is required";
+                    }
+                    error = true;
+                }
+            }
+
+            await checkParticipants();
+
+            // Check if all inputs are validated
+            if (!error) {
+                await createParticipant(participant);
+            }
+
+        });
+    }
+
+    // PAYMENT
+    // Edit payment form validation
+    if (editPaymentForm) {
+        editPaymentForm.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
+            let error: boolean;
+            const editPaymentStatus: HTMLInputElement | any = editPaymentForm.querySelectorAll("input[name='edit-status']:checked");
+            const customErrorMessage: HTMLButtonElement | any = document.querySelector(".edit-payment-message");
+            const editPaymentId: HTMLButtonElement | any = document.querySelector(".edit-payment");
+            e.preventDefault();
+
+
+            async function validateInput(input: (HTMLInputElement | null), errorMessage: string): Promise<void> {
+                if (input && input.value === "") {
+                    if (customErrorMessage) {
+                        customErrorMessage.classList.remove("hidden");
+                        customErrorMessage.innerHTML = errorMessage;
+                    }
+                    error = true;
+                }
+            }
+
+
+            const inputs: (HTMLInputElement | null)[] = [editPaymentStatus[0]];
+
+            error = false;
+
+            for (const input of inputs) {
+                await validateInput(input, input?.name + " is required");
+            }
+
+            if (!error) {
+                customErrorMessage.classList.add("hidden");
+
+                if (!editPaymentAmount.value) {
+                    editPaymentAmount.value = 0;
+                }
+
+                const data: any[] = [editPaymentAmount.value, editPaymentDatePaid.value, editPaymentStatus[0].value, editPaymentId.id];
+                await editPayment(data);
+                await calculatePayments(null);
+                await hideEditPaymentForm();
+                await showSuccessMessage("Payment successfully updated", null);
                 await removeAllChildren();
                 await syncAllTables();
 
@@ -317,11 +318,10 @@ async function app(): Promise<void> {
 
 app();
 
-
 async function hideAllCreateButtons(): Promise<void> {
     if (eventId) {
         try {
-            const event: string | any[] = await api.queryDatabase(EVENT_QUERY.SELECT_EVENT, eventId);
+            const event: any | string[] = await api.queryDatabase(EVENT_QUERY.SELECT_EVENT, eventId);
             if (event) {
                 if (event[0].eventStatus !== 1) {
                     const createExpenseButton: Element | null = document.querySelector(".create-expense-button");

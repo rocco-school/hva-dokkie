@@ -19,6 +19,9 @@ async function app(): Promise<void> {
     const button: HTMLElement | any = document.querySelector(".submit");
     const customErrorMessage: HTMLElement | null = document.querySelector(".error-message");
 
+
+    button?.addEventListener("click", handleClick);
+
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             let error: boolean = false;
@@ -101,21 +104,20 @@ async function app(): Promise<void> {
                 }
             };
 
-            // Validates the input and if its invalid adds an customValidity warning.
-
+            // Validates the input and if its invalid adds a warning.
             const inputs: (HTMLInputElement | null)[] = [password, email];
 
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
             });
 
-            validate(password, email);
+            await validate(password, email);
 
             // Check if all inputs are validated
             const formIsValid: boolean = inputs.every((input: HTMLInputElement | null) => input?.checkValidity());
 
             if (formIsValid) {
-                if (error) {
+                if (!error) {
                     console.log("Form fields valid!");
                 }
             } else {
@@ -130,17 +132,16 @@ async function app(): Promise<void> {
 
         });
     }
-
-    button?.addEventListener("click", handleClick);
-
-    async function handleClick(this: HTMLElement): Promise<void> {
-        // Upon button click adds class and then removes it again.
-        this.classList.add("active");
-        await delay(400);
-        this.classList.remove("active");
-    }
 }
 
+app();
+
+async function handleClick(this: HTMLElement): Promise<void> {
+    // Upon button click adds class and then removes it again.
+    this.classList.add("active");
+    await delay(400);
+    this.classList.remove("active");
+}
 
 async function assignToken(user: any[] | string): Promise<void> {
     // Get secret key from env file
@@ -158,5 +159,3 @@ async function assignToken(user: any[] | string): Promise<void> {
     // Put JWT inside user session storage
     session.set("JWTToken", jwtToken);
 }
-
-app();
