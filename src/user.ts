@@ -2,6 +2,7 @@ import "./hboictcloud-config";
 import {verifyUser} from "./authentication/verifyUser";
 import {api, session} from "@hboictcloud/api";
 import {USER_QUERY} from "./query/user.query";
+import {closeDeleteMessage} from "./components/deleteMessage";
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
@@ -14,7 +15,7 @@ async function app(): Promise<void> {
     const confirmationButton: Element | any = document.querySelector(".continue-button");
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
 
-    closeMessageButton.addEventListener("click", closeMessage);
+    closeMessageButton.addEventListener("click", closeDeleteMessage);
     confirmationButton?.addEventListener("click", deleteUserFunction);
     logout?.addEventListener("click", loggedOut);
 }
@@ -93,16 +94,6 @@ async function showDelete(row: HTMLTableRowElement): Promise<void> {
             message.innerHTML = "Are you sure you want to delete this event?";
         }
     }
-}
-
-async function closeMessage(): Promise<void> {
-    const confirmation: Element | null = document.querySelector(".filter");
-    const deleteIcon: Element | null = document.querySelector(".delete-background");
-    const cancelButton: Element | null = document.querySelector(".close-modal-button");
-
-    cancelButton?.classList.add("hidden");
-    confirmation?.classList.add("hidden");
-    deleteIcon?.classList.add("hidden");
 }
 
 async function loggedOut(this: HTMLElement): Promise<void> {

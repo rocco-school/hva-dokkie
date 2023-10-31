@@ -12,9 +12,10 @@ import {EXPENSE_QUERY} from "./query/expanse.query";
 import {PAYMENT_QUERY} from "./query/payment.query";
 import {PARTICIPANT_QUERY} from "./query/participant.query";
 import {USER_QUERY} from "./query/user.query";
-import {delay} from "./components/delay";
 import {Status} from "./enum/status.enum";
 import {EVENT_QUERY} from "./query/event.query";
+import {showSuccessMessage} from "./components/successMessage";
+import {closeDeleteMessage} from "./components/deleteMessage";
 
 /**
  * Entry point
@@ -65,7 +66,6 @@ async function app(): Promise<void> {
     const confirmButton: HTMLButtonElement | any = document.querySelector(".continue-button");
 
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
-    const returnButton: HTMLButtonElement | any = document.querySelector(".return");
 
     showExpense?.addEventListener("click", showExpenseForm);
     hideExpense?.addEventListener("click", hideExpenseForm);
@@ -79,8 +79,7 @@ async function app(): Promise<void> {
     hideEditPayment?.addEventListener("click", hideEditPaymentForm);
 
     confirmButton?.addEventListener("click", deleteFunction);
-    closeMessageButton?.addEventListener("click", closeMessage);
-    returnButton?.addEventListener("click", handleReturnClick);
+    closeMessageButton?.addEventListener("click", closeDeleteMessage);
 
     document.querySelectorAll(".hero-tab").forEach(item => {
         item.addEventListener("click", handleHeroTab);
@@ -318,6 +317,7 @@ async function app(): Promise<void> {
 
 app();
 
+// Function to hide all create buttons when event is closed
 async function hideAllCreateButtons(): Promise<void> {
     if (eventId) {
         try {
@@ -338,6 +338,7 @@ async function hideAllCreateButtons(): Promise<void> {
     }
 }
 
+// Function to handle page breadcrumbs
 export async function handleBreadcrumbs(): Promise<void> {
     const dashboard: Element | null = document.querySelector(".expense-table");
 
@@ -364,6 +365,7 @@ export async function handleBreadcrumbs(): Promise<void> {
     }
 }
 
+// Function to handle dashboard widgets
 async function showEventData(): Promise<void> {
     const totalCostText: Element | any = document.querySelector(".total-cost");
     const totalParticipantsText: Element | any = document.querySelector(".total-participants");
@@ -414,6 +416,7 @@ async function showEventData(): Promise<void> {
     }
 }
 
+// Function to calculate all expenses payments
 export async function calculatePayments(expense: string | undefined | null): Promise<void> {
     let expenseId: string | any = document.querySelector(".payment-content")?.id;
 
@@ -479,6 +482,7 @@ export async function calculatePayments(expense: string | undefined | null): Pro
     }
 }
 
+// Function to handle creating payment
 async function createPayment(data: any[]): Promise<void> {
     try {
         const updatedPayment: string | any[] = await api.queryDatabase(PAYMENT_QUERY.CREATE_PAYMENT, ...data);
@@ -493,6 +497,7 @@ async function createPayment(data: any[]): Promise<void> {
     }
 }
 
+// Function to handle editing payment
 async function editPayment(data: any[]): Promise<void> {
     try {
         data[1] = data[1] === "" ? null : data[1];
@@ -508,6 +513,7 @@ async function editPayment(data: any[]): Promise<void> {
     }
 }
 
+// Function to handle editing expense
 async function editExpense(data: any[]): Promise<void> {
     try {
         data[1] = data[1] === "" ? null : data[1];
@@ -523,6 +529,7 @@ async function editExpense(data: any[]): Promise<void> {
     }
 }
 
+// Function to handle deleting expense
 function deleteFunction(this: HTMLElement): void {
     const confirmation: Element | null = document.querySelector(".filter");
     const deleteIcon: Element | null = document.querySelector(".delete-background");
@@ -579,6 +586,7 @@ function deleteFunction(this: HTMLElement): void {
     }
 }
 
+// Function to handle creating expense
 async function createExpense(description: string | undefined, amount: number | undefined, participants: any): Promise<void> {
     const id: string = uuidv4();
     const params: any[] = [id, description, amount, eventId];
@@ -593,7 +601,7 @@ async function createExpense(description: string | undefined, amount: number | u
                     if (amount) {
                         const cut: number = amount / participantsAmount;
                         const data: any[] = [null, description, cut, eventId, parseFloat(<string>participant), id, 0];
-                        createPayments(data);
+                        await createPayments(data);
                     }
                     count++;
                     if (count === participantsAmount) {
@@ -619,7 +627,9 @@ async function createExpense(description: string | undefined, amount: number | u
     }
 }
 
+// Function to handle creating all default expense payments.
 async function createPayments(data: any[]): Promise<void> {
+
     try {
         const payment: string | any[] = await api.queryDatabase(PAYMENT_QUERY.CREATE_DEFAULT_PAYMENT, ...data);
 
@@ -636,31 +646,7 @@ async function createPayments(data: any[]): Promise<void> {
 
 }
 
-async function showSuccessMessage(message: string, duration: number | null): Promise<void> {
-    const filter: Element | null = document.querySelector(".filter");
-    const messageButton: Element | null = document.querySelector(".continue-button");
-    const CustomMessage: Element | null = document.querySelector(".message");
-    const successIcon: Element | null = document.querySelector(".success-background");
-
-    filter?.classList.remove("hidden");
-    messageButton?.classList.add("hidden");
-    successIcon?.classList.remove("hidden");
-
-    if (CustomMessage) {
-        CustomMessage.innerHTML = message ?? "Successful!";
-    }
-
-    if (!duration) {
-        duration = 1000;
-    }
-
-    await delay(duration);
-
-    successIcon?.classList.add("hidden");
-    filter?.classList.add("hidden");
-    messageButton?.classList.remove("hidden");
-}
-
+// Function to handle syncing all tables (Expense/Participants/Payments and Widget)
 export async function syncAllTables(): Promise<void> {
     const tableParticipants: Element | null = document.querySelector(".participant-table-body");
     const tableExpenses: Element | null = document.querySelector(".expense-table-body");
@@ -674,6 +660,7 @@ export async function syncAllTables(): Promise<void> {
     await showEventData();
 }
 
+// Function to handle getting eventID from URL
 async function checkURLParams(): Promise<void> {
     try {
         let params: URLSearchParams = new URLSearchParams(location.search);
@@ -686,21 +673,25 @@ async function checkURLParams(): Promise<void> {
     }
 }
 
+// Function to show the create expense form
 function showExpenseForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".create-expense");
     createPaymentForm?.classList.remove("hidden");
 }
 
+// Function to hide the create expense form
 function hideExpenseForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".create-expense");
     createPaymentForm?.classList.add("hidden");
 }
 
+// Function to hide the edit expense form
 function hideEditExpenseForm(): void {
     const editExpenseForm: Element | null = document.querySelector(".edit-expense");
     editExpenseForm?.classList.add("hidden");
 }
 
+// Function to show the create payment form
 function showPaymentForm(): void {
 
     const paymentContent: Element | null = document.querySelector(".payment-content");
@@ -714,27 +705,32 @@ function showPaymentForm(): void {
     createPaymentForm?.classList.remove("hidden");
 }
 
+// Function to hide the create payment form
 function hidePaymentForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".payment-form");
     createPaymentForm?.classList.add("hidden");
 }
 
+// Function to hide the edit payment form
 function hideEditPaymentForm(): void {
     const editPaymentForm: Element | null = document.querySelector(".edit-payment");
     editPaymentForm?.classList.add("hidden");
 }
 
+// Function to show the add participant form
 async function showParticipantForm(): Promise<void> {
     const createPaymentForm: Element | null = document.querySelector(".add-participant");
     await handlePopulateSelects();
     createPaymentForm?.classList.remove("hidden");
 }
 
+// Function to hide the add participant form
 function hideParticipantForm(): void {
     const createPaymentForm: Element | null = document.querySelector(".add-participant");
     createPaymentForm?.classList.add("hidden");
 }
 
+// Function to handle single-event detail-page tab navigation
 async function handleHeroTab(this: HTMLElement): Promise<void> {
     const dashboard: Element | null = document.querySelector(".dashboard-content");
     const expenseTable: Element | null = document.querySelector(".expense-table");
@@ -761,12 +757,14 @@ async function handleHeroTab(this: HTMLElement): Promise<void> {
     }
 }
 
+// Function to handle logging out
 async function loggedOut(this: HTMLElement): Promise<void> {
     // Remove JWTToken From session
     session.remove("JWTToken");
     location.reload();
 }
 
+// Function to handle adding a participant
 async function createParticipant(participant: any): Promise<void> {
     try {
         const data: any[] = [eventId, participant.value];
@@ -787,6 +785,7 @@ async function createParticipant(participant: any): Promise<void> {
     }
 }
 
+// Function to handle adding users to payment select
 function populatePaymentSelect(expenseId): void {
     const arr: any[] = [eventId, expenseId];
     const getParticipants: Promise<string | any[]> = api.queryDatabase(USER_QUERY.GET_LEFT_OVER_USERS_FROM_EXPENSE, ...arr);
@@ -817,6 +816,7 @@ function populatePaymentSelect(expenseId): void {
     );
 }
 
+// Function to handle participants & expense select
 function handlePopulateSelects(): void {
     const arr: any[] = [eventId];
     const participants: Promise<string | any[]> = api.queryDatabase(PARTICIPANT_QUERY.SELECT_PARTICIPANT_AND_USER_BY_EVENT, ...arr);
@@ -871,24 +871,4 @@ function handlePopulateSelects(): void {
         }
     );
 
-}
-
-async function closeMessage(): Promise<void> {
-    const confirmation: Element | null = document.querySelector(".filter");
-    const deleteIcon: Element | null = document.querySelector(".delete-background");
-    const cancelButton: Element | null = document.querySelector(".close-modal-button");
-
-    cancelButton?.classList.add("hidden");
-    confirmation?.classList.add("hidden");
-    deleteIcon?.classList.add("hidden");
-}
-
-async function handleReturnClick(): Promise<void> {
-    document.querySelector(".hero-tabs")?.classList.remove("hidden");
-    document.querySelector(".hero-tabs-underline")?.classList.remove("hidden");
-    document.querySelector(".dashboard-content")?.classList.remove("hidden");
-    document.querySelector(".payment-content")?.classList.add("hidden");
-
-    await removeAllChildren();
-    await syncAllTables();
 }

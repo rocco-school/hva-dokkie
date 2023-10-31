@@ -557,6 +557,14 @@ input:focus {
     border-bottom-width: 1px;
 }
 
+.event {
+    cursor: pointer;
+}
+
+.expense {
+    cursor: pointer;
+}
+
 .table--outer .table tbody tr:hover {
     background-color: #F9FAFB;
 }

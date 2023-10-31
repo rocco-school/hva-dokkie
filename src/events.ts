@@ -10,6 +10,8 @@ import {Status} from "./enum/status.enum";
 import {delay} from "./components/delay";
 import {EXPENSE_QUERY} from "./query/expanse.query";
 import {PAYMENT_QUERY} from "./query/payment.query";
+import {showSuccessMessage} from "./components/successMessage";
+import {closeDeleteMessage} from "./components/deleteMessage";
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
@@ -29,16 +31,22 @@ async function app(): Promise<void> {
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
     const hideEditEvent: HTMLAnchorElement | any = document.querySelector(".cancel-edit-event");
 
-    messageButton?.addEventListener("click", handleMessage);
-    closeMessageButton?.addEventListener("click", closeMessage);
+    // Handle deleting event.
+    messageButton?.addEventListener("click", deleteEventFunction);
+
+    // Handle closing delete confirmation window
+    closeMessageButton?.addEventListener("click", closeDeleteMessage);
 
     // Handle logout event
     logout?.addEventListener("click", loggedOut);
+
     // Handle showing the create event form
     createButton?.addEventListener("click", showCreateEvent);
+
     // Handle canceling creating event.
     cancelButton?.addEventListener("click", hideCreateEvent);
 
+    // Handle hiding the create event from
     hideEditEvent?.addEventListener("click", hideEditEventForm);
 
     if (createEvent) {
@@ -139,22 +147,26 @@ async function app(): Promise<void> {
 
 app();
 
+// Function to hide the create event form
 function hideCreateEvent(): void {
     const createEventForm: Element | null = document.querySelector(".create");
     createEventForm?.classList.add("hidden");
 }
 
+// Function to show the create event form
 function showCreateEvent(): void {
     const createEventForm: Element | null = document.querySelector(".create");
     createEventForm?.classList.remove("hidden");
 }
 
+// Function to handle logging out
 function loggedOut(): void {
     // Remove JWTToken From session
     session.remove("JWTToken");
     location.reload();
 }
 
+// Function to add data to event table
 async function addEventsToTable(): Promise<void> {
     // Get token from session storage for userID
     const token: string = session.get("JWTToken");
@@ -238,6 +250,7 @@ async function addEventsToTable(): Promise<void> {
     }
 }
 
+// Function to share an event
 async function shareEvent(row: HTMLTableRowElement): Promise<void> {
     // Get the event ID from the row's ID attribute
     const eventID: eventInterface["eventId"] = row.id;
@@ -255,7 +268,6 @@ async function shareEvent(row: HTMLTableRowElement): Promise<void> {
 
     if (eventID) {
         try {
-            // Retrieve event, total cost, total participants, total paid payments, total unpaid payments, and expenses data
             const [
                 getEvent,
                 getTotalCost,
@@ -272,91 +284,62 @@ async function shareEvent(row: HTMLTableRowElement): Promise<void> {
                 api.queryDatabase(EXPENSE_QUERY.SELECT_EXPENSES_BY_EVENT, eventID),
             ]);
 
-            // Populate the event object with retrieved data
             if (getEvent) {
+                // Helper function to get event status
+                const getStatusEvent: (status: number) => string = (status: number): string => (status === 0 ? "Open" : "Closed");
+
                 event.description = getEvent[0].description;
-                event.status = getEvent[0].eventStatus;
+                event.status = getStatusEvent(getEvent[0].eventStatus);
             }
 
-            if (getTotalCost) {
-                if (!getTotalCost[0].totalCost) {
-                    getTotalCost[0].totalCost = 0;
-                }
-                event.totalCost = "€" + getTotalCost[0].totalCost;
-            }
-
-            if (getTotalParticipants) {
-                if (!getTotalParticipants[0].totalParticipants) {
-                    getTotalParticipants[0].totalParticipants = 0;
-                }
-                event.totalParticipants = getTotalParticipants[0].totalParticipants;
-            }
-
-            if (getTotalPaidPayments) {
-                if (!getTotalPaidPayments[0].totalPaidPayments) {
-                    getTotalPaidPayments[0].totalPaidPayments = 0;
-                }
-                event.totalPaidPayments = getTotalPaidPayments[0].totalPaidPayments;
-            }
-
-            if (getTotalUnpaidPayments) {
-                if (!getTotalUnpaidPayments[0].totalUnpaidPayments) {
-                    getTotalUnpaidPayments[0].totalUnpaidPayments = 0;
-                }
-                event.totalUnpaidPayments = getTotalUnpaidPayments[0].totalUnpaidPayments;
-            }
+            event.totalCost = `€${getTotalCost ? getTotalCost[0].totalCost || 0 : 0}`;
+            event.totalParticipants = getTotalParticipants ? getTotalParticipants[0].totalParticipants || 0 : 0;
+            event.totalPaidPayments = getTotalPaidPayments ? getTotalPaidPayments[0].totalPaidPayments || 0 : 0;
+            event.totalUnpaidPayments = getTotalUnpaidPayments ? getTotalUnpaidPayments[0].totalUnpaidPayments || 0 : 0;
 
             if (getExpenses) {
-                // Loop through expenses and build expense objects
-                for (const expense: any of getExpenses) {
-                    let expensesStatus: string = "";
-                    if (expense.expenseStatus === 0) {
-                        expensesStatus = "Open";
-                    } else {
-                        expensesStatus = "Closed";
-                    }
+                // Helper function to get expense status
+                const getStatusExpense: (status) => string = (status: number): string => (status === 0 ? "Open" : "Closed");
 
-                    const expenseObject: object = {
-                        description: expense.description,
-                        totalAmount: expense.totalAmount,
-                        status: expensesStatus,
-                        payments: []
-                    };
+                // Handle expenses with promises inside
+                if (typeof getExpenses !== "string") {
+                    event.expenses = await Promise.all(getExpenses.map(async (expense) => {
+                        const expenseStatus: string = getStatusExpense(expense.expenseStatus);
+                        const arr: any[] = [eventID, expense.expenseId];
 
-                    const arr: any[] = [eventID, expense.expenseId];
+                        const getPayments: any | string = await api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...arr);
 
-                    // Retrieve payments for the current expense
-                    const getPayments: any | string = await api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...arr);
+                        // Helper function to get payment status
+                        const getStatusPayment: (status) => string = (status): string => (status === 0 ? "Unpaid" : "Paid");
 
-                    // Loop through payments and build payment objects
-                    for (const payment: any of getPayments) {
-                        let paymentsStatus: string = "";
-                        if (payment.paymentStatus === 0) {
-                            paymentsStatus = "Paid";
-                        } else {
-                            paymentsStatus = "Unpaid";
+                        const getPaymentAmount: (paymentAmount) => string = (paymentAmount): string => (paymentAmount < 0 ? "To receive: €" + (paymentAmount * -1) : "To pay: €" + paymentAmount);
+
+                        if (typeof getPayments !== "string") {
+                            const payments: object = getPayments.map((payment) => ({
+                                description: payment.description,
+                                customAmount: payment.customAmount,
+                                paymentAmount: getPaymentAmount(payment.paymentAmount),
+                                participant: payment.username,
+                                status: getStatusPayment(payment.paymentStatus),
+                            }));
+
+                            return {
+                                description: expense.description,
+                                totalAmount: expense.totalAmount,
+                                status: expenseStatus,
+                                payments,
+                            };
                         }
-
-                        const paymentObject: object = {
-                            description: payment.description,
-                            customAmount: payment.customAmount,
-                            paymentAmount: payment.paymentAmount,
-                            participant: payment.username,
-                            status: paymentsStatus,
-                        };
-                        // Add payment object to the current expense
-                        expenseObject.payments.push(paymentObject);
-                    }
-                    // Add expense object to the event's expenses array
-                    event.expenses.push(expenseObject);
+                    }));
                 }
             }
-
-
         } catch (e) {
             console.log(e);
         }
     }
+
+    console.log(event);
+
 
 // Generate a formatted message for sharing the event
     const message: string = `Event Details:%0a
@@ -376,7 +359,7 @@ ${event.expenses.map((expense, index: number): string => `
 ${expense.payments.map((payment, paymentIndex: number): string => `
         ${paymentIndex + 1}. ${payment.description}%0a
         - Paid Amount: ${payment.customAmount || "N/A"}%0a
-        - To-be Paid Amount: ${payment.paymentAmount}%0a
+        - Amount: ${payment.paymentAmount}%0a
         - Participant: ${payment.participant}%0a
         - Status: ${payment.status}%0a
 `).join("")}
@@ -387,6 +370,7 @@ ${expense.payments.map((payment, paymentIndex: number): string => `
     window.open(`https://web.whatsapp.com/send?text=${message}`, "_blank");
 }
 
+// Function to show the edit event form
 async function editRecord(row: HTMLTableRowElement): Promise<void> {
     if (row.classList.contains("event")) {
         const editEventForm: Element | null = document.querySelector(".edit-event");
@@ -397,11 +381,13 @@ async function editRecord(row: HTMLTableRowElement): Promise<void> {
     }
 }
 
+// Function to hide the edit event form
 function hideEditEventForm(): void {
     const editEventForm: Element | null = document.querySelector(".edit-event");
     editEventForm?.classList.add("hidden");
 }
 
+// Function to handle creating a new event
 async function createNewEvent(description: string | undefined): Promise<void> {
     // Generate an random uuidv4 ID
     const id: eventInterface["eventId"] = uuidv4();
@@ -455,6 +441,7 @@ async function createNewEvent(description: string | undefined): Promise<void> {
     }
 }
 
+// Function to handle showing delete confirmation window
 async function showDeleteConfirmation(row: HTMLTableRowElement): Promise<void> {
     const confirmation: Element | null = document.querySelector(".filter");
     const deleteIcon: Element | null = document.querySelector(".delete-background");
@@ -479,32 +466,9 @@ async function showDeleteConfirmation(row: HTMLTableRowElement): Promise<void> {
     }
 }
 
-async function showSuccessMessage(message: string, duration: number | null): Promise<void> {
-    const filter: Element | null = document.querySelector(".filter");
-    const messageButton: Element | null = document.querySelector(".continue-button");
-    const CustomMessage: Element | null = document.querySelector(".message");
-    const successIcon: Element | null = document.querySelector(".success-background");
-
-    filter?.classList.remove("hidden");
-    messageButton?.classList.add("hidden");
-    successIcon?.classList.remove("hidden");
-
-    if (CustomMessage) {
-        CustomMessage.innerHTML = message ?? "Successful!";
-    }
-
-    if (!duration) {
-        duration = 1000;
-    }
-
-    await delay(duration);
-
-    successIcon?.classList.add("hidden");
-    filter?.classList.add("hidden");
-    messageButton?.classList.remove("hidden");
-}
-
-async function deleteEventFunction(id: eventInterface["eventId"]): Promise<void> {
+// Function to handle deleting an event
+async function deleteEventFunction(this: HTMLElement): Promise<void> {
+    const id: eventInterface["eventId"] = this.id;
     // Get closest <tr> to get user ID
     if (id) {
         // Delete event in database
@@ -521,6 +485,7 @@ async function deleteEventFunction(id: eventInterface["eventId"]): Promise<void>
     }
 }
 
+// Function to handle showing event-detail page
 async function handleEventClick(row: HTMLTableRowElement): Promise<void> {
     const id: eventInterface["eventId"] = row.getAttribute("id");
 
@@ -534,22 +499,7 @@ async function handleEventClick(row: HTMLTableRowElement): Promise<void> {
     }
 }
 
-async function handleMessage(this: HTMLElement): Promise<void> {
-    if (this.id) {
-        await deleteEventFunction(this.id);
-    }
-}
-
-async function closeMessage(): Promise<void> {
-    const confirmation: Element | null = document.querySelector(".filter");
-    const deleteIcon: Element | null = document.querySelector(".delete-background");
-    const cancelButton: Element | null = document.querySelector(".close-modal-button");
-
-    cancelButton?.classList.add("hidden");
-    confirmation?.classList.add("hidden");
-    deleteIcon?.classList.add("hidden");
-}
-
+// Function to handle updating an event.
 async function updateEvent(data: any[]): Promise<void> {
     try {
         data[1] = data[1] === "" ? null : data[1];
