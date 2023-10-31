@@ -420,6 +420,15 @@ input:focus {
     margin-right: .3rem;
 }
 
+.icon-whatsapp {
+    position: relative;
+    top: .2rem;
+    width: 1rem;
+    height: 1rem;
+    margin-right: .3rem;
+}
+
+
 .icon-delete {
     position: relative;
     top: .2rem;
@@ -552,20 +561,15 @@ input:focus {
     background-color: #F9FAFB;
 }
 
+.table--outer .table tbody td {
+    padding: 0 1.5rem;
+}
+
 .table--outer .table tbody th {
     padding: 1rem 1.5rem;
     font-weight: 500;
     color: #111827;
     white-space: nowrap;
-}
-
-.table--outer .table tbody td {
-    padding: 1rem 1.5rem;
-}
-
-.table--outer .table tbody td:last-of-type {
-    padding: 0;
-    max-width: 9rem;
 }
 
 .table-name {
@@ -594,6 +598,16 @@ input:focus {
 }
 
 .edit-button {
+    color: #48bb78;
+    padding: 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+}
+
+.whatsapp-button {
     color: #48bb78;
     padding: 1rem;
     margin-right: 1rem;

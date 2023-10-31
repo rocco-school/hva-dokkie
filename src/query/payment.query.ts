@@ -9,6 +9,8 @@ export const PAYMENT_QUERY: {
     FIND_PAYMENTS_BY_EVENT_ID: string;
     GET_PAYMENTS_BY_EXPENSE_ID: string;
     GET_TOTAL_AMOUNT_OF_PAYMENTS_BY_EVENT_ID: string;
+    GET_TOTAL_PAID_PAYMENTS: string;
+    GET_TOTAL_UNPAID_PAYMENTS: string;
 } = {
     SELECT_PAYMENTS: "SELECT * FROM payment LIMIT 50",
     SELECT_PAYMENT: "SELECT * FROM payment WHERE paymentId = ?",
@@ -20,4 +22,6 @@ export const PAYMENT_QUERY: {
     FIND_PAYMENTS_BY_EVENT_ID: "SELECT * FROM payment WHERE eventId = ?",
     GET_PAYMENTS_BY_EXPENSE_ID: "SELECT payment.paymentId, payment.datePaid, payment.description, payment.customAmount, payment.paymentAmount, payment.eventId, payment.paymentId, payment.expenseId, payment.paymentStatus, user.userId, user.email, user.username FROM payment INNER JOIN participant ON participant.participantId = payment.participantId INNER JOIN user ON user.userId = participant.userId WHERE payment.eventId = ? AND payment.expenseId = ?",
     GET_TOTAL_AMOUNT_OF_PAYMENTS_BY_EVENT_ID: "SELECT COUNT(*) as totalPayments FROM payment WHERE eventId = ? AND paymentStatus = 0",
+    GET_TOTAL_PAID_PAYMENTS: "SELECT SUM(paymentAmount) as totalPaidPayments FROM payment WHERE eventId = ? AND paymentStatus = 1",
+    GET_TOTAL_UNPAID_PAYMENTS: "SELECT SUM(paymentAmount) as totalUnpaidPayments FROM payment WHERE eventId = ? AND paymentStatus = 0",
 };
