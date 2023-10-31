@@ -17,6 +17,7 @@ import {EVENT_QUERY} from "./query/event.query";
 import {showSuccessMessage} from "./components/successMessage";
 import {closeDeleteMessage} from "./components/deleteMessage";
 import {loggedOut} from "./components/handleLogout";
+import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
 /**
  * Entry point
@@ -67,6 +68,20 @@ async function app(): Promise<void> {
     const confirmButton: HTMLButtonElement | any = document.querySelector(".continue-button");
 
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
+
+    const openMobileMenu: Element | any = document.querySelector(".mobile-menu");
+    const closeMobileMenu: Element | any = document.querySelector(".close-menu");
+    const mobileNav: Element | any = document.querySelector(".overlay");
+
+    // Handle open mobile nav menu
+    openMobileMenu?.addEventListener("click", (): void => {
+        openMenu(mobileNav);
+    });
+
+    // Handle closing mobile nav menu
+    closeMobileMenu?.addEventListener("click", (): void => {
+        closeMenu(mobileNav);
+    });
 
     showExpense?.addEventListener("click", showExpenseForm);
     hideExpense?.addEventListener("click", hideExpenseForm);

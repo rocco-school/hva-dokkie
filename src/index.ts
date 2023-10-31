@@ -1,9 +1,7 @@
 import "./hboictcloud-config";
-import {session} from "@hboictcloud/api";
-import {JWTPayload} from "jose";
-import {verify} from "./authentication/jsonwebtoken";
 import {verifyUserHomePage} from "./authentication/verifyUser";
 import {loggedOut} from "./components/handleLogout";
+import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
 /**
  * Entry point
@@ -16,14 +14,19 @@ async function app(): Promise<void> {
     const button: Element | any = document.querySelector(".start_button");
     button?.addEventListener("click", scrollDown);
 
-    // Handle open mobile nav menu
     const openMobileMenu: Element | any = document.querySelector(".mobile-menu");
-    openMobileMenu?.addEventListener("click", openMenu);
+    const closeMobileMenu: Element | any = document.querySelector(".close-menu");
+    const mobileNav: Element | any = document.querySelector(".overlay");
+
+    // Handle open mobile nav menu
+    openMobileMenu?.addEventListener("click", (): void => {
+        openMenu(mobileNav);
+    });
 
     // Handle closing mobile nav menu
-    const closeMobileMenu: Element | any = document.querySelector(".close-menu");
-    closeMobileMenu?.addEventListener("click", closeMenu);
-
+    closeMobileMenu?.addEventListener("click", (): void => {
+        closeMenu(mobileNav);
+    });
     // Handle logout event
     document.querySelectorAll(".logout").forEach(item => {
         item.addEventListener("click", loggedOut);
@@ -39,20 +42,6 @@ async function app(): Promise<void> {
 }
 
 app();
-
-// Function to handle opening mobile menu
-function openMenu(): void {
-    const mobileNav: Element | any = document.querySelector(".overlay");
-    mobileNav?.classList.add("max-width");
-    console.log("done!");
-}
-
-// Function to handle closing mobile menu
-function closeMenu(): void {
-    const mobileNav: Element | any = document.querySelector(".overlay");
-    mobileNav?.classList.remove("max-width");
-    console.log("closed!");
-}
 
 // Function to handle scrolling down to FAQ's
 async function scrollDown(this: HTMLElement): Promise<void> {

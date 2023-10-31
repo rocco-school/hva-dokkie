@@ -6,6 +6,7 @@ import {sign} from "./authentication/jsonwebtoken";
 import {verifyUserRedirect} from "./authentication/verifyUser";
 import {delay} from "./components/delay";
 import {showSuccessMessage} from "./components/successMessage";
+import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
 /**
  * Entry point
@@ -20,7 +21,19 @@ async function app(): Promise<void> {
     const email: HTMLInputElement | null = document.querySelector("#email");
     const button: HTMLElement | any = document.querySelector(".submit");
     const customErrorMessage: HTMLElement | null = document.querySelector(".error-message");
+    const openMobileMenu: Element | any = document.querySelector(".mobile-menu");
+    const closeMobileMenu: Element | any = document.querySelector(".close-menu");
+    const mobileNav: Element | any = document.querySelector(".overlay");
 
+    // Handle open mobile nav menu
+    openMobileMenu?.addEventListener("click", (): void => {
+        openMenu(mobileNav);
+    });
+
+    // Handle closing mobile nav menu
+    closeMobileMenu?.addEventListener("click", (): void => {
+        closeMenu(mobileNav);
+    });
 
     // Show password / Hide password
     document.querySelectorAll(".icon-eye").forEach(item => {

@@ -11,14 +11,32 @@
 </head>
 <body>
 <main>
-    <!-- Header navigation -->
+    <!-- Hero navigation -->
     <div class="hero">
+        <!-- Header navigation -->
         <div class="header">
             <a href="index.html" class="logo">Dokkie</a>
             <div class="header-right">
-                <a class="users" href="events.html">Events</a>
-                <div class="logout highlight">Log out!</div>
+                <div class="header-items not-logged">
+                    <a class="events" href="events.html">events</a>
+                    <div class="logout highlight">Log out!</div>
+                </div>
+                <div class="mobile-menu">
+                    <img src="assets/images/icons/menu.svg" alt="menu icon" class="menu-icon">
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Header mobile navigation -->
+    <div class="overlay">
+        <div class="overlay-content">
+            <div class="close-menu">
+                <a class="close-btn">&times;</a>
+            </div>
+            <a class="logo" href="index.html">Home</a>
+            <a class="events " href="events.html">events</a>
+            <a class="logout">Log out!</a>
         </div>
     </div>
 

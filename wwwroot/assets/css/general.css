@@ -708,3 +708,7 @@ input:focus {
         right: 1.5rem;
     }
 }
+
+.max-width {
+    width: 100%;
+}

@@ -13,6 +13,7 @@ import {PAYMENT_QUERY} from "./query/payment.query";
 import {showSuccessMessage} from "./components/successMessage";
 import {closeDeleteMessage} from "./components/deleteMessage";
 import {loggedOut} from "./components/handleLogout";
+import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
 async function app(): Promise<void> {
     // Verify user before rest of page loads.
@@ -32,6 +33,19 @@ async function app(): Promise<void> {
     const closeMessageButton: HTMLButtonElement | any = document.querySelector(".close-modal-button");
     const hideEditEvent: HTMLAnchorElement | any = document.querySelector(".cancel-edit-event");
 
+    const openMobileMenu: Element | any = document.querySelector(".mobile-menu");
+    const closeMobileMenu: Element | any = document.querySelector(".close-menu");
+    const mobileNav: Element | any = document.querySelector(".overlay");
+
+    // Handle open mobile nav menu
+    openMobileMenu?.addEventListener("click", (): void => {
+        openMenu(mobileNav);
+    });
+
+    // Handle closing mobile nav menu
+    closeMobileMenu?.addEventListener("click", (): void => {
+        closeMenu(mobileNav);
+    });
     // Handle deleting event.
     messageButton?.addEventListener("click", deleteEventFunction);
 
