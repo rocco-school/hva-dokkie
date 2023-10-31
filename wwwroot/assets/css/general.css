@@ -1,3 +1,100 @@
+/* Default page */
+* {
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #F3F4F6;
+    display: flex;
+}
+
+main {
+    width: 100%;
+}
+
+.hero {
+    background-color: white;
+}
+
+
+/* Header */
+.header {
+    overflow: hidden;
+    padding: .8rem 0;
+    vertical-align: center;
+    margin: 0 9rem;
+}
+
+@media screen and (max-width: 1250px) {
+    .header {
+        margin: 0 3rem;
+    }
+}
+
+.header .logo {
+    font-size: 2rem;
+}
+
+.header .highlight {
+    background-color: #F8BC24;
+    width: 8rem;
+    border-radius: 2rem;
+}
+
+.header .highlight:hover {
+    background-color: #051821;
+    color: white;
+}
+
+.header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.3rem;
+    line-height: 1rem;
+    border-radius: 1.2rem;
+    margin-right: 2rem;
+}
+
+.header .logout {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    text-decoration: none;
+    font-size: 1.2rem;
+    line-height: 1rem;
+    border-radius: 1.2rem;
+    margin-right: 2rem;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.header-right {
+    float: right;
+}
+
+@media screen and (max-width: 500px) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .header-right {
+        float: none;
+    }
+}
+
+
+/* Success/Failed/Delete messages  */
 .success-modal {
     overflow-y: auto;
     overflow-x: hidden;
@@ -130,6 +227,9 @@
     background-color: #2b6cb0;
 }
 
+
+/* Backgrounds  */
+
 .blur-container {
     position: fixed;
     top: 0;
@@ -152,8 +252,7 @@
 }
 
 
-/** Create formulier */
-
+/** Create form */
 .create-button-wrapper {
     width: 70%;
     position: relative;
@@ -165,7 +264,6 @@
     position: relative;
     margin: 5rem auto 2rem;
 }
-
 
 .create-button {
     position: absolute;
@@ -303,10 +401,6 @@ input:focus {
     margin: 1rem auto auto;
 }
 
-.hidden {
-    display: none;
-}
-
 .icon-eye {
     float: right;
     margin-left: -25px;
@@ -315,6 +409,7 @@ input:focus {
     width: 1rem;
     height: 1rem;
     z-index: 2;
+    cursor: pointer;
 }
 
 .icon-edit {
@@ -324,7 +419,6 @@ input:focus {
     height: 1rem;
     margin-right: .3rem;
 }
-
 
 .icon-delete {
     position: relative;
@@ -346,6 +440,13 @@ input:focus {
     cursor: not-allowed;
 }
 
+/* Hide  */
+.hidden {
+    display: none;
+}
+
+
+/* Breadcrumbs  */
 .breadcrumb-container {
     width: 80%;
     margin: auto;
@@ -414,6 +515,59 @@ input:focus {
     color: #6B7280;
 }
 
+
+/* Table  */
+.table--outer {
+    position: relative;
+    overflow-x: auto;
+    border-radius: 0.5rem;
+}
+
+.table--outer .table {
+    width: 100%;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+    color: #6B7280;
+}
+
+.table--outer .table .thead {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: #374151;
+    text-transform: uppercase;
+    background-color: #F9FAFB;
+}
+
+.table--outer .table .table-head th {
+    padding: 0.75rem 1.5rem;
+}
+
+.table--outer .table tbody tr {
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+}
+
+.table--outer .table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.table--outer .table tbody th {
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.table--outer .table tbody td {
+    padding: 1rem 1.5rem;
+}
+
+.table--outer .table tbody td:last-of-type {
+    padding: 0;
+    max-width: 9rem;
+}
+
 .table-name {
     position: absolute;
     left: 0;
@@ -451,4 +605,84 @@ input:focus {
 
 .edit-button:disabled {
     cursor: not-allowed;
+}
+
+
+/* Mobile menu  */
+.mobile-menu {
+    display: none;
+}
+
+@media screen and (max-width: 680px) {
+
+    .logo {
+        margin-top: .5rem;
+    }
+
+    .header-items {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: flex;
+        margin: auto;
+    }
+
+    .menu-icon {
+        padding: 1rem;
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #000000e6;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.overlay-content {
+    position: relative;
+    display: grid;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}
+
+.overlay .close-btn {
+    position: absolute;
+    top: -14.5rem;
+    right: 1.5rem;
+    font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+    .overlay a {
+        font-size: 20px
+    }
+
+    .overlay .close-btn {
+        font-size: 40px;
+        top: -14.5rem;
+        right: 1.5rem;
+    }
 }

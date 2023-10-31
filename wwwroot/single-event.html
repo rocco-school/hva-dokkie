@@ -193,6 +193,42 @@
         </div>
     </div>
 
+    <!-- Edit expense form -->
+    <div class="darkness-container hidden edit-expense">
+        <div class="create-form">
+            <div class="container">
+                <h2 class="container--title">Edit expense</h2>
+                <form id="edit-expense-form" novalidate>
+                    <div class="amount field">
+                        <label for="edit-expense-amount"><b>Total Cost</b></label>
+                        <input id="edit-expense-amount" type="number" name="Total Cost" placeholder="Amount">
+                    </div>
+
+                    <div class="status">
+                        <p class="status-title">Expense status</p>
+                        <div class="option">
+                            <input id="expense-status-open" type="radio" name="edit-status"
+                                   placeholder="Open" value="0" checked="checked">
+                            <label for="expense-status-open">Open</label>
+                        </div>
+                        <div class="option">
+                            <input id="expense-status-closed" type="radio" name="edit-status" placeholder="Closed"
+                                   value="1">
+                            <label for="expense-status-closed">Closed</label>
+                        </div>
+                    </div>
+
+                    <div class="error-message edit-expense-message hidden">Error when editing Payment!</div>
+
+                    <div class="form-buttons">
+                        <button class="submit" type="submit">Save</button>
+                        <button class="cancel cancel-edit-expense" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Create payment form -->
     <div class="darkness-container payment-form hidden">
         <div class="create-form payment">
@@ -252,30 +288,6 @@
         </div>
     </div>
 
-    <!-- Add participant to event form -->
-    <div class="darkness-container add-participant hidden">
-        <div class="create-form">
-            <div class="container">
-                <h2 class="container--title">Add participant!</h2>
-                <form id="participant-form">
-                    <div class="participant field">
-                        <label class="dropdown-label required" for="participant"><b>Participant</b></label>
-                        <select class="dropdown" id="participant" name="participant">
-                            <option value="none" selected disabled hidden>Select an Option</option>
-                        </select>
-                    </div>
-
-                    <div class="error-message hidden">Error when creating Expense</div>
-
-                    <div class="form-buttons">
-                        <button class="submit" type="submit">Create</button>
-                        <button class="cancel cancel-create-participant" type="button">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Edit payment form -->
     <div class="darkness-container edit-payment hidden">
         <div class="create-form">
@@ -319,36 +331,24 @@
         </div>
     </div>
 
-    <!-- Edit expense form -->
-    <div class="darkness-container hidden edit-expense">
+    <!-- Add participant to event form -->
+    <div class="darkness-container add-participant hidden">
         <div class="create-form">
             <div class="container">
-                <h2 class="container--title">Edit expense</h2>
-                <form id="edit-expense-form" novalidate>
-                    <div class="amount field">
-                        <label for="edit-expense-amount"><b>Total Cost</b></label>
-                        <input id="edit-expense-amount" type="number" name="Total Cost" placeholder="Amount">
+                <h2 class="container--title">Add participant!</h2>
+                <form id="participant-form">
+                    <div class="participant field">
+                        <label class="dropdown-label required" for="participant"><b>Participant</b></label>
+                        <select class="dropdown" id="participant" name="participant">
+                            <option value="none" selected disabled hidden>Select an Option</option>
+                        </select>
                     </div>
 
-                    <div class="status">
-                        <p class="status-title">Expense status</p>
-                        <div class="option">
-                            <input id="expense-status-open" type="radio" name="edit-status"
-                                   placeholder="Open" value="0" checked="checked">
-                            <label for="expense-status-open">Open</label>
-                        </div>
-                        <div class="option">
-                            <input id="expense-status-closed" type="radio" name="edit-status" placeholder="Closed"
-                                   value="1">
-                            <label for="expense-status-closed">Closed</label>
-                        </div>
-                    </div>
-
-                    <div class="error-message edit-expense-message hidden">Error when editing Payment!</div>
+                    <div class="error-message hidden">Error when creating Expense</div>
 
                     <div class="form-buttons">
-                        <button class="submit" type="submit">Save</button>
-                        <button class="cancel cancel-edit-expense" type="button">Cancel</button>
+                        <button class="submit" type="submit">Create</button>
+                        <button class="cancel cancel-create-participant" type="button">Cancel</button>
                     </div>
                 </form>
             </div>

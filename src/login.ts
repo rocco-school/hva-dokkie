@@ -20,6 +20,11 @@ async function app(): Promise<void> {
     const customErrorMessage: HTMLElement | null = document.querySelector(".error-message");
 
 
+    // Show password / Hide password
+    document.querySelectorAll(".icon-eye").forEach(item => {
+        item.addEventListener("click", handleShowPasswordClick);
+    });
+
     button?.addEventListener("click", handleClick);
 
     if (form) {
@@ -135,6 +140,31 @@ async function app(): Promise<void> {
 }
 
 app();
+
+
+async function handleShowPasswordClick(this: HTMLImageElement): Promise<void> {
+    const password: HTMLInputElement | null = document.querySelector("#password");
+    this.classList.toggle("open");
+
+    const parentElementId: string | undefined = this.parentElement?.id;
+
+    // Check what the parentID is if it checks call function.
+    if (parentElementId) {
+        if (password) {
+            togglePasswordVisibility(password, this, "assets/images/icons/eye-hidden-com.svg", "assets/images/icons/eye-open-com.svg");
+        }
+    }
+}
+
+function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
+    if (input) {
+        // Get image with class open and change password type to plain text
+        // Change the image of the clicked icon.
+        const isOpen: boolean = image.classList.contains("open");
+        input.type = isOpen ? "password" : "text";
+        image.src = isOpen ? hiddenSrc : openSrc;
+    }
+}
 
 async function handleClick(this: HTMLElement): Promise<void> {
     // Upon button click adds class and then removes it again.

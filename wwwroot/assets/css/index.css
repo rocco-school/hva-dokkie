@@ -1,24 +1,3 @@
-/**
-primary color = dark blue = #051821
-Secondary color = dark green = #1A4645
-tertiary color = lighter green = #266867
-quaternary color = orange = #F58800
-quinary color = yellow = #F8BC24
- */
-* {
-    font-family: 'Poppins', sans-serif;
-    padding: 0;
-    margin: 0;
-}
-
-body {
-    display: flex;
-}
-
-main {
-    width: 100%;
-}
-
 .container {
     background-image: url('../images/geld3.png');
     background-repeat: no-repeat;
@@ -297,84 +276,6 @@ main {
 
 .faq-container .is-active .faq--question .faq--question-arrow {
     transform: rotate(0deg);
-}
-
-.mobile-menu {
-    display: none;
-}
-
-@media screen and (max-width: 680px) {
-
-    .logo {
-        margin-top: .5rem;
-    }
-
-    .header-items {
-        display: none;
-    }
-
-    .mobile-menu {
-        display: flex;
-        margin: auto;
-    }
-
-    .menu-icon {
-        padding: 1rem;
-        width: 2rem;
-        height: 2rem;
-    }
-}
-
-.overlay {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #000000e6;
-    overflow-x: hidden;
-    transition: 0.5s;
-}
-
-.overlay-content {
-    position: relative;
-    display: grid;
-    top: 25%;
-    width: 100%;
-    text-align: center;
-    margin-top: 30px;
-}
-
-.overlay a {
-    padding: 8px;
-    text-decoration: none;
-    font-size: 36px;
-    color: #818181;
-    transition: 0.3s;
-}
-
-.overlay a:hover, .overlay a:focus {
-    color: #f1f1f1;
-}
-
-.overlay .close-btn {
-    position: absolute;
-    top: -14.5rem;
-    right: 1.5rem;
-    font-size: 60px;
-}
-
-@media screen and (max-height: 450px) {
-    .overlay a {
-        font-size: 20px
-    }
-
-    .overlay .close-btn {
-        font-size: 40px;
-        top: -14.5rem;
-        right: 1.5rem;
-    }
 }
 
 .max-width {
