@@ -8,15 +8,20 @@ import {delay} from "./components/delay";
 import {showSuccessMessage} from "./components/successMessage";
 import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
-
 /**
- * Entry point
+ * The main application entry point for the signup page.
+ *
+ * This function initializes the signup page, including event handling,
+ * user verification, and other related functionality.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the application setup is complete.
  */
-async function app(): Promise<void> {
+async function signupApp(): Promise<void> {
 
-    // Checks if user is not already logged in if logged in redirects to homepage.
+    // Verify the user's login status before the rest of the page loads.
     await verifyUserRedirect("index.html");
 
+    // Page Element Initialization
     const password: HTMLInputElement | null = document.querySelector("#password");
     const confirmPassword: HTMLInputElement | null = document.querySelector("#confirm-password");
     const name: HTMLInputElement | null = document.querySelector("#name");
@@ -51,6 +56,11 @@ async function app(): Promise<void> {
             let error: boolean = false;
             e.preventDefault();
 
+            /**
+             * Validates the input field and sets a custom validation message if needed.
+             * @param {HTMLInputElement | null} input - The input element to validate.
+             * @param {string} errorMessage - The error message to display if validation fails.
+             */
             const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
                 if (input && input.value === "") {
                     if (customErrorMessage) {
@@ -67,6 +77,12 @@ async function app(): Promise<void> {
                 }
             };
 
+
+            /**
+             * Validates the password field and sets a custom validation message if needed.
+             *
+             * @param {HTMLInputElement | null} password - The password input element to validate.
+             */
             const validatePassword: (password: HTMLInputElement | null) => void = (password: HTMLInputElement | null): void => {
                 if (password) {
                     const passwordLength: number = password.value.length;
@@ -94,6 +110,11 @@ async function app(): Promise<void> {
                 }
             };
 
+            /**
+             * Validates the confirm-password field and sets a custom validation message if needed.
+             *
+             * @param {HTMLInputElement | null} confirmPassword - The confirm-password input element to validate.
+             */
             const validateConfirmPassword: (confirmPassword: HTMLInputElement | null, password: HTMLInputElement | null) => void = (confirmPassword: HTMLInputElement | null, password: HTMLInputElement | null): void => {
                 if (confirmPassword && password && confirmPassword.value !== password.value) {
                     if (customErrorMessage) {
@@ -104,6 +125,12 @@ async function app(): Promise<void> {
                 }
             };
 
+            /**
+             * Validates an email input field and sets a custom validation message if needed.
+             *
+             * @param {HTMLInputElement | null} email - The email input element to validate.
+             * @param {RegExp} validRegex - The regular expression to validate email format.
+             */
             const validateEmail: (email: HTMLInputElement | null, validRegex: RegExp) => void = async (email: HTMLInputElement | null, validRegex: RegExp): Promise<void> => {
                 let emailExists: boolean = false;
 
@@ -178,7 +205,8 @@ async function app(): Promise<void> {
 
 }
 
-app();
+// Invoke the signup application entry point.
+signupApp();
 
 // Function to handle submit button click
 async function buttonClickEvent(this: HTMLElement): Promise<void> {
@@ -188,7 +216,11 @@ async function buttonClickEvent(this: HTMLElement): Promise<void> {
     this.classList.remove("active");
 }
 
-// Function to handle changing password or confirmations-password type on click
+/**
+ * Toggles the visibility of a password input field or confirmation password input field by clicking an image.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the event is toggled successfully.
+ */
 async function handleClick(this: HTMLImageElement): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     const confirmPassword: HTMLInputElement | null = document.querySelector("#confirm-password");
@@ -211,7 +243,14 @@ async function handleClick(this: HTMLImageElement): Promise<void> {
     }
 }
 
-// Function to handle changing password or confirmation-password icon and type.
+/**
+ * Toggles the visibility of a password input field or confirmation password input field and changes the associated image.
+ *
+ * @param {HTMLInputElement | null} input - The input field to toggle the type of.
+ * @param {HTMLImageElement} image - The image to change.
+ * @param {string} hiddenSrc - The image source when the password is hidden.
+ * @param {string} openSrc - The image source when the password is visible.
+ */
 function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLImageElement, hiddenSrc: string, openSrc: string): void {
     if (input) {
         // Get image with class open and change password type to plain text
@@ -222,7 +261,11 @@ function togglePasswordVisibility(input: HTMLInputElement | null, image: HTMLIma
     }
 }
 
-// Function to handle creating new user and redirecting to login page
+/**
+ * Handles the submission of a user registration form, creates a new user entry with a hashed password, and redirects to the login page upon success.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the registration is successful.
+ */
 async function onsubmit(): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     const name: HTMLInputElement | null = document.querySelector("#name");

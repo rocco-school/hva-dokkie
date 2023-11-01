@@ -4,7 +4,12 @@ import {loggedOut} from "./components/handleLogout";
 import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
 /**
- * Entry point
+ * The main application entry point for the home page.
+ *
+ * This function initializes the home page, including event handling,
+ * user verification, and other related functionality.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the application setup is complete.
  */
 async function app(): Promise<void> {
     // Verify user and sets buttons based on verified user
@@ -14,6 +19,7 @@ async function app(): Promise<void> {
     const button: Element | any = document.querySelector(".start_button");
     button?.addEventListener("click", scrollDown);
 
+    // Page Element Initialization
     const openMobileMenu: Element | any = document.querySelector(".mobile-menu");
     const closeMobileMenu: Element | any = document.querySelector(".close-menu");
     const mobileNav: Element | any = document.querySelector(".overlay");
@@ -41,16 +47,25 @@ async function app(): Promise<void> {
     });
 }
 
+// Invoke the homepage application entry point.
 app();
 
-// Function to handle scrolling down to FAQ's
+/**
+ * Scrolls down to the FAQ section when clicked.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the FAQ section's state is toggled.
+ */
 async function scrollDown(this: HTMLElement): Promise<void> {
     const elem: Element | null = document.querySelector(".faq-container");
     // Scrolls to faq-container Element
     elem?.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
 }
 
-// Function to handle closing all opened FAQ
+/**
+ * Closes all active FAQ sections by replacing the "is-active" class with "faq__height".
+ *
+ * @returns {Promise<void>} A Promise that resolves when all active FAQs are closed.
+ */
 async function closeAllFAQ(): Promise<void> {
     // Closes all active FAQ's
     const items: Element[] = Array.from(document.querySelectorAll(".faq"));
@@ -59,7 +74,11 @@ async function closeAllFAQ(): Promise<void> {
     });
 }
 
-// Function to handle opening FAQ
+/**
+ * Toggles the open/close state of the FAQ section when clicked.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the FAQ section's state is toggled.
+ */
 async function handleFAQClick(this: HTMLElement): Promise<void> {
     // Get all FAQ items
     const items: Element[] = Array.from(document.querySelectorAll(".faq"));
@@ -76,7 +95,12 @@ async function handleFAQClick(this: HTMLElement): Promise<void> {
     this.classList.toggle("is-active");
 }
 
-// Function to handle click outside FAQ to close all opened FAQ
+/**
+ * Handles clicks outside of FAQ elements to close all active FAQ sections.
+ *
+ * @param {MouseEvent} event - The click event.
+ * @returns {Promise<void>} A Promise that resolves when all active FAQs are closed.
+ */
 async function handleClick(event: MouseEvent): Promise<void> {
     const click: EventTarget | any = event.target;
 

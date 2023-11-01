@@ -9,12 +9,18 @@ import {showSuccessMessage} from "./components/successMessage";
 import {closeMenu, openMenu} from "./components/handleMobileNavigation";
 
 /**
- * Entry point
+ * The main application entry point for the login page.
+ *
+ * This function initializes the login page, including event handling,
+ * user verification, and other related functionality.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the application setup is complete.
  */
-async function app(): Promise<void> {
+async function loginApp(): Promise<void> {
     // Checks if user is not already logged in if logged in redirects to homepage.
     await verifyUserRedirect("index.html");
 
+    // Page Element Initialization
     const password: HTMLInputElement | null = document.querySelector("#password");
     const form: HTMLFormElement | null = document.querySelector("#form");
     const container: HTMLFormElement | null = document.querySelector(".container");
@@ -42,12 +48,19 @@ async function app(): Promise<void> {
 
     button?.addEventListener("click", handleClick);
 
+    // Event listener for the login form submission.
     if (form) {
         form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
             let error: boolean = false;
 
             e.preventDefault();
 
+            /**
+             * Validates the input field and sets a custom validation message if needed.
+             *
+             * @param {HTMLInputElement | null} input - The input element to validate.
+             * @param {string} errorMessage - The error message to display if validation fails.
+             */
             const validateInput: (input: (HTMLInputElement | null), errorMessage: string) => void = (input: HTMLInputElement | null, errorMessage: string): void => {
                 if (input && input.value === "") {
                     if (customErrorMessage) {
@@ -65,6 +78,12 @@ async function app(): Promise<void> {
                 }
             };
 
+            /**
+             * Validates the password and email fields and creates a user database input through bcrypt.
+             *
+             * @param {HTMLInputElement | null} password - The password input element to validate.
+             * @param {HTMLInputElement | null} email - The email input element to validate.
+             */
             const validate: (password: HTMLInputElement | null, email: HTMLInputElement | null) => void = async (password: HTMLInputElement | any, email: HTMLInputElement | any): Promise<void> => {
                 if (password?.value && email?.value) {
                     if (customErrorMessage) {
@@ -126,9 +145,8 @@ async function app(): Promise<void> {
                 }
             };
 
-            // Validates the input and if its invalid adds a warning.
+            // Validation logic for create event form fields.
             const inputs: (HTMLInputElement | null)[] = [password, email];
-
             inputs.forEach((input: HTMLInputElement | null): void => {
                 validateInput(input, input?.name + " is required");
             });
@@ -156,9 +174,14 @@ async function app(): Promise<void> {
     }
 }
 
-app();
+// Invoke the login application entry point.
+loginApp();
 
-// Function to handle changing password type on click
+/**
+ * Toggles the password type by click
+ *
+ * @returns {Promise<void>} A Promise that resolves when the event is toggled successfully.
+ */
 async function handleShowPasswordClick(this: HTMLImageElement): Promise<void> {
     const password: HTMLInputElement | null = document.querySelector("#password");
     this.classList.toggle("open");
@@ -185,7 +208,12 @@ async function handleClick(this: HTMLElement): Promise<void> {
     this.classList.remove("active");
 }
 
-// Function to assign JWT token to logged-in user.
+/**
+ * Assigns a JWT token to the user's session after logging in.
+ *
+ * @param {any[] | string} user - The logged-in user data or user ID.
+ * @returns {Promise<void>} A Promise that resolves when the token is assigned successfully.
+ */
 async function assignToken(user: any[] | string): Promise<void> {
     // Get secret key from env file
     const secret: string = __SECRET_KEY__;

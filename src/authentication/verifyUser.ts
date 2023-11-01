@@ -8,6 +8,7 @@ import {EVENT_QUERY} from "../query/event.query";
  * Verify if the user is authenticated by checking their JWT token.
  * If the user is not authenticated, they are redirected to the provided path.
  * @param {string} path - The provided path for this event.
+ * @returns {Promise<void>} A Promise that resolves after the specified delay.
  */
 export async function verifyUserRedirect(path): Promise<void> {
     try {
@@ -29,6 +30,7 @@ export async function verifyUserRedirect(path): Promise<void> {
 /**
  * Verify if the user is authenticated by checking their JWT token.
  * If the user is not authenticated, they are redirected to the login page.
+ * @returns {Promise<void>} A Promise that resolves after the specified delay.
  */
 export async function verifyUser(): Promise<void> {
     try {
@@ -54,6 +56,7 @@ export async function verifyUser(): Promise<void> {
  * This function checks the user's JWT token, event ID, and user ID to determine authorization.
  * If the user is not authorized, it redirects them to the index page.
  * @param {eventInterface[eventId]} eventId - The unique identifier of the event.
+ * @returns {Promise<void>} A Promise that resolves after the specified delay.
  */
 export async function verifyUserForEvent(eventId): Promise<void> {
     try {
@@ -89,6 +92,7 @@ export async function verifyUserForEvent(eventId): Promise<void> {
  * Verify if the user is authenticated by checking their JWT token.
  * If the user is not authenticated, they will only get access to log in and signup page.
  * If the user is authorized, they will get access to all pages.
+ * @returns {Promise<void>} A Promise that resolves after the specified delay.
  */
 export async function verifyUserHomePage(): Promise<void> {
     // Gets Secret key from ENV

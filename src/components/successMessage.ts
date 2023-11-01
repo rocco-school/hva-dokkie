@@ -1,4 +1,3 @@
-// Function to show a success message.
 import {delay} from "./delay";
 
 /**

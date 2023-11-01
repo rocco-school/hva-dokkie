@@ -1,5 +1,7 @@
 /**
- * Close the delete confirmation message by hiding the modal and overlay.
+ * Closes the delete confirmation windows
+ *
+ * @returns {Promise<void>} A Promise that resolves after the specified delay.
  */
 export async function closeDeleteMessage(): Promise<void> {
     const confirmation: Element | null = document.querySelector(".filter");

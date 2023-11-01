@@ -1,11 +1,21 @@
 import "../hboictcloud-config";
-import {api} from "@hboictcloud/api";
+import {api, session} from "@hboictcloud/api";
 import {PAYMENT_QUERY} from "../query/payment.query";
 import {EXPENSE_QUERY} from "../query/expanse.query";
 import {PARTICIPANT_QUERY} from "../query/participant.query";
 import {EVENT_QUERY} from "../query/event.query";
 import {USER_QUERY} from "../query/user.query";
+import {JWTPayload} from "jose";
+import {verify} from "../authentication/jsonwebtoken";
+import {handleRedirectToEventDetail} from "./handleRedirect";
+import {shareEvent} from "./shareEvent";
+import {delay} from "./delay";
 
+/**
+ * Clears all rows from the expense, participant, and payments tables.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
+ */
 export async function removeAllChildren(): Promise<void> {
     const tablePayment: Element | null = document.querySelector(".payment-table-body");
     const expenseTable: Element | null = document.querySelector(".expense-table-body");
@@ -34,6 +44,13 @@ export async function removeAllChildren(): Promise<void> {
     }
 }
 
+/**
+ * Add (payment, expense or event) id to edit form
+ * Show edit form of specified (payment, expense or event)
+ *
+ * @param {HTMLTableRowElement} row - The HTML table row representing the (payment, expense or event).
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
+ */
 async function editRecord(row: HTMLTableRowElement): Promise<void> {
     if (row.classList.contains("payment")) {
         const createPaymentForm: Element | null = document.querySelector(".edit-payment");
@@ -50,6 +67,14 @@ async function editRecord(row: HTMLTableRowElement): Promise<void> {
         }
         editExpenseForm?.classList.remove("hidden");
     }
+
+    if (row.classList.contains("event")) {
+        const editEventForm: Element | null = document.querySelector(".edit-event");
+        if (editEventForm) {
+            editEventForm.id = row.id;
+        }
+        editEventForm?.classList.remove("hidden");
+    }
 }
 
 /**
@@ -57,7 +82,7 @@ async function editRecord(row: HTMLTableRowElement): Promise<void> {
  *
  * @param {HTMLTableRowElement} row - The HTML table row representing the expense.
  * @param {eventInterface[eventId]} eventId - The ID of the event to which the expense belongs.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
  */
 async function showPaymentsTable(row, eventId): Promise<void> {
     // Get the expense ID from the row's attributes
@@ -118,6 +143,7 @@ async function showPaymentsTable(row, eventId): Promise<void> {
 /**
  * Display a confirmation dialog for deleting a row (expense, participant, or payment).
  * @param row - The HTML element representing the row to be deleted.
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
  */
 async function showDeleteConfirmation(row: HTMLElement): Promise<void> {
     // Check if row is defined
@@ -163,6 +189,13 @@ async function showDeleteConfirmation(row: HTMLElement): Promise<void> {
                 message.innerHTML = "Are you sure you want to delete this user?";
             }
         }
+
+        if (row.classList.contains("event")) {
+            confirmButton.classList.add("event");
+            if (message) {
+                message.innerHTML = "Are you sure you want to delete this event?";
+            }
+        }
     }
 
     // Show the confirmation dialog elements
@@ -176,7 +209,7 @@ async function showDeleteConfirmation(row: HTMLElement): Promise<void> {
  *
  * @param {eventInterface[eventId]} eventId - The ID of the event for which expenses should be added.
  * @param {Element} tableBody - The HTML element where the expense data should be added.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
  */
 export async function addExpensesTable(eventId, tableBody): Promise<void> {
     // Check if eventId is defined
@@ -268,7 +301,7 @@ export async function addExpensesTable(eventId, tableBody): Promise<void> {
  *
  * @param {participantInterface[eventId]} eventId - The ID of the event for which participants should be added.
  * @param {Element} tableBody - The HTML element where the expense data should be added.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
  */
 export async function populateParticipantTable(eventId, tableBody): Promise<void> {
     // Check if eventId is defined
@@ -335,12 +368,11 @@ export async function populateParticipantTable(eventId, tableBody): Promise<void
  *
  * @param {paymentInterface[expenseId]} expenseId - The ID of the expense for which payments should be added.
  * @param {paymentInterface[eventId]} eventId - The ID of the event to which the expense belongs.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
  */
 export async function populatePaymentTable(expenseId, eventId): Promise<void> {
     const tableBody: Element | null = document.querySelector(".payment-table-body");
 
-    console.log(tableBody);
     // Check if eventId and expenseId is defined
     if (!eventId) return;
     if (!expenseId) return;
@@ -349,7 +381,6 @@ export async function populatePaymentTable(expenseId, eventId): Promise<void> {
     try {
 
         // Fetch expenses data for the given eventId
-        console.log(expenseId, eventId);
         const params: any[] = [eventId, expenseId];
         const payments: any | string = await api.queryDatabase(PAYMENT_QUERY.GET_PAYMENTS_BY_EXPENSE_ID, ...params);
 
@@ -442,18 +473,15 @@ export async function populatePaymentTable(expenseId, eventId): Promise<void> {
 }
 
 /**
- * Add participant data to a table within the provided tableBody element.
+ * Add users data to a table within the provided tableBody element.
  *
- * @param {participantInterface[eventId]} eventId - The ID of the event for which participants should be added.
- * @param {Element} tableBody - The HTML element where the expense data should be added.
- * @returns {Promise<void>}
+ * @param {Element} tableBody - The HTML element where the user data should be added.
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
  */
 export async function addUsersToTable(tableBody): Promise<void> {
     try {
         // Fetch all users
         const users: any | string = await api.queryDatabase(USER_QUERY.SELECT_USERS);
-
-        console.log(users);
 
         // Check if the response is a string (error) or an array (data)
         if (typeof users === "string") return;
@@ -492,6 +520,106 @@ export async function addUsersToTable(tableBody): Promise<void> {
                         target.classList.contains("delete-button")) {
                         // Handle delete button click
                         await showDeleteConfirmation(deleteButton);
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Add events data to a table within the provided tableBody element.
+ *
+ * @param {Element} tableBody - The HTML element where the expense data should be added.
+ * @returns {Promise<void>} A Promise that resolves when the tables are cleared.
+ */
+export async function addEventsToTable(tableBody: Element | null): Promise<void> {
+    // Check if eventId and expenseId is defined
+
+    const token: string = session.get("JWTToken");
+    const logged: JWTPayload = await verify(token, __SECRET_KEY__);
+    const userID: eventInterface["userId"] = logged.id;
+
+    if (!logged.id) return;
+    if (!userID) return;
+    if (!tableBody) return;
+
+    try {
+
+        // Fetch expenses data for the given eventId
+        const events: any | string = await api.queryDatabase(EVENT_QUERY.SELECT_EVENTS_BY_USER, userID);
+
+        // Check if the response is a string (error) or an array (data)
+        if (typeof events === "string") return;
+
+        // Iterate through each expense and create a table row for it
+        for (const event of events) {
+            const {
+                eventId,
+                description,
+                dateCreated,
+                eventStatus
+            } = event;
+            const tr: HTMLTableRowElement | undefined = tableBody?.appendChild(document.createElement("tr"));
+
+            // Determine the status based on expenseStatus
+            const status: string = eventStatus === 0 ? "Active" : "Inactive";
+
+            // Format the creation date
+            const createdAt: string = dateCreated ? new Date(dateCreated).toUTCString().replace(" GMT", "") : "Unknown";
+
+            if (tr) {
+                // Set attributes for the table row
+                tr.setAttribute("id", eventId);
+                tr.setAttribute("class", "event");
+
+                // Helper function to create and append table cells
+                const createTableCell: (text) => Text = (text) => tr.appendChild(document.createElement("td")).appendChild(document.createTextNode(text));
+
+                // Create table cells for each expense detail
+                createTableCell(eventId);
+                createTableCell(description);
+                createTableCell(createdAt);
+                createTableCell(status);
+
+                // Create Edit and Delete buttons
+                const editButton: any = createButton("Edit", "edit-button event", eventId, "assets/images/icons/edit.svg");
+                const deleteButton: any = createButton("Delete", "delete-button event", eventId, "assets/images/icons/delete-color.svg");
+                const whatsappButton: any = createButton("Whatsapp", "whatsapp-button event", eventId, "assets/images/icons/whatsapp.svg");
+
+                const whatsappButtonCell: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
+                whatsappButtonCell.appendChild(whatsappButton);
+
+                // Append the buttons to the table cell
+                const buttonCell: HTMLTableCellElement = tr.appendChild(document.createElement("td"));
+                buttonCell.appendChild(editButton);
+                buttonCell.appendChild(deleteButton);
+
+                if (event) {
+                    // Disable buttons if expenseStatus is 1 (Closed)
+                    if (event.eventStatus === 1) {
+                        editButton.setAttribute("disabled", "disabled");
+                        deleteButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Add event listeners for clicking on rows and buttons
+                tr.addEventListener("click", async function (event: MouseEvent): Promise<void> {
+                    const target: HTMLElement = event.target as HTMLElement;
+                    if ((target.parentElement && target.parentElement.classList.contains("delete-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("delete-button")) || target.classList.contains("delete-button")) {
+                        // Handle delete button click
+                        await showDeleteConfirmation(tr);
+                    } else if ((target.parentElement && target.parentElement.classList.contains("edit-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("edit-button")) || target.classList.contains("edit-button")) {
+                        // Handle edit button click
+                        await editRecord(tr);
+                    } else if ((target.parentElement && target.parentElement.classList.contains("whatsapp-button")) || (target.firstElementChild && target.firstElementChild.classList.contains("whatsapp-button")) || target.classList.contains("whatsapp-button")) {
+                        // Handle whatsapp button click
+                        await shareEvent(tr);
+                    } else {
+                        // Handle event
+                        await handleRedirectToEventDetail(tr);
                     }
                 });
             }
